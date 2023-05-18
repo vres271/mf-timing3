@@ -3,6 +3,8 @@
 ## Pages site
 https://vres271.gitlab.io/mf-timing3/
 
+https://mf-timing3-vres271-ef74ca85806b67e597ea9993698f629a49a07749be2b.gitlab.io/
+
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
