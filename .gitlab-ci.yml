@@ -1,2 +1,2 @@
 # The Docker image that will be used to build your app
-image: pages-image
+image: node:lts
