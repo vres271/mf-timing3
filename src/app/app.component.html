@@ -5,6 +5,7 @@
   <p-table [value]="products"  [tableStyle]="{ 'min-width': '50rem' }">
     <ng-template pTemplate="header">
         <tr>
+            <th width="30px">#</th>
             <th>Code</th>
             <th>Name</th>
             <th>Category</th>
@@ -13,6 +14,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-product>
         <tr>
+            <td></td>
             <td>{{ product.code }}</td>
             <td>{{ product.name }}</td>
             <td>{{ product.category }}</td>
