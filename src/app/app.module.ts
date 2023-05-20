@@ -2,7 +2,15 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
+
+// PrimeNG
+import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
+import { TabMenuModule } from 'primeng/tabmenu';
+
 import { AppComponent } from './app.component';
+
+
 
 @NgModule({
   declarations: [
@@ -10,7 +18,13 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+
+    // PrimeNG
+    ButtonModule,
+    TableModule,
+    TabMenuModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent]
