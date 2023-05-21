@@ -8,6 +8,9 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { TabMenuModule } from 'primeng/tabmenu';
 
+import { LogUpdateService } from './services/log-update-service.service';
+import { CheckForUpdateService } from './services/check-for-update-service.service';
+
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
@@ -33,7 +36,10 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     }),
 
   ],
-  providers: [],
+  providers: [
+    LogUpdateService,
+    CheckForUpdateService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
