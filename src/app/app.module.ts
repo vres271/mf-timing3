@@ -3,18 +3,12 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 
-// PrimeNG
-import { ButtonModule } from 'primeng/button';
-import { TableModule } from 'primeng/table';
-import { TabMenuModule } from 'primeng/tabmenu';
-
-import { LogUpdateService } from './services/log-update-service.service';
-import { CheckForUpdateService } from './services/check-for-update-service.service';
+import { LogUpdateService } from './core/services/log-update.service';
+import { CheckForUpdateService } from './core/services/check-for-update.service';
 
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
-
-
+import { LayoutModule } from './core/layout/layout.module';
 
 @NgModule({
   declarations: [
@@ -24,10 +18,6 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     BrowserModule,
     AppRoutingModule,
 
-    // PrimeNG
-    ButtonModule,
-    TableModule,
-    TabMenuModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
@@ -35,6 +25,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
       registrationStrategy: 'registerWhenStable:30000'
     }),
 
+    LayoutModule,
   ],
   providers: [
     LogUpdateService,
