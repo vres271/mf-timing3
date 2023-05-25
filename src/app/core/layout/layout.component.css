@@ -1,0 +1,20 @@
+.grid {
+    display: grid;    
+}
+.wrapper {
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 54px auto 32px;    
+}
+.wrapper .header {
+    padding: 8px;
+    background: var(--surface-card);
+}
+.wrapper .content {
+    padding: 8px;
+    overflow-y: auto;
+}
+.wrapper .footer {
+    padding: 4px 12px;
+    font-size: 14px;
+}

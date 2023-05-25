@@ -7,24 +7,20 @@ import { HomeService } from './home.service';
 })
 export class HomeComponent {
   hs: number = 0;
+  products:any = [];
+
   constructor(private homeService: HomeService) {
-    this.hs = this.homeService.getHS()
+    this.hs = this.homeService.getHS();
+    for (let i = 0; i < 300; i++) {
+      this.products.push({
+        id: i+1,
+        code: Math.floor(Math.random()*100000),
+        name: 'Name Of Item ' + i,
+        category: 'full',
+        quantity: Math.random() > .5
+      })      
+    }
+
   }
-
-  products = [
-    {code: '123',name: '123',category: '123',quantity: '123'},
-    {code: '123',name: '123',category: '123',quantity: '123'},
-    {code: '123',name: '123',category: '123',quantity: '123'},
-    {code: '123',name: '123',category: '123',quantity: '123'},
-    {code: '123',name: '123',category: '123',quantity: '123'},
-    {code: '123',name: '123',category: '123',quantity: '123'},
-    {code: '123',name: '123',category: '123',quantity: '123'},
-    {code: '123',name: '123',category: '123',quantity: '123'},
-    {code: '123',name: '123',category: '123',quantity: '123'},
-    {code: '123',name: '123',category: '123',quantity: '123'},
-    {code: '123',name: '123',category: '123',quantity: '123'},
-  ]
-
-
 
 }

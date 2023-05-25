@@ -9,7 +9,7 @@ import { LayoutComponent } from './layout.component';
   declarations: [LayoutComponent],
   imports: [
     CommonModule,
-    TabMenuModule
+    TabMenuModule,
   ],
   exports: [
     LayoutComponent

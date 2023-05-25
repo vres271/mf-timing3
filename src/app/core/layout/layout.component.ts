@@ -4,16 +4,37 @@ import { MenuItem } from 'primeng/api';
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
+  styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent {
 
   items: MenuItem[] = [
-    { label: 'Home', icon: 'pi pi-fw pi-home' },
-    { label: 'Calendar', icon: 'pi pi-fw pi-calendar' },
-    { label: 'Edit', icon: 'pi pi-fw pi-pencil' },
-    { label: 'Documentation', icon: 'pi pi-fw pi-file' },
-    { label: 'Settings', icon: 'pi pi-fw pi-cog' }
+    { 
+      label: 'About', 
+      icon: 'pi pi-fw pi-home', 
+      routerLink: '/lazy-home/about', 
+      routerLinkActiveOptions: { exact: true } 
+    },
+    { 
+      label: 'Lazy Home', 
+      icon: 'pi pi-fw pi-calendar', 
+      routerLink: '/lazy-home', 
+      routerLinkActiveOptions: { exact: true } 
+    },
+    { 
+      label: 'Version', 
+      icon: 'pi pi-fw pi-pencil', 
+      routerLink: '/lazy-home/version', 
+      routerLinkActiveOptions: { exact: true } 
+    },
+    { 
+      label: 'Documentation', 
+      icon: 'pi pi-fw pi-file' 
+    },
+    { 
+      label: 'Settings', 
+      icon: 'pi pi-fw pi-cog' 
+    }
   ];
-  activeItem = this.items[2];
   
 }
