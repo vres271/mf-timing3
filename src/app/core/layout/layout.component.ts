@@ -28,12 +28,10 @@ export class LayoutComponent {
       routerLinkActiveOptions: { exact: true } 
     },
     { 
-      label: 'Documentation', 
-      icon: 'pi pi-fw pi-file' 
-    },
-    { 
-      label: 'Settings', 
-      icon: 'pi pi-fw pi-cog' 
+      label: 'Administration', 
+      icon: 'pi pi-fw pi-cog',
+      routerLink: '/admin/', 
+      routerLinkActiveOptions: { exact: true } 
     }
   ];
   

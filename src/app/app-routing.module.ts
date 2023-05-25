@@ -1,18 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
 
 const routes: Routes = [
-  // { 
-  //   path: 'home', 
-  //   title: 'MFTiming3: Home', 
-  //   component: HomeComponent 
-  // },
   {
     path: 'lazy-home',
     loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
   },
-  // { path: '',   redirectTo: '/home', pathMatch: 'full' }
+  {
+    path: 'admin',
+    loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule)
+  },
+  { path: '',   redirectTo: '/lazy-home/about', pathMatch: 'full' }
 ];
 
 @NgModule({
