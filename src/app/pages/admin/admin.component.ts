@@ -10,7 +10,7 @@ import { GeneralComponent } from './general/general.component';
 })
 export class AdminComponent implements OnInit {
 
-  currentComponent = GeneralComponent;
+  currentComponent: any = GeneralComponent;
   header = 'General';
 
   constructor(public router: Router, public activatedRoute: ActivatedRoute) {
