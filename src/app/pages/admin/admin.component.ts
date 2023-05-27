@@ -1,33 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { UsersComponent } from './users/users.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GeneralComponent } from './general/general.component';
 
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
+  styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-  menuItems: MenuItem[] = [];
-  constructor() {
+
+  currentComponent = GeneralComponent;
+  header = 'General';
+
+  constructor(public router: Router, public activatedRoute: ActivatedRoute) {
 
   }
 
   ngOnInit() {
-
-    this.menuItems  = [
-      { 
-        label: 'General', 
-        icon: 'pi pi-fw pi-home', 
-        routerLink: '', 
-        routerLinkActiveOptions: { exact: true } 
-      },
-      { 
-        label: 'Users', 
-        icon: 'pi pi-fw pi-users', 
-        routerLink: 'users', 
-        routerLinkActiveOptions: { exact: true } 
-      },
-    ];
-
+    if (this.router.url === '/admin/users') {
+      this.currentComponent = UsersComponent;
+      this.header = 'Users';
+    } else {
+      this.currentComponent = GeneralComponent;
+      this.header = 'General';
+    }
   }
 
 

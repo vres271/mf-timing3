@@ -30,7 +30,7 @@ export class LayoutComponent {
     { 
       label: 'Administration', 
       icon: 'pi pi-fw pi-cog',
-      routerLink: '/admin/', 
+      routerLink: '/admin', 
       routerLinkActiveOptions: { exact: true } 
     }
   ];

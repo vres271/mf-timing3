@@ -8,7 +8,7 @@
 }
 .wrapper .header {
     padding: 8px;
-    background: var(--surface-card);
+    /* background: var(--surface-card); */
 }
 .wrapper .content {
     padding: 8px;

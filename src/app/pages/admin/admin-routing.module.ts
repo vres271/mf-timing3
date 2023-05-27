@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AdminComponent } from './admin.component';
 import { UsersComponent } from './users/users.component';
+import { GeneralComponent } from './general/general.component';
 
 
 const routes: Routes = [
@@ -11,8 +12,12 @@ const routes: Routes = [
     component: AdminComponent
   },
   {
+    path: 'general',
+    component: AdminComponent
+  },
+  {
     path: 'users',
-    component: UsersComponent
+    component: AdminComponent
   },
 
 ];

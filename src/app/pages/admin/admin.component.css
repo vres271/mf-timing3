@@ -1,0 +1,12 @@
+.wrapper {
+    display: grid;
+    grid-template-columns: 210px auto ;    
+}
+.wrapper .sidebar {
+    /* padding: 8px; */
+    /* background: var(--surface-card); */
+}
+.wrapper .content {
+    /* padding: 8px;
+    overflow-y: auto; */
+}

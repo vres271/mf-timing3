@@ -1,2 +1,11 @@
-<p>admin works!</p>
-<p-menu [model]="menuItems"></p-menu>
+<div class="wrapper">
+    <div class="sidebar">
+        <admin-menu></admin-menu>
+    </div>
+    <div class="content">
+        <p-card [header]="header">
+            <ng-container *ngComponentOutlet="currentComponent"></ng-container>
+        </p-card>
+    </div>
+</div>
+
