@@ -6,7 +6,8 @@ export interface RacerDTO extends Item{
     userId: number;
     raceId: number;
     categoryId: number;
-    regDate: Date;
+    regDate: number;
+    num: number;
 }
 
 export class Racer{
@@ -15,12 +16,14 @@ export class Racer{
     raceId: number;
     categoryId: number;
     regDate: Date;
+    num: number;
 
     private usersMap: any;
   
     constructor(dto: RacerDTO, usersMap: any) {
-        Object.assign(this, dto);
-        this.usersMap = usersMap;
+      Object.assign(this, dto);
+      this.regDate = new Date(dto.regDate);
+      this.usersMap = usersMap;
     }
   
     get user():User {
@@ -29,6 +32,10 @@ export class Racer{
     
     get userName():string {
       return this.usersMap.id[this.userId]?.name;
+    }
+
+    get formatedDate():string {
+      return new Date(this.regDate).toISOString().slice(0, 10);
     }
 
     get userFullName():string {
@@ -50,6 +57,6 @@ export function Racer2DTO(item: Racer):RacerDTO {
     dto.userId = item.userId;
     dto.raceId = item.raceId;
     dto.categoryId = item.categoryId;
-    dto.regDate = item.regDate;
+    // dto.regDate = new Date(item.regDate);
     return dto;
 }

@@ -23,4 +23,8 @@ export class DataService {
     });
   }
 
+  getById(key: string, id: number) {
+    return this.map[key].id[id]
+  }
+
 }

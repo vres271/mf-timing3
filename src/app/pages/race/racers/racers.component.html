@@ -29,7 +29,7 @@
         [tableStyle]="{ 'min-width': '50rem' }"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         [rowsPerPageOptions]="[20, 50, 100, 500, 1000]"      
-        [globalFilterFields]="['userId','userFullName','raceId','categoryId','regDate']" 
+        [globalFilterFields]="fieldNames" 
         selectionMode="multiple" [(selection)]="selectedItems" [metaKeySelection]="true" (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect()"
         styleClass="p-datatable-sm" >
         <ng-template pTemplate="caption">

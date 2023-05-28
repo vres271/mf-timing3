@@ -12,17 +12,20 @@ export class RacersComponent implements OnInit {
   racers$: Observable<Racer[]>;
   selectedItems:  Racer[];
   sidebarVisible: boolean;
+  fieldNames: string[];
 
   fields = [
     {name: 'userId', title: 'userId', type: 'text' },
+    {name: 'num', title: 'num', type: 'text' },
     {name: 'userFullName', title: 'userFullName', type: 'text' },
     {name: 'raceId', title: 'raceId', type: 'text' },
     {name: 'categoryId', title: 'categoryId', type: 'text' },
     {name: 'regDate', title: 'regDate', type: 'text' },
+    {name: 'formatedDate', title: 'formatedDate', type: 'text' },
   ]
 
   constructor(private racersService: RacersService) {
-
+    this.fieldNames = this.fields.map(f => f.name);
   }
 
   ngOnInit() {
@@ -30,11 +33,7 @@ export class RacersComponent implements OnInit {
   }
 
   onRowSelect(e: any) {
-    // if(this.selectedItems.length===2 && e.data === this.selectedItems[0]) {
-    //   this.sidebarVisible = false;
-    // } else {
-      this.sidebarVisible = true;
-    // }
+    this.sidebarVisible = true;
   }
 
   onRowUnselect() {

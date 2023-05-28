@@ -1,4 +1,4 @@
-import { User } from './../models/user.model';
+import { User } from '../models/user.model';
 export const UsersMockData: User[] = [
     {
       "name": "Hannah Gregory",

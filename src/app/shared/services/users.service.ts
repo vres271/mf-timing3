@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from './../models/user.model';
 import { Injectable } from '@angular/core';
-import { UsersMockData } from './users.mock';
+import { UsersMockData } from '../mocks/users.mock';
 import { DataService } from './data.service';
 
 @Injectable({
