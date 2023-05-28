@@ -28,3 +28,14 @@ app-layout{
     display: block;
     height: 100vh;
 }
+
+.input-block{
+    flex-direction: column;
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.with-menu-layout {
+    display: grid;
+    grid-template-columns: 210px auto ;    
+}

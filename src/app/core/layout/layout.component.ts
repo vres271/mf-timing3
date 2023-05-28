@@ -15,16 +15,22 @@ export class LayoutComponent {
       routerLink: '/lazy-home/about', 
       routerLinkActiveOptions: { exact: true } 
     },
+    // { 
+    //   label: 'Lazy Home', 
+    //   icon: 'pi pi-fw pi-calendar', 
+    //   routerLink: '/lazy-home', 
+    //   routerLinkActiveOptions: { exact: true } 
+    // },
+    // { 
+    //   label: 'Version', 
+    //   icon: 'pi pi-fw pi-pencil', 
+    //   routerLink: '/lazy-home/version', 
+    //   routerLinkActiveOptions: { exact: true } 
+    // },
     { 
-      label: 'Lazy Home', 
-      icon: 'pi pi-fw pi-calendar', 
-      routerLink: '/lazy-home', 
-      routerLinkActiveOptions: { exact: true } 
-    },
-    { 
-      label: 'Version', 
-      icon: 'pi pi-fw pi-pencil', 
-      routerLink: '/lazy-home/version', 
+      label: 'Race', 
+      icon: 'pi pi-fw pi-car',
+      routerLink: '/race', 
       routerLinkActiveOptions: { exact: true } 
     },
     { 

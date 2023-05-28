@@ -19,7 +19,7 @@
 </p-sidebar>
 
 
-<ng-container *ngIf="users$ | async as data">
+<ng-container *ngIf="racers$ | async as data">
     <p-table 
         #table
         [value]="data" 
@@ -29,7 +29,7 @@
         [tableStyle]="{ 'min-width': '50rem' }"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         [rowsPerPageOptions]="[20, 50, 100, 500, 1000]"      
-        [globalFilterFields]="['name', 'firstName', 'secondName', 'thirdName']" 
+        [globalFilterFields]="['userId','userFullName','raceId','categoryId','regDate']" 
         selectionMode="multiple" [(selection)]="selectedItems" [metaKeySelection]="true" (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect()"
         styleClass="p-datatable-sm" >
         <ng-template pTemplate="caption">

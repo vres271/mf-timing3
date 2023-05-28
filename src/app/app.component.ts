@@ -1,3 +1,4 @@
+import { UsersService } from 'src/app/shared/services/users.service';
 import { Component } from '@angular/core';
 import { LogUpdateService } from './core/services/log-update.service';
 import { CheckForUpdateService } from './core/services/check-for-update.service';
@@ -11,7 +12,10 @@ export class AppComponent{
   constructor(
     private logUpdateService: LogUpdateService,
     private checkForUpdateService: CheckForUpdateService,
-  ) {}
+    private usersService: UsersService,
+  ) {
+    this.usersService.generateUsers()
+  }
 
 
 

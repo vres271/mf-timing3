@@ -2,16 +2,16 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from './../models/user.model';
 import { Injectable } from '@angular/core';
 import { UsersMockData } from './users.mock';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class UsersService {
-  private items: User[] = [];
   private items$ = new BehaviorSubject<User[]>([]);
 
-  constructor() {
-    this.generateUsers();
+  constructor(private dataService: DataService) {
   }
 
   getUsers():Observable<User[]> {
@@ -19,8 +19,10 @@ export class UsersService {
   }
 
   generateUsers() {
-    this.items = UsersMockData;
-    this.items$.next(this.items);
+    this.dataService.items.users = UsersMockData.map(item => new User(item));
+    this.dataService.createMap('users');
+    this.items$.next(this.dataService.items.users);
   }
+
 
 }
