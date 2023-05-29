@@ -27,23 +27,23 @@ export class Racer{
     }
   
     get user():User {
-      return this.usersMap.id[this.userId];
+      return this.usersMap.id.get(this.userId);
     }
     
     get userName():string {
-      return this.usersMap.id[this.userId]?.name;
-    }
-
-    get formatedDate():string {
-      return new Date(this.regDate).toISOString().slice(0, 10);
+      return this.user?.name;
     }
 
     get userFullName():string {
       return [
-        this.usersMap.id[this.userId]?.firstName,
-        this.usersMap.id[this.userId]?.secondName,
-        this.usersMap.id[this.userId]?.thirdName,
+        this.user?.firstName,
+        this.user?.secondName,
+        this.user?.thirdName,
       ].join(' ').trim();
+    }
+
+    get formatedDate():string {
+      return new Date(this.regDate).toISOString().slice(0, 10);
     }
 
 }

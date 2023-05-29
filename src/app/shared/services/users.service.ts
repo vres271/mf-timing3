@@ -3,6 +3,7 @@ import { User } from './../models/user.model';
 import { Injectable } from '@angular/core';
 import { UsersMockData } from '../mocks/users.mock';
 import { DataService } from './data.service';
+import { EntityType } from '../models/items.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +20,9 @@ export class UsersService {
   }
 
   generateUsers() {
-    this.dataService.items.users = UsersMockData.map(item => new User(item));
-    this.dataService.createMap('users');
-    this.items$.next(this.dataService.items.users);
+    this.dataService.items[EntityType.User] = UsersMockData.map(item => new User(item));
+    this.dataService.createMap(EntityType.User);
+    this.items$.next(this.dataService.items[EntityType.User]);
   }
 
 
