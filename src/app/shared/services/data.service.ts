@@ -29,5 +29,5 @@ export class DataService {
   getById(key: EntityType, id: number) {
     return this.map[key].id.get(id);
   }
-  
+
 }

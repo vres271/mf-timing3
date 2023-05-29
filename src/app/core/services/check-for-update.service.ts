@@ -18,7 +18,7 @@ export class CheckForUpdateService {
         const updateFound = await updates.checkForUpdate();
         console.log(updateFound ? 'A new version is available.' : 'Already on the latest version.');
       } catch (err) {
-        console.error('Failed to check for updates:', err);
+        console.warn('Failed to check for updates:', err);
       }
     });
   }
