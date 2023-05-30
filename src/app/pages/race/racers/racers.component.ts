@@ -13,6 +13,7 @@ export class RacersComponent implements OnInit {
   selectedItems:  Racer[];
   sidebarVisible: boolean;
   fieldNames: string[];
+  editedItem: Racer;
 
   fields = [
     {name: 'userId', title: 'userId', type: 'text' },
@@ -34,12 +35,21 @@ export class RacersComponent implements OnInit {
 
   onRowSelect(e: any) {
     this.sidebarVisible = true;
+    this.editedItem = this.selectedItems[0];
   }
 
   onRowUnselect() {
     if (!this.selectedItems.length) {
       this.sidebarVisible = false
     }
+  }
+
+  save() {
+    this.racersService.saveRacer(this.editedItem)
+      .subscribe(res=> {
+        console.log('saved', res)
+        this.sidebarVisible = false;
+      })
   }
 
 }

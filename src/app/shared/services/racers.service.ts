@@ -1,10 +1,9 @@
+import { APIService } from '../../core/services/api.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Racer, RacerDTO } from './../models/racer.model';
 import { Injectable } from '@angular/core';
-import { RacersMockData } from '../mocks/racers.mock';
 import { DataService } from './data.service';
 import { EntityType } from '../models/items.model';
-import { NgxIndexedDBService } from 'ngx-indexed-db';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +14,7 @@ export class RacersService {
 
   constructor(
     private dataService: DataService,
-    private dbService: NgxIndexedDBService,
+    private apiService: APIService,
   ) {
   }
 
@@ -23,13 +22,26 @@ export class RacersService {
     return this.items$;
   }
 
+  saveRacer(item: Racer):Observable<any> {
+    const dto:RacerDTO = {
+      id: 1*item.id,
+      userId: 1*item.userId,
+      raceId: 1*item.raceId ,
+      categoryId: 1*item.categoryId,
+      regDate: item.regDate.getTime(),
+      num: 1*item.num,
+    }
+    return this.apiService.update<RacerDTO>(EntityType.Racer, dto);
+  }
+
   generateRacers() {
-    // this.dataService.items[EntityType.Racer] = RacersMockData.map(item => new Racer(item, this.dataService.map.users));
-    this.dbService.getAll(EntityType.Racer).subscribe((result) => {
-      this.dataService.items[EntityType.Racer] = result.map((item) => new Racer(item as RacerDTO, this.dataService.map.users));
-      this.dataService.createMap(EntityType.Racer);
-      this.items$.next(this.dataService.items[EntityType.Racer]);
-    });
+    this.apiService.get<RacerDTO>(EntityType.Racer)
+      .subscribe((result) => {
+        this.dataService.items[EntityType.Racer] = result
+          .map((item) => new Racer(item as RacerDTO, this.dataService.map.users));
+        this.dataService.createMap(EntityType.Racer);
+        this.items$.next(this.dataService.items[EntityType.Racer]);
+      });
   }
 
 

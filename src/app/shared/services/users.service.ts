@@ -1,10 +1,9 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User, UserDTO } from './../models/user.model';
 import { Injectable } from '@angular/core';
-import { UsersMockData } from '../mocks/users.mock';
 import { DataService } from './data.service';
 import { EntityType } from '../models/items.model';
-import { NgxIndexedDBService } from 'ngx-indexed-db';
+import { APIService } from 'src/app/core/services/api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +14,7 @@ export class UsersService {
 
   constructor(
     private dataService: DataService,
-    private dbService: NgxIndexedDBService,
+    private apiService: APIService,
   ) {
   }
 
@@ -24,12 +23,13 @@ export class UsersService {
   }
 
   generateUsers() {
-    // this.dataService.items[EntityType.User] = UsersMockData.map(item => new User(item));
-    this.dbService.getAll(EntityType.User).subscribe((result) => {
-      this.dataService.items[EntityType.User] = result.map(item =>  new User(item as UserDTO));
-      this.dataService.createMap(EntityType.User);
-      this.items$.next(this.dataService.items[EntityType.User]);
-    });
+    this.apiService.get<UserDTO>(EntityType.User)
+      .subscribe((result) => {
+        this.dataService.items[EntityType.User] = result
+          .map((item) =>  new User(item as UserDTO));
+        this.dataService.createMap(EntityType.User);
+        this.items$.next(this.dataService.items[EntityType.User]);
+      });
   }
 
 

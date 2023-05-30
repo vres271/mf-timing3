@@ -2,7 +2,7 @@
 <p-sidebar [(visible)]="sidebarVisible" position="right" [modal]="false" (onHide)="selectedItems = []" styleClass="p-sidebar-sm">
     <ng-template pTemplate="header">User</ng-template>
     <ng-template pTemplate="content">
-        <ng-container *ngIf="selectedItems[0] as item">
+        <ng-container *ngIf="editedItem as item">
             <div class="input-block" *ngFor="let field of fields">
                 <ng-container *ngIf="field.type === 'text'">
                     <label>{{field.title}}</label>
@@ -12,6 +12,10 @@
                     <p-inputSwitch [(ngModel)]="$any(item)[field.name]"></p-inputSwitch>
                     <label>{{field.title}}</label>
                 </ng-container>
+            </div>
+            <div class="btn-bar">
+                <p-button label="Save" (click)="save()"></p-button>
+                <p-button label="Cancel" styleClass="p-button-secondary" (click)="sidebarVisible = false"></p-button>
             </div>
         </ng-container>
     </ng-template>

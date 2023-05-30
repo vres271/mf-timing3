@@ -39,3 +39,7 @@ app-layout{
     display: grid;
     grid-template-columns: 210px auto ;    
 }
+
+.btn-bar p-button{
+    margin-right: 4px;
+}

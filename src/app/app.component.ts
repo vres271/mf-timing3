@@ -1,7 +1,5 @@
 import { UsersService } from 'src/app/shared/services/users.service';
 import { Component } from '@angular/core';
-import { LogUpdateService } from './core/services/log-update.service';
-import { CheckForUpdateService } from './core/services/check-for-update.service';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { EntityType } from './shared/models/items.model';
 import { UsersMockData } from './shared/mocks/users.mock';
@@ -14,8 +12,6 @@ import { RacersMockData } from './shared/mocks/racers.mock';
 export class AppComponent{
 
   constructor(
-    private logUpdateService: LogUpdateService,
-    private checkForUpdateService: CheckForUpdateService,
     private usersService: UsersService,
     private dbService: NgxIndexedDBService,
   ) {
