@@ -35,11 +35,7 @@ export class Racer{
     }
 
     get userFullName():string {
-      return [
-        this.user?.firstName,
-        this.user?.secondName,
-        this.user?.thirdName,
-      ].join(' ').trim();
+      return this.user?.fullName
     }
 
     get formatedDate():string {
@@ -53,10 +49,13 @@ export function DTO2Racer() {
 }
 
 export function Racer2DTO(item: Racer):RacerDTO {
-    const dto = <RacerDTO>{};
-    dto.userId = item.userId;
-    dto.raceId = item.raceId;
-    dto.categoryId = item.categoryId;
-    // dto.regDate = new Date(item.regDate);
+    const dto:RacerDTO = {
+      id: 1*item.id,
+      userId: 1*item.userId,
+      raceId: 1*item.raceId ,
+      categoryId: 1*item.categoryId,
+      regDate: item.regDate.getTime(),
+      num: 1*item.num,
+    }
     return dto;
 }

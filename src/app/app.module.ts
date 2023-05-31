@@ -15,7 +15,7 @@ import { getDBConfig } from './core/db/db.config';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

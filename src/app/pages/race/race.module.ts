@@ -10,8 +10,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SidebarModule } from 'primeng/sidebar';
 import { RacersComponent } from './racers/racers.component';
 import { FormsModule } from '@angular/forms';
-
-
+import { DropdownModule } from 'primeng/dropdown';
+import { DateTimeModule } from 'src/app/shared/components/controls/date-time/date-time.module';
 
 @NgModule({
   declarations: [
@@ -20,6 +20,7 @@ import { FormsModule } from '@angular/forms';
   ],
   imports: [
     CommonModule,
+    FormsModule,
     RaceRoutingModule,
     MenuModule,
     CardModule,
@@ -27,8 +28,8 @@ import { FormsModule } from '@angular/forms';
     ButtonModule,
     InputTextModule,
     SidebarModule,
-    FormsModule,
-
+    DropdownModule,
+    DateTimeModule,
   ]
 })
 export class RaceModule { }

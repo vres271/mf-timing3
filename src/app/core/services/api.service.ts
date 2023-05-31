@@ -19,7 +19,9 @@ export class APIService {
   }
 
   add<T>(entityType: EntityType, item: T):Observable<T> {
-    return this.dbService.add(entityType, item);
+    const _item = item as any;
+    delete _item.id;
+    return this.dbService.add(entityType, _item);
   }
 
   update<T>(entityType: EntityType, item: T):Observable<T> {

@@ -17,10 +17,18 @@ export class User{
     thirdName: string;
     email: string;
     active: boolean;
-
+    get fullName():string {
+        return [
+            this.firstName,
+            this.secondName,
+            this.thirdName,
+        ].join(' ').trim();
+    }
+  
   
     constructor(dto: UserDTO) {
         Object.assign(this, dto);
     }
 
+    
 }

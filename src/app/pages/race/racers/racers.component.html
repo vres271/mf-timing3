@@ -1,9 +1,9 @@
 
-<p-sidebar [(visible)]="sidebarVisible" position="right" [modal]="false" (onHide)="selectedItems = []" styleClass="p-sidebar-sm">
+<p-sidebar [(visible)]="sidebarVisible" position="right" [modal]="false" (onHide)="selectedItems = []" styleClass="p-sidebar-md">
     <ng-template pTemplate="header">User</ng-template>
     <ng-template pTemplate="content">
-        <ng-container *ngIf="editedItem as item">
-            <div class="input-block" *ngFor="let field of fields">
+        <ng-container *ngIf="editedItems[0] as item">
+            <div class="input-block" *ngFor="let field of editFields">
                 <ng-container *ngIf="field.type === 'text'">
                     <label>{{field.title}}</label>
                     <input type="text" pInputText [(ngModel)]="$any(item)[field.name]" />
@@ -12,21 +12,30 @@
                     <p-inputSwitch [(ngModel)]="$any(item)[field.name]"></p-inputSwitch>
                     <label>{{field.title}}</label>
                 </ng-container>
+                <ng-container *ngIf="field.type === 'list'">
+                    <label>{{field.title}}</label>
+                    <ng-container *ngIf="field.list | async as list">
+                        <p-dropdown [options]="list" [(ngModel)]="$any(item)[field.name]" placeholder="Select" [filter]="true"></p-dropdown>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="field.type === 'date'">
+                    <label>{{field.title}}</label>
+                    <date-time-control [(dt)]="$any(item)[field.name]" ></date-time-control>
+                </ng-container>
             </div>
             <div class="btn-bar">
                 <p-button label="Save" (click)="save()"></p-button>
-                <p-button label="Cancel" styleClass="p-button-secondary" (click)="sidebarVisible = false"></p-button>
+                <p-button label="Cancel" styleClass="p-button-secondary" (click)="closeEditor()"></p-button>
             </div>
         </ng-container>
     </ng-template>
-    <ng-template pTemplate="footer">Selected rows: {{selectedItems.length}}</ng-template>
+    <ng-template pTemplate="footer">Selected rows: {{selectedItems && selectedItems.length}}</ng-template>
 </p-sidebar>
 
-
-<ng-container *ngIf="racers$ | async as data">
+<ng-container *ngIf="racers$ | async as items">
     <p-table 
         #table
-        [value]="data" 
+        [value]="items" 
         [paginator]="true"
         [rows]="20"
         [showCurrentPageReport]="true"
@@ -38,6 +47,7 @@
         styleClass="p-datatable-sm" >
         <ng-template pTemplate="caption">
             <div class="flex">
+                <p-button label="Add" (click)="openEditor()"></p-button> | 
                 <span class="p-input-icon-left ml-auto">
                     <i class="pi pi-search"></i>
                     <input pInputText type="text"  (input)="table.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />

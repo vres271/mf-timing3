@@ -1,5 +1,5 @@
 import { User } from '../models/user.model';
-export const UsersMockData: User[] = [
+export const UsersMockData: any[] = [
     {
       "name": "Hannah Gregory",
       "email": "gregory66@example.com",
