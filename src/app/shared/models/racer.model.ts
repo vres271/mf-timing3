@@ -18,16 +18,16 @@ export class Racer{
     regDate: Date;
     num: number;
 
-    private usersMap: any;
+    private itemsMap: any;
   
-    constructor(dto: RacerDTO, usersMap: any) {
+    constructor(dto: RacerDTO, itemsMap: any) {
       Object.assign(this, dto);
       this.regDate = new Date(dto.regDate);
-      this.usersMap = usersMap;
+      this.itemsMap = itemsMap;
     }
   
     get user():User {
-      return this.usersMap.id.get(this.userId);
+      return this.itemsMap.users.id.get(this.userId);
     }
     
     get userName():string {

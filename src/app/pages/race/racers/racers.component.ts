@@ -48,7 +48,7 @@ export class RacersComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.racers$ = this.racersService.getRacers();
+    this.racers$ = this.racersService.get();
     this.editFields = [
       {name: 'id', title: 'id', type: 'text' },
       {name: 'userId', title: 'userId', type: 'list', list: this.usersService.getUsers()
@@ -92,12 +92,12 @@ export class RacersComponent implements OnInit {
 
   save() {
     if(this.editedItems[0]?.id) {
-      this.racersService.saveRacer(this.editedItems[0])
+      this.racersService.save(this.editedItems[0])
         .subscribe(res=> {
           this.closeEditor()
         })
     } else {
-      this.racersService.addRacer(this.editedItems[0])
+      this.racersService.add(this.editedItems[0])
         .subscribe(res=> {
           this.closeEditor()
         })
