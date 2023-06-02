@@ -47,7 +47,7 @@
         <ng-template pTemplate="caption">
             <div class="flex btn-bar">
                 <p-button label="Add" (click)="openEditor()"></p-button>
-                <p-button label="Edit" (click)="openEditor(selectedItems)" styleClass="p-button-success"></p-button>
+                <p-button label="Edit" (click)="selectedItems.length > 0 && openEditor(selectedItems)" styleClass="p-button-success"  [disabled]="!(selectedItems.length > 0)"></p-button>
                 <p-button label="Copy" (click)="selectedItems.length > 0 && copy(selectedItems)" styleClass="p-button-secondary" [disabled]="!(selectedItems.length > 0)"></p-button>
                 <p-button label="Delete" (click)="selectedItems.length > 0 && delete(selectedItems)" styleClass="p-button-danger" [disabled]="!(selectedItems.length > 0)"></p-button>
                 <span class="p-input-icon-left ml-auto">
