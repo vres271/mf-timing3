@@ -10,19 +10,18 @@ export interface RacerDTO extends Item{
     num: number;
 }
 
-export class Racer{
+export class Racer  implements RacerDTO{
     id: number;
     userId: number;
     raceId: number;
     categoryId: number;
-    regDate: Date;
+    regDate: number;
     num: number;
 
     private itemsMap: any;
   
     constructor(dto: RacerDTO, itemsMap: any) {
       Object.assign(this, dto);
-      this.regDate = new Date(dto.regDate);
       this.itemsMap = itemsMap;
     }
   
@@ -38,8 +37,8 @@ export class Racer{
       return this.user?.fullName
     }
 
-    get formatedDate():string {
-      return new Date(this.regDate).toISOString().slice(0, 10);
+    get registrationDate():string {
+      return new Date(this.regDate).toLocaleString();
     }
 
 }
@@ -54,7 +53,7 @@ export function Racer2DTO(item: Racer):RacerDTO {
       userId: 1*item.userId,
       raceId: 1*item.raceId ,
       categoryId: 1*item.categoryId,
-      regDate: item.regDate.getTime(),
+      regDate: item.regDate,
       num: 1*item.num,
     }
     return dto;

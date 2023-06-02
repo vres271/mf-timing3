@@ -1,17 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { User } from 'src/app/shared/models/user.model';
+import { Observable, map } from 'rxjs';
+import { User, User2DTO, UserDTO } from 'src/app/shared/models/user.model';
 import { UsersService } from 'src/app/shared/services/users.service';
+
+export interface EditField {
+  name: string;
+  title: string; 
+  type: string; 
+  list?: Observable<{value:number, label: string}[]>;
+  date?: Date
+}
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
 })
+
 export class UsersComponent implements OnInit {
 
-  users$: Observable<User[]>;
-  selectedItems:  User[];
+  items$: Observable<User[]>;
+  selectedItems:  User[] = [];
   sidebarVisible: boolean;
+  fieldNames: string[];
+  editedItem: User;
+  editedItems: UserDTO[];
 
   fields = [
     {name: 'name', title: 'Логин', type: 'text' },
@@ -22,27 +34,83 @@ export class UsersComponent implements OnInit {
     {name: 'active', title: 'Активен', type: 'boolean' },
   ]
 
-  constructor(private usersService: UsersService) {
+  editFields: EditField[];
 
+  constructor(
+    private usersService: UsersService,
+  ) {
+    this.fieldNames = this.fields.map(f => f.name);
   }
 
   ngOnInit() {
-    this.users$ = this.usersService.getUsers();
+    this.items$ = this.usersService.get();
+    this.editFields = [
+      {name: 'name', title: 'Логин', type: 'text' },
+      {name: 'firstName', title: 'Имя', type: 'text' },
+      {name: 'secondName', title: 'Фамилия', type: 'text' },
+      {name: 'thirdName', title: 'Отчество', type: 'text' },
+      {name: 'email', title: 'Email', type: 'text' },
+      {name: 'active', title: 'Активен', type: 'boolean' },
+    ]
   }
 
   onRowSelect(e: any) {
-    // if(this.selectedItems.length===2 && e.data === this.selectedItems[0]) {
-    //   this.sidebarVisible = false;
-    // } else {
-      this.sidebarVisible = true;
-    // }
+    // this.openEditor(this.selectedItems);
   }
 
   onRowUnselect() {
-    console.log(1)
     if (!this.selectedItems.length) {
-      this.sidebarVisible = false
+      this.closeEditor()
     }
   }
+
+  openEditor(items?: User[]) {
+    this.sidebarVisible = true;
+    if (items) {
+      this.editedItems = items.map(item => User2DTO(item))
+    } else {
+      this.editedItems = [<UserDTO>{}];
+      this.editedItems[0].id = 0;
+    }
+  }
+
+  closeEditor() {
+    this.sidebarVisible = false;
+    this.editedItems = [];
+    this.selectedItems = [];
+  }
+
+  save() {
+    if(this.editedItems[0]?.id) {
+      this.usersService.save(this.editedItems[0])
+        .subscribe(res=> {
+          this.closeEditor()
+        })
+    } else {
+      this.usersService.add(this.editedItems[0])
+        .subscribe(res=> {
+          this.closeEditor()
+        })
+
+    }
+  }
+
+  delete(items: User[]) {
+    this.usersService.delete(items[0].id)
+      .subscribe(res=> {
+        console.log('deleted', res);
+        this.selectedItems = [];
+        this.closeEditor()
+      })
+  }
+
+  copy(items: User[]) {
+    this.usersService.add({...items[0], id: 0})
+      .subscribe(res=> {
+        console.log('deleted', res);
+      })
+
+  }
+
 
 }

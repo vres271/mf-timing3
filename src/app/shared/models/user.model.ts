@@ -9,7 +9,7 @@ export interface UserDTO extends Item{
     active: boolean;
 }
 
-export class User{
+export class User implements UserDTO{
     id: number;
     name: string;
     firstName: string;
@@ -29,6 +29,18 @@ export class User{
     constructor(dto: UserDTO) {
         Object.assign(this, dto);
     }
-
     
+}
+
+export function User2DTO(item: User):UserDTO {
+    const dto:UserDTO = {
+      id: 1*item.id,
+      name: item.name,
+      firstName: item.firstName,
+      secondName: item.secondName,
+      thirdName: item.thirdName,
+      email: item.email,
+      active: item.active,
+    }
+    return dto;
 }

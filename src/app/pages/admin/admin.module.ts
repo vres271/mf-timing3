@@ -14,6 +14,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SidebarModule } from 'primeng/sidebar';
 import { FormsModule } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { DropdownModule } from 'primeng/dropdown';
+import { DateTimeModule } from 'src/app/shared/components/controls/date-time/date-time.module';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     InputTextModule,
     SidebarModule,
     InputSwitchModule,
+    DropdownModule,
+    DateTimeModule,
   ],
   bootstrap: [AdminComponent]
 })

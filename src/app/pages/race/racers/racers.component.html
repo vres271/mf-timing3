@@ -37,7 +37,7 @@
         #table
         [value]="items" 
         [paginator]="true"
-        [rows]="20"
+        [rows]="20"     
         [showCurrentPageReport]="true"
         [tableStyle]="{ 'min-width': '50rem' }"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -46,8 +46,11 @@
         selectionMode="multiple" [(selection)]="selectedItems" [metaKeySelection]="true" (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect()"
         styleClass="p-datatable-sm" >
         <ng-template pTemplate="caption">
-            <div class="flex">
-                <p-button label="Add" (click)="openEditor()"></p-button> | 
+            <div class="flex btn-bar">
+                <p-button label="Add" (click)="openEditor()"></p-button>
+                <p-button label="Edit" (click)="openEditor(selectedItems)" styleClass="p-button-success"></p-button>
+                <p-button label="Copy" (click)="selectedItems.length > 0 && copy(selectedItems)" styleClass="p-button-secondary" [disabled]="!(selectedItems.length > 0)"></p-button>
+                <p-button label="Delete" (click)="selectedItems.length > 0 && delete(selectedItems)" styleClass="p-button-danger" [disabled]="!(selectedItems.length > 0)"></p-button>
                 <span class="p-input-icon-left ml-auto">
                     <i class="pi pi-search"></i>
                     <input pInputText type="text"  (input)="table.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />

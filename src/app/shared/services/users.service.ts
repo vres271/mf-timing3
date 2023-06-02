@@ -4,22 +4,22 @@ import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { EntityType } from '../models/items.model';
 import { APIService } from 'src/app/core/services/api.service';
+import { ItemsService } from './items.service';
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class UsersService {
-  private items$ = new BehaviorSubject<User[]>([]);
+export class UsersService extends ItemsService<User, UserDTO>{
+
+  override itemClass = User;
+  override entityType = EntityType.User;
 
   constructor(
-    private dataService: DataService,
-    private apiService: APIService,
+    dataService: DataService,
+    apiService: APIService,
   ) {
-  }
-
-  getUsers():Observable<User[]> {
-    return this.items$;
+    super(dataService, apiService)
   }
 
   generateUsers() {

@@ -22,7 +22,7 @@ export class RacersComponent implements OnInit {
 
   racers$: Observable<Racer[]>;
   users$: Observable<User[]>
-  selectedItems:  Racer[];
+  selectedItems:  Racer[] = [];
   sidebarVisible: boolean;
   fieldNames: string[];
   editedItem: Racer;
@@ -34,8 +34,7 @@ export class RacersComponent implements OnInit {
     {name: 'userFullName', title: 'userFullName', type: 'text' },
     {name: 'raceId', title: 'raceId', type: 'text' },
     {name: 'categoryId', title: 'categoryId', type: 'text' },
-    {name: 'regDate', title: 'regDate', type: 'text' },
-    {name: 'formatedDate', title: 'formatedDate', type: 'text' },
+    {name: 'registrationDate', title: 'registrationDate', type: 'text' },
   ]
 
   editFields: EditField[];
@@ -51,7 +50,7 @@ export class RacersComponent implements OnInit {
     this.racers$ = this.racersService.get();
     this.editFields = [
       {name: 'id', title: 'id', type: 'text' },
-      {name: 'userId', title: 'userId', type: 'list', list: this.usersService.getUsers()
+      {name: 'userId', title: 'userId', type: 'list', list: this.usersService.get()
         .pipe(
           map(users => users
             .map(user => ({value: user.id, label: user.fullName}))
@@ -65,7 +64,7 @@ export class RacersComponent implements OnInit {
   }
 
   onRowSelect(e: any) {
-    this.openEditor(this.selectedItems);
+    // this.openEditor(this.selectedItems);
   }
 
   onRowUnselect() {
@@ -103,6 +102,23 @@ export class RacersComponent implements OnInit {
         })
 
     }
+  }
+
+  delete(items: Racer[]) {
+    this.racersService.delete(items[0].id)
+      .subscribe(res=> {
+        console.log('deleted', res);
+        this.selectedItems = [];
+        this.closeEditor()
+      })
+  }
+
+  copy(items: Racer[]) {
+    this.racersService.add({...items[0], id: 0})
+      .subscribe(res=> {
+        console.log('deleted', res);
+      })
+
   }
 
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Key, NgxIndexedDBService } from 'ngx-indexed-db';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { EntityType } from 'src/app/shared/models/items.model';
 
 @Injectable({
@@ -28,8 +28,8 @@ export class APIService {
     return this.dbService.update(entityType, item);
   }
 
-  bulkDelete(entityType: EntityType, ids: number[]):Observable<number[]> {
-    return this.dbService.bulkDelete(entityType, ids);
+  delete(entityType: EntityType, id: number):Observable<any> {
+    return this.dbService.delete(entityType, id);
   }
 
 }
