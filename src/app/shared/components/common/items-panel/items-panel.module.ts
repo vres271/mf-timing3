@@ -1,29 +1,24 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RaceComponent } from '../race/race.component';
-import { RaceRoutingModule } from './race-routing.module';
-import { MenuModule } from 'primeng/menu';
+import { ItemsPanelComponent } from './items-panel.component';
+import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SidebarModule } from 'primeng/sidebar';
-import { RacersComponent } from './racers/racers.component';
-import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
-import { DateTimeModule } from 'src/app/shared/components/controls/date-time/date-time.module';
-import { ItemsPanelModule } from 'src/app/shared/components/common/items-panel/items-panel.module';
+import { DateTimeModule } from '../../controls/date-time/date-time.module';
+
+
 
 @NgModule({
   declarations: [
-    RaceComponent,
-    RacersComponent,
+    ItemsPanelComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
-    RaceRoutingModule,
-    MenuModule,
     CardModule,
     TableModule,
     ButtonModule,
@@ -31,7 +26,9 @@ import { ItemsPanelModule } from 'src/app/shared/components/common/items-panel/i
     SidebarModule,
     DropdownModule,
     DateTimeModule,
-    ItemsPanelModule
+  ],
+  exports: [
+    ItemsPanelComponent
   ]
 })
-export class RaceModule { }
+export class ItemsPanelModule { }

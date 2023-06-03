@@ -63,63 +63,63 @@ export class RacersComponent implements OnInit {
     ]
   }
 
-  onRowSelect(e: any) {
-    // this.openEditor(this.selectedItems);
-  }
+  // onRowSelect(e: any) {
+  //   // this.openEditor(this.selectedItems);
+  // }
 
-  onRowUnselect() {
-    if (!this.selectedItems.length) {
-      this.closeEditor()
-    }
-  }
+  // onRowUnselect() {
+  //   if (!this.selectedItems.length) {
+  //     this.closeEditor()
+  //   }
+  // }
 
-  openEditor(items?: Racer[]) {
-    this.sidebarVisible = true;
-    if (items) {
-      this.editedItems = items.map(item => Racer2DTO(item))
-    } else {
-      this.editedItems = [<RacerDTO>{}];
-      this.editedItems[0].id = 0;
-    }
-  }
+  // openEditor(items?: Racer[]) {
+  //   this.sidebarVisible = true;
+  //   if (items) {
+  //     this.editedItems = items.map(item => Racer2DTO(item))
+  //   } else {
+  //     this.editedItems = [<RacerDTO>{}];
+  //     this.editedItems[0].id = 0;
+  //   }
+  // }
 
-  closeEditor() {
-    this.sidebarVisible = false;
-    this.editedItems = [];
-    this.selectedItems = [];
-  }
+  // closeEditor() {
+  //   this.sidebarVisible = false;
+  //   this.editedItems = [];
+  //   this.selectedItems = [];
+  // }
 
-  save() {
-    if(this.editedItems[0]?.id) {
-      this.racersService.save(this.editedItems[0])
-        .subscribe(res=> {
-          this.closeEditor()
-        })
-    } else {
-      this.racersService.add(this.editedItems[0])
-        .subscribe(res=> {
-          this.closeEditor()
-        })
+  // save() {
+  //   if(this.editedItems[0]?.id) {
+  //     this.racersService.save(this.editedItems[0])
+  //       .subscribe(res=> {
+  //         this.closeEditor()
+  //       })
+  //   } else {
+  //     this.racersService.add(this.editedItems[0])
+  //       .subscribe(res=> {
+  //         this.closeEditor()
+  //       })
 
-    }
-  }
+  //   }
+  // }
 
-  delete(items: Racer[]) {
-    this.racersService.delete(items[0].id)
-      .subscribe(res=> {
-        console.log('deleted', res);
-        this.selectedItems = [];
-        this.closeEditor()
-      })
-  }
+  // delete(items: Racer[]) {
+  //   this.racersService.delete(items[0].id)
+  //     .subscribe(res=> {
+  //       console.log('deleted', res);
+  //       this.selectedItems = [];
+  //       this.closeEditor()
+  //     })
+  // }
 
-  copy(items: Racer[]) {
-    this.racersService.add({...items[0], id: 0})
-      .subscribe(res=> {
-        console.log('deleted', res);
-      })
+  // copy(items: Racer[]) {
+  //   this.racersService.add({...items[0], id: 0})
+  //     .subscribe(res=> {
+  //       console.log('deleted', res);
+  //     })
 
-  }
+  // }
 
 
 }
