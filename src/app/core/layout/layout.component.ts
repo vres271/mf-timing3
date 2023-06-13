@@ -31,13 +31,13 @@ export class LayoutComponent {
       label: 'Race', 
       icon: 'pi pi-fw pi-car',
       routerLink: '/race', 
-      routerLinkActiveOptions: { exact: true } 
+      // routerLinkActiveOptions: { exact: true } 
     },
     { 
       label: 'Administration', 
       icon: 'pi pi-fw pi-cog',
       routerLink: '/admin', 
-      routerLinkActiveOptions: { exact: true } 
+      // routerLinkActiveOptions: { exact: true } 
     }
   ];
   

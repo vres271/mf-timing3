@@ -40,7 +40,7 @@ export class RacersComponent implements OnInit {
   editFields: EditField[];
 
   constructor(
-    private racersService: RacersService,
+    public racersService: RacersService,
     private usersService: UsersService,
   ) {
     this.fieldNames = this.fields.map(f => f.name);

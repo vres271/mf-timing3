@@ -1,5 +1,5 @@
 import { APIService } from '../../core/services/api.service';
-import { Racer, RacerDTO } from './../models/racer.model';
+import { Racer, Racer2DTO, RacerDTO } from './../models/racer.model';
 import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { EntityType } from '../models/items.model';
@@ -31,5 +31,8 @@ export class RacersService extends ItemsService<Racer, RacerDTO>{
       });
   }
 
+  item2DTO(item: Racer) {
+    return Racer2DTO(item);
+  }
 
 }
