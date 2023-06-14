@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable, map } from 'rxjs';
+import { Item } from 'src/app/shared/models/items.model';
 
 export interface EditField {
   name: string;
@@ -22,16 +23,20 @@ export interface Field {
 })
 export class ItemsPanelComponent {
 
-  @Input() items$: Observable<any[]>;
+  @Input() items$: Observable<Item[]>;
   @Input() fields: Field[];
   @Input() editFields: EditField[];
-  @Input() itemsService: any;
+  @Input() item2DTO: (item: any) => any;
 
-  selectedItems:  any[] = [];
+  @Output() onItemSave = new EventEmitter<any>();
+  @Output() onItemAdd = new EventEmitter<any>();
+  @Output() onItemDelete = new EventEmitter<any>();
+
+  selectedItems:  Item[] = [];
   sidebarVisible: boolean;
   fieldNames: string[];
-  editedItem: any;
-  editedItems: any[];
+  editedItem: Item;
+  editedItems: Item[];
 
   constructor(
   ) {}
@@ -50,13 +55,12 @@ export class ItemsPanelComponent {
     }
   }
 
-  openEditor(items?: any[]) {
+  openEditor(items?: Item[]) {
     this.sidebarVisible = true;
     if (items) {
-      this.editedItems = items.map(item => this.itemsService.item2DTO(item))
+      this.editedItems = items.map(item => this.item2DTO(item))
     } else {
-      this.editedItems = [{}];
-      this.editedItems[0].id = 0;
+      this.editedItems = [{id:0}];
     }
   }
 
@@ -68,34 +72,21 @@ export class ItemsPanelComponent {
 
   save() {
     if(this.editedItems[0]?.id) {
-      this.itemsService.save(this.editedItems[0])
-        .subscribe((res:any)=> {
-          this.closeEditor()
-        })
+      this.onItemSave.emit(this.editedItems[0]);
     } else {
-      this.itemsService.add(this.editedItems[0])
-        .subscribe((res:any)=> {
-          this.closeEditor()
-        })
+      this.onItemAdd.emit(this.editedItems[0]);
     }
+    this.closeEditor();
   }
 
-  delete(items: any[]) {
-    this.itemsService.delete(items[0].id)
-      .subscribe((res:any)=> {
-        console.log('deleted', res);
-        this.selectedItems = [];
-        this.closeEditor()
-      })
+  delete(items: Item[]) {
+    this.onItemDelete.emit(items[0].id);
+    this.selectedItems = [];
+    this.closeEditor()
   }
 
-  copy(items: any[]) {
-    this.itemsService.add({...items[0], id: 0})
-      .subscribe((res:any)=> {
-        console.log('deleted', res);
-      })
-
+  copy(items: Item[]) {
+    this.onItemAdd.emit({...items[0], id: 0});
   }
-
 
 }

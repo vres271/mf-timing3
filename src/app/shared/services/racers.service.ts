@@ -31,8 +31,4 @@ export class RacersService extends ItemsService<Racer, RacerDTO>{
       });
   }
 
-  item2DTO(item: Racer) {
-    return Racer2DTO(item);
-  }
-
 }

@@ -2,86 +2,11 @@
     [items$]="racers$"
     [fields]="fields"
     [editFields]="editFields"
-    [itemsService]="racersService"
+    [item2DTO]="item2DTO"
+
+    (onItemSave)="saveRacer($event)"
+    (onItemAdd)="addRacer($event)"
+    (onItemDelete)="deleteRacer($event)"
+
     >
 </app-items-panel>
-
-<!-- 
-<p-sidebar [(visible)]="sidebarVisible" position="right" [modal]="false" (onHide)="selectedItems = []" styleClass="p-sidebar-md">
-    <ng-template pTemplate="header">User</ng-template>
-    <ng-template pTemplate="content">
-        <ng-container *ngIf="editedItems[0] as item">
-            <div class="input-block" *ngFor="let field of editFields">
-                <ng-container *ngIf="field.type === 'text'">
-                    <label>{{field.title}}</label>
-                    <input type="text" pInputText [(ngModel)]="$any(item)[field.name]" />
-                </ng-container>
-                <ng-container *ngIf="field.type === 'boolean'">
-                    <p-inputSwitch [(ngModel)]="$any(item)[field.name]"></p-inputSwitch>
-                    <label>{{field.title}}</label>
-                </ng-container>
-                <ng-container *ngIf="field.type === 'list'">
-                    <label>{{field.title}}</label>
-                    <ng-container *ngIf="field.list | async as list">
-                        <p-dropdown [options]="list" [(ngModel)]="$any(item)[field.name]" placeholder="Select" [filter]="true"></p-dropdown>
-                    </ng-container>
-                </ng-container>
-                <ng-container *ngIf="field.type === 'date'">
-                    <label>{{field.title}}</label>
-                    <date-time-control [(dt)]="$any(item)[field.name]" ></date-time-control>
-                </ng-container>
-            </div>
-            <div class="btn-bar">
-                <p-button label="Save" (click)="save()"></p-button>
-                <p-button label="Cancel" styleClass="p-button-secondary" (click)="closeEditor()"></p-button>
-            </div>
-        </ng-container>
-    </ng-template>
-    <ng-template pTemplate="footer">Selected rows: {{selectedItems && selectedItems.length}}</ng-template>
-</p-sidebar>
-
-<ng-container *ngIf="racers$ | async as items">
-    <p-table 
-        #table
-        [value]="items" 
-        [paginator]="true"
-        [rows]="20"     
-        [showCurrentPageReport]="true"
-        [tableStyle]="{ 'min-width': '50rem' }"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [rowsPerPageOptions]="[20, 50, 100, 500, 1000]"      
-        [globalFilterFields]="fieldNames" 
-        selectionMode="multiple" [(selection)]="selectedItems" [metaKeySelection]="true" (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect()"
-        styleClass="p-datatable-sm" >
-        <ng-template pTemplate="caption">
-            <div class="flex btn-bar">
-                <p-button label="Add" (click)="openEditor()"></p-button>
-                <p-button label="Edit" (click)="selectedItems.length > 0 && openEditor(selectedItems)" styleClass="p-button-success" [disabled]="!(selectedItems.length > 0)"></p-button>
-                <p-button label="Copy" (click)="selectedItems.length > 0 && copy(selectedItems)" styleClass="p-button-secondary" [disabled]="!(selectedItems.length > 0)"></p-button>
-                <p-button label="Delete" (click)="selectedItems.length > 0 && delete(selectedItems)" styleClass="p-button-danger" [disabled]="!(selectedItems.length > 0)"></p-button>
-                <span class="p-input-icon-left ml-auto">
-                    <i class="pi pi-search"></i>
-                    <input pInputText type="text"  (input)="table.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
-                </span>
-            </div>
-        </ng-template>        
-        <ng-template pTemplate="header">
-            <tr>
-                <th [pSortableColumn]="field.name" *ngFor="let field of fields">{{field.title}} <p-sortIcon [field]="field.name"></p-sortIcon></th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-item>
-            <tr [pSelectableRow]="item">
-                <td *ngFor="let field of fields">
-                    <ng-container *ngIf="field.type === 'text'">{{ item[field.name] }}</ng-container>
-                    <ng-container *ngIf="field.type === 'boolean'">{{ item[field.name] ? 'Да' : 'Нет'}}</ng-container>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <td colspan="5">No items found.</td>
-            </tr>
-        </ng-template>        
-    </p-table>    
-</ng-container> -->
