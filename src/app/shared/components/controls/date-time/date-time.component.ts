@@ -21,7 +21,7 @@ export class DateTimeComponent implements OnInit{
     } else {
       this.dtValue = val;
     }
-    this.dtChange.emit(this.dtValue);
+    this.dtChange.emit(this.dtValue.getTime());
   } 
 
   ngOnInit() {

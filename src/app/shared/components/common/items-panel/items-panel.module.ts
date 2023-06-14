@@ -9,6 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SidebarModule } from 'primeng/sidebar';
 import { DropdownModule } from 'primeng/dropdown';
 import { DateTimeModule } from '../../controls/date-time/date-time.module';
+import { ItemsPanelService } from './items-panel.service';
 
 
 
@@ -26,6 +27,9 @@ import { DateTimeModule } from '../../controls/date-time/date-time.module';
     SidebarModule,
     DropdownModule,
     DateTimeModule,
+  ],
+  providers: [
+    ItemsPanelService
   ],
   exports: [
     ItemsPanelComponent

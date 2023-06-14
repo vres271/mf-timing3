@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { Item } from 'src/app/shared/models/items.model';
+import { ItemsPanelService } from './items-panel.service';
 
 export interface EditField {
   name: string;
@@ -39,10 +40,15 @@ export class ItemsPanelComponent {
   editedItems: Item[];
 
   constructor(
+    private itemsPanelService: ItemsPanelService
   ) {}
 
   ngOnInit() {
     this.fieldNames = this.fields.map(f => f.name);
+    this.itemsPanelService.onSave()
+      .subscribe(res => {
+        console.log('Save result', res)
+      })
   }
 
   onRowSelect(e: any) {

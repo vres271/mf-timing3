@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, map } from 'rxjs';
+import { ItemsPanelService } from 'src/app/shared/components/common/items-panel/items-panel.service';
 import { Racer, Racer2DTO, RacerDTO } from 'src/app/shared/models/racer.model';
 import { User } from 'src/app/shared/models/user.model';
 import { RacersService } from 'src/app/shared/services/racers.service';
@@ -42,6 +43,7 @@ export class RacersComponent implements OnInit {
   constructor(
     public racersService: RacersService,
     private usersService: UsersService,
+    private itemsPanelService: ItemsPanelService,
   ) {
     this.fieldNames = this.fields.map(f => f.name);
   }
@@ -61,11 +63,14 @@ export class RacersComponent implements OnInit {
       {name: 'regDate', title: 'regDate', type: 'date' },
       {name: 'num', title: 'num', type: 'text' },
     ]
+
   }
 
   saveRacer(item: RacerDTO) {
     this.racersService.save(item)
-      .subscribe()    
+      .subscribe(res=>{
+        this.itemsPanelService.onSave().next(res)
+      })    
   }
 
   addRacer(item: RacerDTO) {
