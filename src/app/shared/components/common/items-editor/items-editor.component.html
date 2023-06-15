@@ -1,0 +1,32 @@
+<p-sidebar [(visible)]="sidebarVisible" position="right" [modal]="false" (onHide)="cancel()" styleClass="p-sidebar-md">
+    <ng-template pTemplate="header">Item</ng-template>
+    <ng-template pTemplate="content">
+        <ng-container *ngIf="items[0] as item">
+            <div class="input-block" *ngFor="let field of editFields">
+                <ng-container *ngIf="field.type === 'text'">
+                    <label>{{field.title}}</label>
+                    <input type="text" pInputText [(ngModel)]="$any(item)[field.name]" />
+                </ng-container>
+                <ng-container *ngIf="field.type === 'boolean'">
+                    <p-inputSwitch [(ngModel)]="$any(item)[field.name]"></p-inputSwitch>
+                    <label>{{field.title}}</label>
+                </ng-container>
+                <ng-container *ngIf="field.type === 'list'">
+                    <label>{{field.title}}</label>
+                    <ng-container *ngIf="field.list | async as list">
+                        <p-dropdown [options]="list" [(ngModel)]="$any(item)[field.name]" placeholder="Select" [filter]="true"></p-dropdown>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="field.type === 'date'">
+                    <label>{{field.title}}</label>
+                    <date-time-control [(dt)]="$any(item)[field.name]" ></date-time-control>
+                </ng-container>
+            </div>
+            <div class="btn-bar">
+                <p-button label="Save" (click)="save()"></p-button>
+                <p-button label="Cancel" styleClass="p-button-secondary" (click)="cancel()"></p-button>
+            </div>
+        </ng-container>
+    </ng-template>
+    <ng-template pTemplate="footer">Selected rows: {{items && items.length}}</ng-template>
+</p-sidebar>

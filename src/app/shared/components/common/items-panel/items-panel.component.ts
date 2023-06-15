@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { Item } from 'src/app/shared/models/items.model';
 import { ItemsPanelService } from './items-panel.service';
+import { ItemsEditorComponent } from '../items-editor/items-editor.component';
 
 export interface EditField {
   name: string;
@@ -33,6 +34,8 @@ export class ItemsPanelComponent {
   @Output() onItemAdd = new EventEmitter<any>();
   @Output() onItemDelete = new EventEmitter<any>();
 
+  @ViewChild(ItemsEditorComponent) editor: ItemsEditorComponent;
+
   selectedItems:  Item[] = [];
   sidebarVisible: boolean;
   fieldNames: string[];
@@ -62,7 +65,7 @@ export class ItemsPanelComponent {
   }
 
   openEditor(items?: Item[]) {
-    this.sidebarVisible = true;
+    this.editor.sidebarVisible = true;
     if (items) {
       this.editedItems = items.map(item => this.item2DTO(item))
     } else {
@@ -71,17 +74,20 @@ export class ItemsPanelComponent {
   }
 
   closeEditor() {
-    this.sidebarVisible = false;
+    this.editor.sidebarVisible = false;
     this.editedItems = [];
     this.selectedItems = [];
   }
 
-  save() {
-    if(this.editedItems[0]?.id) {
-      this.onItemSave.emit(this.editedItems[0]);
-    } else {
-      this.onItemAdd.emit(this.editedItems[0]);
+  save(item:any) {
+    if(item?.id) {
+      this.onItemSave.emit(item);
     }
+    this.closeEditor();
+  }
+
+  add(item:any) {
+    this.onItemAdd.emit(item);
     this.closeEditor();
   }
 

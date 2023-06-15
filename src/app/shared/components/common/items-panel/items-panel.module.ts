@@ -10,12 +10,14 @@ import { SidebarModule } from 'primeng/sidebar';
 import { DropdownModule } from 'primeng/dropdown';
 import { DateTimeModule } from '../../controls/date-time/date-time.module';
 import { ItemsPanelService } from './items-panel.service';
+import { ItemsEditorComponent } from '../items-editor/items-editor.component';
 
 
 
 @NgModule({
   declarations: [
-    ItemsPanelComponent
+    ItemsPanelComponent,
+    ItemsEditorComponent,
   ],
   imports: [
     CommonModule,
@@ -32,7 +34,8 @@ import { ItemsPanelService } from './items-panel.service';
     ItemsPanelService
   ],
   exports: [
-    ItemsPanelComponent
+    ItemsPanelComponent,
+    ItemsEditorComponent,
   ]
 })
 export class ItemsPanelModule { }
