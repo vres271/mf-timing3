@@ -23,19 +23,23 @@ export class ItemsEditorComponent {
   @Output() onItemSave = new EventEmitter<any>();
   @Output() onItemAdd = new EventEmitter<any>();
   @Output() onCancel = new EventEmitter<any>();
-  sidebarVisible = false;
 
   save() {
     if(this.items[0]?.id) {
-      this.onItemSave.emit(this.items[0]);
+      this.onItemSave.emit({...this.items[0]});
     } else {
-      this.onItemAdd.emit(this.items[0]);
+      this.onItemAdd.emit({...this.items[0]});
     }
+    this.items = [];
   }
 
   cancel() {
-    this.sidebarVisible = false;
+    this.items = [];
     this.onCancel.emit()
+  }
+
+  get sidebarVisible() {
+    return this.items?.length>0
   }
 
 

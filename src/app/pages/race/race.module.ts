@@ -13,11 +13,13 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { DateTimeModule } from 'src/app/shared/components/controls/date-time/date-time.module';
 import { ItemsPanelModule } from 'src/app/shared/components/common/items-panel/items-panel.module';
+import { RacersEditorComponent } from './racers/racers-editor/racers-editor.component';
 
 @NgModule({
   declarations: [
     RaceComponent,
     RacersComponent,
+    RacersEditorComponent,
   ],
   imports: [
     CommonModule,

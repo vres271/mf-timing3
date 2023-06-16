@@ -1,4 +1,4 @@
-<p-sidebar [(visible)]="sidebarVisible" position="right" [modal]="false" (onHide)="cancel()" styleClass="p-sidebar-md">
+<p-sidebar [visible]="sidebarVisible" position="right" [modal]="false" (onHide)="cancel()" styleClass="p-sidebar-md">
     <ng-template pTemplate="header">Item</ng-template>
     <ng-template pTemplate="content">
         <ng-container *ngIf="items[0] as item">
@@ -6,6 +6,10 @@
                 <ng-container *ngIf="field.type === 'text'">
                     <label>{{field.title}}</label>
                     <input type="text" pInputText [(ngModel)]="$any(item)[field.name]" />
+                </ng-container>
+                <ng-container *ngIf="field.type === 'number'">
+                    <label>{{field.title}}</label>
+                    <input type="number" pInputText [(ngModel)]="$any(item)[field.name]" />
                 </ng-container>
                 <ng-container *ngIf="field.type === 'boolean'">
                     <p-inputSwitch [(ngModel)]="$any(item)[field.name]"></p-inputSwitch>

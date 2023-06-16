@@ -1,12 +1,13 @@
+<app-racers-editor
+    [items]="editedItems"
+    >
+</app-racers-editor>
 <app-items-panel
     [items$]="racers$"
     [fields]="fields"
-    [editFields]="editFields"
-    [item2DTO]="item2DTO"
 
-    (onItemSave)="saveRacer($event)"
-    (onItemAdd)="addRacer($event)"
     (onItemDelete)="deleteRacer($event)"
-
+    (onEditorOpen)="openEditor($event)"
+    (onItemCopy)="copyRacer($event)"
     >
 </app-items-panel>

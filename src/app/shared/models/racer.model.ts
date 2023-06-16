@@ -49,12 +49,12 @@ export function DTO2Racer() {
 
 export function Racer2DTO(item: Racer):RacerDTO {
     const dto:RacerDTO = {
-      id: 1*item.id,
-      userId: 1*item.userId,
-      raceId: 1*item.raceId ,
-      categoryId: 1*item.categoryId,
+      id: 1*item.id || 0,
+      userId: 1*item.userId || 0,
+      raceId: 1*item.raceId || 0 ,
+      categoryId: 1*item.categoryId || 0,
       regDate: item.regDate,
-      num: 1*item.num,
+      num: 1*item.num || 0,
     }
     return dto;
 }
