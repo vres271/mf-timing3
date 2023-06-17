@@ -1,15 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, map } from 'rxjs';
+import { EditField } from 'src/app/shared/components/common/items-editor/items-editor.component';
 import { User, User2DTO, UserDTO } from 'src/app/shared/models/user.model';
 import { UsersService } from 'src/app/shared/services/users.service';
-
-export interface EditField {
-  name: string;
-  title: string; 
-  type: string; 
-  list?: Observable<{value:number, label: string}[]>;
-  date?: Date
-}
 
 @Component({
   selector: 'app-users',

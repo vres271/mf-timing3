@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Item } from 'src/app/shared/models/items.model';
 
-export interface Field {
+export interface ItemField {
   name: string;
   title: string; 
   type: string; 
@@ -17,7 +17,7 @@ export interface Field {
 export class ItemsPanelComponent {
 
   @Input() items$: Observable<Item[]>;
-  @Input() fields: Field[];
+  @Input() fields: ItemField[];
 
   @Output() onItemDelete = new EventEmitter<any>();
   @Output() onItemCopy = new EventEmitter<Item>();

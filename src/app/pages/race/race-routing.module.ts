@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { RaceComponent } from './race.component';
 
-
 const routes: Routes = [
   {
     path: '',
@@ -11,6 +10,10 @@ const routes: Routes = [
   },
   {
     path: 'racers',
+    component: RaceComponent
+  },
+  {
+    path: 'races',
     component: RaceComponent
   },
 

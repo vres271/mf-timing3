@@ -25,7 +25,7 @@ import { getDBConfig } from './core/db/db.config';
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
     }),
-    NgxIndexedDBModule.forRoot(getDBConfig({version: 3})),
+    NgxIndexedDBModule.forRoot(getDBConfig({version: 4})),
     LayoutModule,
   ],
   providers: [

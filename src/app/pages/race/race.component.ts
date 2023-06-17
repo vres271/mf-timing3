@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RacersComponent } from './racers/racers.component';
 import { MenuItem } from 'primeng/api';
+import { RacesComponent } from './races/races.component';
+import { RacesService } from 'src/app/shared/services/races.service';
 
 @Component({
   selector: 'app-race',
@@ -19,14 +21,19 @@ export class RaceComponent  implements OnInit{
     public router: Router, 
     public activatedRoute: ActivatedRoute,
     private racersService: RacersService,
+    private racesService: RacesService,
   ) {
     this.racersService.generateRacers()
+    this.racesService.generateRaces()
   }
 
   ngOnInit() {
     if (this.router.url === '/race/racers') {
       this.currentComponent = RacersComponent;
       this.header = 'Racers';
+    } else if (this.router.url === '/race/races') {
+      this.currentComponent = RacesComponent;
+      this.header = 'Races';
     } else {
       this.currentComponent = RacersComponent;
       this.header = 'Racers';
@@ -43,6 +50,12 @@ export class RaceComponent  implements OnInit{
         label: 'Racers', 
         icon: 'pi pi-fw pi-users', 
         routerLink: '/race/racers', 
+        routerLinkActiveOptions: { exact: true } 
+      },
+      { 
+        label: 'Races', 
+        icon: 'pi pi-fw pi-flag', 
+        routerLink: '/race/races', 
         routerLinkActiveOptions: { exact: true } 
       },
     ];

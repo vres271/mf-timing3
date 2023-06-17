@@ -1,0 +1,13 @@
+<app-races-editor
+    [items]="editedItems"
+    >
+</app-races-editor>
+<app-items-panel
+    [items$]="races$"
+    [fields]="fields"
+
+    (onItemDelete)="deleteRace($event)"
+    (onEditorOpen)="openEditor($event)"
+    (onItemCopy)="copyRace($event)"
+    >
+</app-items-panel>

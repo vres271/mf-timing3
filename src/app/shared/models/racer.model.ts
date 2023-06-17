@@ -1,4 +1,5 @@
 import { Item } from './items.model.js';
+import { Race } from './race.model.js';
 import { User } from './user.model.js';
 
 
@@ -41,6 +42,14 @@ export class Racer  implements RacerDTO{
       return new Date(this.regDate).toLocaleString();
     }
 
+    get race():Race {
+      return this.itemsMap.races.id.get(this.raceId);
+    }
+
+    get raceName():string {
+      return this.race?.name;
+    }
+    
 }
 
 export function DTO2Racer() {

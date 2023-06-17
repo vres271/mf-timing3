@@ -1,10 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Item } from 'src/app/shared/models/items.model';
-import { EditField } from '../racers.component';
+
 import { UsersService } from 'src/app/shared/services/users.service';
 import { RacersService } from 'src/app/shared/services/racers.service';
 import { map } from 'rxjs';
 import { RacerDTO } from 'src/app/shared/models/racer.model';
+import { EditField } from 'src/app/shared/components/common/items-editor/items-editor.component';
+import { RacesService } from 'src/app/shared/services/races.service';
 
 @Component({
   selector: 'app-racers-editor',
@@ -20,6 +22,7 @@ export class RacersEditorComponent implements OnInit  {
   constructor(
     public racersService: RacersService,
     private usersService: UsersService,
+    private racesService: RacesService,
   ) {
     
   }
@@ -33,7 +36,12 @@ export class RacersEditorComponent implements OnInit  {
             .map(user => ({value: user.id, label: user.fullName}))
           )
         )},
-      {name: 'raceId', title: 'raceId', type: 'number' },
+      {name: 'raceId', title: 'raceId', type: 'list', list: this.racesService.get()
+        .pipe(
+          map(races => races
+            .map(race => ({value: race.id, label: race.name}))
+          )
+        )},
       {name: 'categoryId', title: 'categoryId', type: 'number' },
       {name: 'regDate', title: 'regDate', type: 'date' },
       {name: 'num', title: 'num', type: 'number' },

@@ -1,17 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, map } from 'rxjs';
+import { EditField } from 'src/app/shared/components/common/items-editor/items-editor.component';
 import { Item } from 'src/app/shared/models/items.model';
 import { Racer, Racer2DTO, RacerDTO } from 'src/app/shared/models/racer.model';
-import { User } from 'src/app/shared/models/user.model';
 import { RacersService } from 'src/app/shared/services/racers.service';
-
-export interface EditField {
-  name: string;
-  title: string; 
-  type: string; 
-  list?: Observable<{value:number, label: string}[]>;
-  date?: Date
-}
 
 @Component({
   selector: 'app-racers',
@@ -21,18 +13,16 @@ export interface EditField {
 export class RacersComponent implements OnInit {
 
   racers$: Observable<Racer[]>;
-  users$: Observable<User[]>
   selectedItems:  Racer[] = [];
-  sidebarVisible: boolean;
   fieldNames: string[];
-  editedItem: Racer;
   editedItems: RacerDTO[];
 
   fields = [
-    {name: 'userId', title: 'userId', type: 'text' },
+    // {name: 'userId', title: 'userId', type: 'text' },
     {name: 'num', title: 'num', type: 'text' },
     {name: 'userFullName', title: 'userFullName', type: 'text' },
-    {name: 'raceId', title: 'raceId', type: 'text' },
+    // {name: 'raceId', title: 'raceId', type: 'text' },
+    {name: 'raceName', title: 'raceName', type: 'text' },
     {name: 'categoryId', title: 'categoryId', type: 'text' },
     {name: 'registrationDate', title: 'registrationDate', type: 'text' },
   ]

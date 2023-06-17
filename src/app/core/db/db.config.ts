@@ -30,6 +30,16 @@ export function getDBConfig(options: {version: number}): DBConfig {
           { name: 'regDate', keypath: 'regDate', options: { unique: false } },
           { name: 'num', keypath: 'num', options: { unique: false } },
         ]
+      },
+      {
+        store: 'races',
+        storeConfig: { keyPath: 'id', autoIncrement: true },
+        storeSchema: [
+          { name: 'id', keypath: 'id', options: { unique: true } },
+          { name: 'name', keypath: 'name', options: { unique: false } },
+          { name: 'startDate', keypath: 'startDate', options: { unique: false } },
+          { name: 'raceType', keypath: 'raceType', options: { unique: false } },
+        ]
       }
     ],
     migrationFactory

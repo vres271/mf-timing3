@@ -14,12 +14,18 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DateTimeModule } from 'src/app/shared/components/controls/date-time/date-time.module';
 import { ItemsPanelModule } from 'src/app/shared/components/common/items-panel/items-panel.module';
 import { RacersEditorComponent } from './racers/racers-editor/racers-editor.component';
+import { RacesComponent } from './races/races.component';
+import { RacersService } from 'src/app/shared/services/racers.service';
+import { RacesService } from 'src/app/shared/services/races.service';
+import { RacesEditorComponent } from './races/races-editor/races-editor.component';
 
 @NgModule({
   declarations: [
     RaceComponent,
     RacersComponent,
     RacersEditorComponent,
+    RacesComponent,
+    RacesEditorComponent,
   ],
   imports: [
     CommonModule,
@@ -34,6 +40,11 @@ import { RacersEditorComponent } from './racers/racers-editor/racers-editor.comp
     DropdownModule,
     DateTimeModule,
     ItemsPanelModule
-  ]
+  ],
+  providers: [
+    RacersService,
+    RacesService,
+  ],
+
 })
 export class RaceModule { }

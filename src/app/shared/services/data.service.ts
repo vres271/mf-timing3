@@ -15,11 +15,13 @@ export class DataService {
   map: Record<EntityType, ItemsMapSection> = {
     [EntityType.User]: {id: new Map()},
     [EntityType.Racer]: {id: new Map()},
+    [EntityType.Race]: {id: new Map()},
   };
 
   items: Record<EntityType, any[]> =  {
     [EntityType.User]: [],
     [EntityType.Racer]: [],
+    [EntityType.Race]: [],
   };
   
   constructor() { }
