@@ -26,6 +26,12 @@ export class MenuComponent implements OnInit {
         routerLink: '/admin/users', 
         routerLinkActiveOptions: { exact: true } 
       },
+      { 
+        label: 'Serial', 
+        icon: 'pi pi-fw pi-server', 
+        routerLink: '/admin/serial', 
+        routerLinkActiveOptions: { exact: true } 
+      },
     ];
 
   }

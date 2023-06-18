@@ -7,19 +7,10 @@ import { GeneralComponent } from './general/general.component';
 
 
 const routes: Routes = [
-  {
-    path: '',
-    component: AdminComponent
-  },
-  {
-    path: 'general',
-    component: AdminComponent
-  },
-  {
-    path: 'users',
-    component: AdminComponent
-  },
-
+  {path: '', component: AdminComponent},
+  {path: 'general', component: AdminComponent},
+  {path: 'users', component: AdminComponent},
+  {path: 'serial', component: AdminComponent},
 ];
 
 @NgModule({

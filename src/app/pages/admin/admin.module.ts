@@ -17,6 +17,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DateTimeModule } from 'src/app/shared/components/controls/date-time/date-time.module';
 import { ItemsPanelModule } from 'src/app/shared/components/common/items-panel/items-panel.module';
 import { UsersEditorComponent } from './users/users-editor/users-editor.component';
+import { SerialComponent } from './serial/serial.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { UsersEditorComponent } from './users/users-editor/users-editor.componen
     GeneralComponent,
     MenuComponent,
     UsersEditorComponent,
+    SerialComponent,
   ],
   imports: [
     CommonModule,
