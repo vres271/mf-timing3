@@ -20,6 +20,17 @@ export abstract class ItemsService<ItemType, DTOType> {
     return this.items$;
   }
 
+  load():Observable<DTOType[]> {
+    return this.apiService.get<DTOType>(this.entityType)
+      .pipe(tap((dtos: DTOType[] ) => {
+        this.dataService.items[this.entityType] = dtos
+          .map((dto) => new (this.itemClass)(dto as DTOType, this.dataService.map));
+        this.dataService.createMap(this.entityType);
+        this.items$.next(this.dataService.items[this.entityType]);
+      }));
+  }
+
+
   add(dto: DTOType):Observable<DTOType> {
     return this.apiService.add<DTOType>(this.entityType, dto)
       .pipe(tap((addedDTO: any ) => {

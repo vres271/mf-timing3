@@ -19,14 +19,4 @@ export class RacersService extends ItemsService<Racer, RacerDTO>{
     super(dataService, apiService)
   }
 
-  generateRacers() {
-    this.apiService.get<RacerDTO>(this.entityType)
-      .subscribe((result) => {
-        this.dataService.items[this.entityType] = result
-          .map((dto) => new (this.itemClass)(dto as RacerDTO, this.dataService.map));
-        this.dataService.createMap(this.entityType);
-        this.items$.next(this.dataService.items[this.entityType]);
-      });
-  }
-
 }

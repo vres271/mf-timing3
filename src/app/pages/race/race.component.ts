@@ -5,6 +5,7 @@ import { RacersComponent } from './racers/racers.component';
 import { MenuItem } from 'primeng/api';
 import { RacesComponent } from './races/races.component';
 import { RacesService } from 'src/app/shared/services/races.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-race',
@@ -22,8 +23,6 @@ export class RaceComponent  implements OnInit{
     private racersService: RacersService,
     private racesService: RacesService,
   ) {
-    this.racersService.generateRacers()
-    this.racesService.generateRaces()
   }
 
   ngOnInit() {
@@ -58,6 +57,13 @@ export class RaceComponent  implements OnInit{
         routerLinkActiveOptions: { exact: true } 
       },
     ];
+
+    forkJoin({
+      racers: this.racersService.load(),
+      races: this.racesService.load()
+    }).subscribe(res => {
+      
+    } )
 
   }
 

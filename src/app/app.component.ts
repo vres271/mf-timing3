@@ -17,7 +17,10 @@ export class AppComponent{
     private dbService: NgxIndexedDBService,
     private primengConfig: PrimeNGConfig
   ) {
-    this.usersService.generateUsers()
+    
+    this.usersService.load()
+      .subscribe()
+
     this.primengConfig.ripple = true;
     this.dbService.bulkGet(EntityType.User, [1]).subscribe((result: any) => {
       if (!result?.[0]) {

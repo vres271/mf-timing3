@@ -22,15 +22,4 @@ export class UsersService extends ItemsService<User, UserDTO>{
     super(dataService, apiService)
   }
 
-  generateUsers() {
-    this.apiService.get<UserDTO>(EntityType.User)
-      .subscribe((result) => {
-        this.dataService.items[EntityType.User] = result
-          .map((item) =>  new User(item as UserDTO));
-        this.dataService.createMap(EntityType.User);
-        this.items$.next(this.dataService.items[EntityType.User]);
-      });
-  }
-
-
 }
