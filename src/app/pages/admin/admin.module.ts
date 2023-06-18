@@ -13,16 +13,18 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SidebarModule } from 'primeng/sidebar';
 import { FormsModule } from '@angular/forms';
-import { InputSwitchModule } from 'primeng/inputswitch';
 import { DropdownModule } from 'primeng/dropdown';
 import { DateTimeModule } from 'src/app/shared/components/controls/date-time/date-time.module';
+import { ItemsPanelModule } from 'src/app/shared/components/common/items-panel/items-panel.module';
+import { UsersEditorComponent } from './users/users-editor/users-editor.component';
 
 @NgModule({
   declarations: [
     AdminComponent,
     UsersComponent,
     GeneralComponent,
-    MenuComponent
+    MenuComponent,
+    UsersEditorComponent,
   ],
   imports: [
     CommonModule,
@@ -34,9 +36,9 @@ import { DateTimeModule } from 'src/app/shared/components/controls/date-time/dat
     ButtonModule,
     InputTextModule,
     SidebarModule,
-    InputSwitchModule,
     DropdownModule,
     DateTimeModule,
+    ItemsPanelModule,
   ],
   bootstrap: [AdminComponent]
 })

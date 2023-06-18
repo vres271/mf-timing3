@@ -10,7 +10,6 @@ import { EditField } from 'src/app/shared/components/common/items-editor/items-e
 @Component({
   selector: 'app-races-editor',
   templateUrl: './races-editor.component.html',
-  styleUrls: ['./races-editor.component.css']
 })
 export class RacesEditorComponent implements OnInit  {
 
@@ -27,7 +26,6 @@ export class RacesEditorComponent implements OnInit  {
 
   ngOnInit() {
     this.editFields = [
-      {name: 'id', title: 'id', type: 'number' },
       {name: 'name', title: 'name', type: 'text' },
       {name: 'startDate', title: 'startDate', type: 'date' },
       {name: 'raceType', title: 'raceType', type: 'list', list: of([

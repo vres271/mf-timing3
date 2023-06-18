@@ -9,7 +9,6 @@ import { RacesService } from 'src/app/shared/services/races.service';
 @Component({
   selector: 'app-race',
   templateUrl: './race.component.html',
-  styleUrls: ['./race.component.css']
 })
 export class RaceComponent  implements OnInit{
 

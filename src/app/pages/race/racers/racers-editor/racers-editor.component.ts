@@ -11,7 +11,6 @@ import { RacesService } from 'src/app/shared/services/races.service';
 @Component({
   selector: 'app-racers-editor',
   templateUrl: './racers-editor.component.html',
-  styleUrls: ['./racers-editor.component.css']
 })
 export class RacersEditorComponent implements OnInit  {
 
@@ -29,7 +28,6 @@ export class RacersEditorComponent implements OnInit  {
 
   ngOnInit() {
     this.editFields = [
-      {name: 'id', title: 'id', type: 'number' },
       {name: 'userId', title: 'userId', type: 'list', list: this.usersService.get()
         .pipe(
           map(users => users

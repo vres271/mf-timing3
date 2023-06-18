@@ -1,7 +1,13 @@
 import { Item } from './items.model.js';
+
 export enum RaceType{
   Standart = 1,
   PumpBattle
+}
+
+export const RaceTypeNames: Record<RaceType, string> = {
+  1: 'Стандарт',
+  2: 'Памп батл',
 }
 
 export interface RaceDTO extends Item{
@@ -23,6 +29,10 @@ export class Race  implements RaceDTO{
   
   get startDateString():string {
     return new Date(this.startDate).toLocaleString();
+  }
+
+  get raceTypeName():string {
+    return RaceTypeNames[this.raceType];
   }
 
 }

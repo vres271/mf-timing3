@@ -50,6 +50,10 @@ export class Racer  implements RacerDTO{
       return this.race?.name;
     }
     
+    get raceTypeName():string {
+      return this.race?.raceTypeName;
+    }
+    
 }
 
 export function DTO2Racer() {

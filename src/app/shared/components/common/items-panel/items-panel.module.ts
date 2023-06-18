@@ -1,3 +1,4 @@
+import { InputSwitchModule } from 'primeng/inputswitch';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ItemsPanelComponent } from './items-panel.component';
@@ -29,6 +30,8 @@ import { ItemsEditorComponent } from '../items-editor/items-editor.component';
     SidebarModule,
     DropdownModule,
     DateTimeModule,
+    InputSwitchModule,
+
   ],
   providers: [
     ItemsPanelService

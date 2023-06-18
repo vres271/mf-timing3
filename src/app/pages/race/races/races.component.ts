@@ -8,7 +8,6 @@ import { RacesService } from 'src/app/shared/services/races.service';
 @Component({
   selector: 'app-races',
   templateUrl: './races.component.html',
-  styleUrls: ['./races.component.css']
 })
 export class RacesComponent {
   races$: Observable<Race[]>;
@@ -19,7 +18,7 @@ export class RacesComponent {
   fields = [
     {name: 'name', title: 'name', type: 'text' },
     {name: 'startDateString', title: 'startDateString', type: 'text' },
-    {name: 'raceType', title: 'raceType', type: 'text' },
+    {name: 'raceTypeName', title: 'raceTypeName', type: 'text' },
   ]
 
   editFields: EditField[];

@@ -23,6 +23,7 @@ export class RacersComponent implements OnInit {
     {name: 'userFullName', title: 'userFullName', type: 'text' },
     // {name: 'raceId', title: 'raceId', type: 'text' },
     {name: 'raceName', title: 'raceName', type: 'text' },
+    {name: 'raceTypeName', title: 'raceTypeName', type: 'text' },
     {name: 'categoryId', title: 'categoryId', type: 'text' },
     {name: 'registrationDate', title: 'registrationDate', type: 'text' },
   ]
