@@ -29,13 +29,14 @@ export class SerialComponent {
   nav:any = navigator;
   serial:any = this.nav.serial;
   port: any = null;
+  message = '';
 
   outputElem: ElementRef;
 
   print(value: string) {
-    // if (typeof value === 'object') {
-    //   value = JSON.stringify(value);
-    // }
+    if (typeof value === 'object') {
+      value = JSON.stringify(value);
+    }
     this.output =  this.output+value;
   }
 
@@ -43,6 +44,7 @@ export class SerialComponent {
     const ports = await this.serial.getPorts();
     console.log(ports, ports.map((p:any) => p.getInfo()));
     this.print(ports);
+    this.print(ports.map((p:any) => p.getInfo()));
   }
 
   async requestPort() {
@@ -71,6 +73,10 @@ export class SerialComponent {
   async closePort() {
     const closeRes = await this.port.close();
     console.log('closeRes', closeRes);
+  }
+
+  sendMessage() {
+    this.write(this.message);
   }
 
   async read() {
@@ -102,6 +108,16 @@ export class SerialComponent {
     }
   }
 
+  async write(message: string) {
+    
+    const encoder = new TextEncoder();
+    const writer = this.port.writable.getWriter();
+    const encoded = encoder.encode(message+"\n");
+    const writeRes = await writer.write(encoded);
+    console.log('writeRes', encoded, writeRes);
+    this.message = '';
+    writer.releaseLock();
+  }
 
 
 

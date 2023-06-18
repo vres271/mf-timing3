@@ -6,3 +6,7 @@
 </div>
 
 <pre class="serial-output" id="outputElem">{{output}}</pre>
+<div class="flex btn-bar">
+    <p-button label="Send" (click)="sendMessage()" styleClass="p-button-secondary"></p-button>
+    <input type="text" pInputText [(ngModel)]="message" style="width: 80%" />
+</div>
