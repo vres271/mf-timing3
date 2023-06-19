@@ -41,14 +41,16 @@ export abstract class ItemsService<ItemType, DTOType> {
       }));  
   }
 
-  save(dto: DTOType):Observable<DTOType> {
-    return this.apiService.update<DTOType>(this.entityType, dto)
-      .pipe(tap((savedDTO: any ) => {
-        const i = this.dataService.items[this.entityType].findIndex((item:any) => item.id === savedDTO.id);
-        const newItem = new (this.itemClass)(savedDTO, this.dataService.map);
-        this.dataService.items[this.entityType][i] = newItem;
-        this.dataService.createMap(this.entityType);
-        this.items$.next(this.dataService.items[this.entityType]);
+  save(dtos: DTOType[]):Observable<DTOType[]> {
+    return this.apiService.update<DTOType>(this.entityType, dtos)
+      .pipe(tap((savedDTOs: DTOType[] ) => {
+          savedDTOs.forEach((savedDTO:any) => {
+            const i = this.dataService.items[this.entityType].findIndex((item:any) => item.id === savedDTO.id);
+            const newItem = new (this.itemClass)(savedDTO, this.dataService.map);
+            this.dataService.items[this.entityType][i] = newItem;
+          })
+          this.dataService.createMap(this.entityType);
+          this.items$.next(this.dataService.items[this.entityType]);
       }));
   }
 

@@ -46,9 +46,9 @@ export class RacersEditorComponent implements OnInit  {
     ]
   }
 
-  save(item: RacerDTO) {
-    this.racersService.save(item)
-      .subscribe()    
+  save(dtos: RacerDTO[]) {
+    this.racersService.save(dtos)
+      .subscribe(res => console.log(res))    
   }
 
   add(item: RacerDTO) {

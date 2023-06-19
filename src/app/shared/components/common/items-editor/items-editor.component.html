@@ -27,7 +27,7 @@
                 </ng-container>
             </div>
             <div class="btn-bar">
-                <p-button label="Save" (click)="save()"></p-button>
+                <p-button [label]="('Save' + (items.length <= 1 ? '' : (' ' + items.length + ' Items')))" (click)="save()"></p-button>
                 <p-button label="Cancel" styleClass="p-button-secondary" (click)="cancel()"></p-button>
             </div>
         </ng-container>

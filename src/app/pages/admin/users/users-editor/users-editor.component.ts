@@ -34,8 +34,8 @@ export class UsersEditorComponent implements OnInit  {
     ]
   }
 
-  save(item: UserDTO) {
-    this.usersService.save(item)
+  save(dtos: UserDTO[]) {
+    this.usersService.save(dtos)
       .subscribe()    
   }
 

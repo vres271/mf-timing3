@@ -36,8 +36,8 @@ export class RacesEditorComponent implements OnInit  {
     ]
   }
 
-  save(item: RaceDTO) {
-    this.racesService.save(item)
+  save(dtos: RaceDTO[]) {
+    this.racesService.save(dtos)
       .subscribe()    
   }
 

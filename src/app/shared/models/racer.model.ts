@@ -66,7 +66,7 @@ export function Racer2DTO(item: Racer):RacerDTO {
       userId: 1*item.userId || 0,
       raceId: 1*item.raceId || 0 ,
       categoryId: 1*item.categoryId || 0,
-      regDate: item.regDate,
+      regDate: ((regDate:any) => typeof regDate === 'object' ? regDate.getTime() : regDate)(item.regDate),
       num: 1*item.num || 0,
     }
     return dto;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Key, NgxIndexedDBService } from 'ngx-indexed-db';
-import { Observable, tap } from 'rxjs';
+import { Observable, forkJoin, tap } from 'rxjs';
 import { EntityType } from 'src/app/shared/models/items.model';
 
 @Injectable({
@@ -24,8 +24,9 @@ export class APIService {
     return this.dbService.add(entityType, _item);
   }
 
-  update<T>(entityType: EntityType, item: T):Observable<T> {
-    return this.dbService.update(entityType, item);
+  update<T>(entityType: EntityType, dtos: T[]):Observable<T[]> {
+    return forkJoin(dtos.map(dto => this.dbService.update(entityType, dto)))
+    // return this.dbService.update(entityType, item);
   }
 
   delete(entityType: EntityType, id: number):Observable<any> {

@@ -45,7 +45,7 @@ export function Race2DTO(item: Race):RaceDTO {
   const dto:RaceDTO = {
     id: 1*item.id || 0,
     name: item.name || '',
-    startDate: item.startDate,
+    startDate: ((startDate:any) => typeof startDate === 'object' ? startDate.getTime() : startDate)(item.startDate),
     raceType: 1*item.raceType || 0,
   }
   return dto;
