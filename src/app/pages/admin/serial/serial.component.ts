@@ -1,29 +1,13 @@
-import { Component, ElementRef } from '@angular/core';
-
-class LineBreakTransformer {
-  container:string = '';
-  constructor() {
-    this.container = '';
-  }
-
-  transform(chunk:any, controller:any) {
-    this.container += chunk;
-    const lines = this.container.split('\r\n');
-    this.container = lines.pop() || '';
-    lines.forEach(line => controller.enqueue(line));
-  }
-
-  flush(controller:any) {
-    controller.enqueue(this.container);
-  }
-}
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { SerialService } from 'src/app/core/services/serial.service';
+import { TimecontrolAPIService } from 'src/app/core/services/timecontrol-api.service';
 
 @Component({
   selector: 'app-serial',
   templateUrl: './serial.component.html',
   styleUrls: ['./serial.component.css']
 })
-export class SerialComponent {
+export class SerialComponent implements OnInit{
 
   output = '';
   nav:any = navigator;
@@ -32,6 +16,25 @@ export class SerialComponent {
   message = '';
 
   outputElem: ElementRef;
+
+  constructor(
+    private serialService: SerialService,
+    private timecontrolAPIService: TimecontrolAPIService,
+  ) {
+
+  }
+
+  ngOnInit() {
+    // this.serialService.getInputStream()
+    //   .subscribe(res => {
+    //     console.log('message from Serial service stream', res)
+    //   })
+
+      this.timecontrolAPIService.getInputStream()
+      .subscribe(res => {
+        console.log('message from timecontrolAPI service stream', res)
+      })
+  }
 
   print(value: string) {
     if (typeof value === 'object') {
@@ -117,6 +120,14 @@ export class SerialComponent {
     console.log('writeRes', encoded, writeRes);
     this.message = '';
     writer.releaseLock();
+  }
+
+  startService() {
+    this.serialService.start();
+  }
+
+  startAPIService() {
+    this.timecontrolAPIService.connect();
   }
 
 
