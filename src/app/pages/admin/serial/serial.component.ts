@@ -17,6 +17,7 @@ export class SerialComponent implements OnInit{
   serial:any = this.nav.serial;
   port: any = null;
   message = '';
+  messageAPI = '';
 
   outputElem: ElementRef;
 
@@ -44,7 +45,7 @@ export class SerialComponent implements OnInit{
       
       this.logItems$ = this.logItemsService.get()
         .pipe(
-          map(items => items.map(item => `${(item.detail.direction === SerialMessageDirection.Input ? '>>' : '<<') }  ${(new Date(item.date).toLocaleTimeString())}  ${item.detail.message.trim()}`).join('\n')),
+          map(items => items.map(item => `${(item.detail.direction === SerialMessageDirection.Input ? '  ' : '<<') } ${(new Date(item.date).toLocaleTimeString())} ${item.detail.message.trim()}`).join('\n')),
           tap(() => {setTimeout(()=>document.getElementById('outputElemLog')?.scrollTo(0, 1000000),100);}),
         );
         this.logItemsService.load().subscribe();
@@ -144,7 +145,21 @@ export class SerialComponent implements OnInit{
     this.timecontrolAPIService.connect();
   }
 
+  sendTimecontrolAPIMessage() {
+    // this.timecontrolAPIService.sendText(this.messageAPI);
+    this.timecontrolAPIService.sendComand(this.messageAPI, [1,2,3]);
 
+    this.messageAPI = '';
+  }
 
+  sendTimecontrolAPIMessageAsText() {
+    this.timecontrolAPIService.sendText(this.messageAPI);
+    this.messageAPI = '';
+  }
+
+  sendTimecontrolAPIMessageAsCommand() {
+    this.timecontrolAPIService.sendComand(this.messageAPI.split(' ')[0], this.messageAPI.split(' ')?.slice(1)?.map(v => parseInt(v)));
+    this.messageAPI = '';
+  }
 
 }

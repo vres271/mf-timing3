@@ -11,11 +11,16 @@
     <p-tabView>
         <p-tabPanel header="Serial Service Log">
             <pre class="serial-output" id="outputElemLog">{{logItems$ | async}}</pre>
+            <div class="flex btn-bar">
+                <p-button label="Send as Text" (click)="sendTimecontrolAPIMessageAsText()" styleClass="p-button-secondary"></p-button>
+                <p-button label="Send as Command" (click)="sendTimecontrolAPIMessageAsCommand()" styleClass="p-button-secondary"></p-button>
+                <input type="text" [(ngModel)]="messageAPI" pInputText #mes style="width: 60%" />
+            </div>
         </p-tabPanel>
         <p-tabPanel header="Serial output">
             <pre class="serial-output" id="outputElem">{{output}}</pre>
             <div class="flex btn-bar">
-                <p-button label="Send" (click)="sendMessage()" styleClass="p-button-secondary"></p-button>
+                <p-button label="Send as Text" (click)="sendMessage()" styleClass="p-button-secondary"></p-button>
                 <input type="text" pInputText [(ngModel)]="message" style="width: 80%" />
             </div>
         </p-tabPanel>

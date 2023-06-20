@@ -41,4 +41,12 @@ export class TimecontrolAPIService {
     this.serialService.start();
   }
 
+  sendComand(cmd: string, value?: number[]) {
+    this.sendText(`api ${cmd}` + (value?.length ? (' ' + value.join(' ')) : ''));
+  }
+
+  sendText(message: string) {
+    this.serialService.send(message);
+  }
+
 }

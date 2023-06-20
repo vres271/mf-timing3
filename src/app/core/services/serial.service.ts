@@ -35,6 +35,10 @@ export class SerialService {
     this._start();
   }
 
+  send(message: string) {
+    this.write(message);
+  }
+
   async _start() {
     await this.requestPort();
     await this.openPort();
@@ -101,7 +105,8 @@ export class SerialService {
     const writer = this.port.writable.getWriter();
     const encoded = encoder.encode(message+"\n");
     const writeRes = await writer.write(encoded);
-    console.log('writeRes', encoded, writeRes);
+    this.log(message, SerialMessageDirection.Output);
+    // console.log('writeRes', encoded, writeRes);
     writer.releaseLock();
   }
 
