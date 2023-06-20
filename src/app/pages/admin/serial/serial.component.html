@@ -7,8 +7,19 @@
     <p-button label="TimecontrolAPIService start" (click)="startAPIService()" styleClass="p-button-secondary"></p-button>
 </div>
 
-<pre class="serial-output" id="outputElem">{{output}}</pre>
-<div class="flex btn-bar">
-    <p-button label="Send" (click)="sendMessage()" styleClass="p-button-secondary"></p-button>
-    <input type="text" pInputText [(ngModel)]="message" style="width: 80%" />
+<div class="card">
+    <p-tabView>
+        <p-tabPanel header="Serial Service Log">
+            <pre class="serial-output" id="outputElemLog">{{logItems$ | async}}</pre>
+        </p-tabPanel>
+        <p-tabPanel header="Serial output">
+            <pre class="serial-output" id="outputElem">{{output}}</pre>
+            <div class="flex btn-bar">
+                <p-button label="Send" (click)="sendMessage()" styleClass="p-button-secondary"></p-button>
+                <input type="text" pInputText [(ngModel)]="message" style="width: 80%" />
+            </div>
+        </p-tabPanel>
+    </p-tabView>
 </div>
+
+

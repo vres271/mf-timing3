@@ -6,6 +6,7 @@ import { SerialService } from './serial.service';
   providedIn: 'root'
 })
 export class TimecontrolAPIService {
+  connected = false;
 
   constructor(private serialService: SerialService) {
   }
@@ -24,6 +25,9 @@ export class TimecontrolAPIService {
           if(splitted?.[4]) {
             res.laps = +splitted?.[4];
           }
+          if(res.command === 'connect_timecontrol3') {
+            this.connected = true;
+          }
           return res;
         }
         return null;
@@ -33,6 +37,7 @@ export class TimecontrolAPIService {
   }
 
   connect() {
+    this.connected = false;
     this.serialService.start();
   }
 

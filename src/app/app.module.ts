@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { LayoutModule } from './core/layout/layout.module';
 import { getDBConfig } from './core/db/db.config';
+import { LogItemsService } from './shared/services/log-items.service';
 
 @NgModule({
   declarations: [
@@ -25,12 +26,13 @@ import { getDBConfig } from './core/db/db.config';
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
     }),
-    NgxIndexedDBModule.forRoot(getDBConfig({version: 4})),
+    NgxIndexedDBModule.forRoot(getDBConfig({version: 6})),
     LayoutModule,
   ],
   providers: [
     LogUpdateService,
     CheckForUpdateService,
+    LogItemsService,
   ],
   bootstrap: [AppComponent]
 })

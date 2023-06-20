@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { TimecontrolAPIService } from '../services/timecontrol-api.service';
 
 @Component({
   selector: 'app-layout',
@@ -7,6 +8,10 @@ import { MenuItem } from 'primeng/api';
   styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent {
+
+  constructor(public timecontrolAPIService: TimecontrolAPIService) {
+
+  }
 
   items: MenuItem[] = [
     { 

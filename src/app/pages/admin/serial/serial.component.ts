@@ -1,6 +1,9 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
-import { SerialService } from 'src/app/core/services/serial.service';
+import { Component, ElementRef, OnInit, Input } from '@angular/core';
+import { Observable, map, tap } from 'rxjs';
+import { SerialMessageDirection, SerialService } from 'src/app/core/services/serial.service';
 import { TimecontrolAPIService } from 'src/app/core/services/timecontrol-api.service';
+import { LogItem } from 'src/app/shared/models/log-item.model';
+import { LogItemsService } from 'src/app/shared/services/log-items.service';
 
 @Component({
   selector: 'app-serial',
@@ -17,9 +20,13 @@ export class SerialComponent implements OnInit{
 
   outputElem: ElementRef;
 
+  logItems$: Observable<string>;
+
+  
   constructor(
     private serialService: SerialService,
     private timecontrolAPIService: TimecontrolAPIService,
+    private logItemsService: LogItemsService,
   ) {
 
   }
@@ -34,6 +41,13 @@ export class SerialComponent implements OnInit{
       .subscribe(res => {
         console.log('message from timecontrolAPI service stream', res)
       })
+      
+      this.logItems$ = this.logItemsService.get()
+        .pipe(
+          map(items => items.map(item => `${(item.detail.direction === SerialMessageDirection.Input ? '>>' : '<<') }  ${(new Date(item.date).toLocaleTimeString())}  ${item.detail.message.trim()}`).join('\n')),
+          tap(() => {setTimeout(()=>document.getElementById('outputElemLog')?.scrollTo(0, 1000000),100);}),
+        );
+        this.logItemsService.load().subscribe();
   }
 
   print(value: string) {

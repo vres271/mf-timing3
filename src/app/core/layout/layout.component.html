@@ -6,6 +6,6 @@
         <router-outlet></router-outlet>
     </div>
     <div class="footer">
-        This is a footer
+        <span *ngIf=timecontrolAPIService.connected ><i class="pi pi-check"></i> Подключено: timecontrol3</span>
     </div>
 </div>

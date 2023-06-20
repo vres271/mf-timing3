@@ -16,12 +16,14 @@ export class DataService {
     [EntityType.User]: {id: new Map()},
     [EntityType.Racer]: {id: new Map()},
     [EntityType.Race]: {id: new Map()},
+    [EntityType.LogItem]: {id: new Map()},
   };
 
   items: Record<EntityType, any[]> =  {
     [EntityType.User]: [],
     [EntityType.Racer]: [],
     [EntityType.Race]: [],
+    [EntityType.LogItem]: [],
   };
   
   constructor() { }

@@ -18,6 +18,7 @@ import { DateTimeModule } from 'src/app/shared/components/controls/date-time/dat
 import { ItemsPanelModule } from 'src/app/shared/components/common/items-panel/items-panel.module';
 import { UsersEditorComponent } from './users/users-editor/users-editor.component';
 import { SerialComponent } from './serial/serial.component';
+import { TabViewModule } from 'primeng/tabview';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { SerialComponent } from './serial/serial.component';
     DropdownModule,
     DateTimeModule,
     ItemsPanelModule,
+    TabViewModule,
   ],
   bootstrap: [AdminComponent]
 })

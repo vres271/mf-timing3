@@ -40,6 +40,15 @@ export function getDBConfig(options: {version: number}): DBConfig {
           { name: 'startDate', keypath: 'startDate', options: { unique: false } },
           { name: 'raceType', keypath: 'raceType', options: { unique: false } },
         ]
+      },
+      {
+        store: 'log',
+        storeConfig: { keyPath: 'id', autoIncrement: true },
+        storeSchema: [
+          { name: 'id', keypath: 'id', options: { unique: true } },
+          { name: 'date', keypath: 'date', options: { unique: false } },
+          { name: 'message', keypath: 'message', options: { unique: false } },
+        ]
       }
     ],
     migrationFactory

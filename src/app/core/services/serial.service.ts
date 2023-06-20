@@ -1,5 +1,13 @@
-import { Injectable } from '@angular/core';
+import { LogItemDTO, LogItemType } from 'src/app/shared/models/log-item.model';
+import { LogItemsService } from './../../shared/services/log-items.service';
+import { APIService } from './api.service';
+import { Injectable, Output } from '@angular/core';
 import { Subject } from 'rxjs';
+
+export enum SerialMessageDirection {
+  Input = 1,
+  Output,
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +20,9 @@ export class SerialService {
 
   private inputMessages$ = new Subject<string>();
 
-  constructor() {
+  constructor(
+    private logItemsService: LogItemsService
+  ) {
     this.nav = navigator;
     this.serial = this.nav.serial;
   }
@@ -75,7 +85,8 @@ export class SerialService {
             }
             if (value) {
               // console.log(value);
-              this.inputMessages$.next(value)
+              this.inputMessages$.next(value);
+              this.log(value, SerialMessageDirection.Input);
             }
           }
         } catch (error) {
@@ -94,5 +105,15 @@ export class SerialService {
     writer.releaseLock();
   }
 
+  log(message: string, direction: SerialMessageDirection) {
+    const logItem: LogItemDTO = {
+      id: 0,
+      logItemType: LogItemType.Serial,
+      date: (new Date).getTime(),
+      detail: {message, direction}
+    }
+    this.logItemsService.add(logItem)
+      .subscribe()
+  }
 
 }
