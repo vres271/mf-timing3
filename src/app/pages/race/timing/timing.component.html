@@ -1,0 +1,38 @@
+<ng-container *ngIf="!race">
+    <p-menu [model]="racesMenu" [style]="{width: '100%'}"></p-menu>
+</ng-container>
+<ng-container *ngIf="race">
+    <div class="flex-row">
+        <div>Гонка: {{race.name}}</div>
+        <div *ngIf="laps">Кругов: {{laps}}</div>
+        <div>{{stateLabel}}</div>
+        <div>Racer #{{racerNum}}</div>
+        <div *ngIf="racer">{{racer.userFullName}}</div>
+        <div>{{timer}}</div>
+            <p-button 
+                [label]="timecontrolAPIService.connected ? 'Connected' : 'Connect'" 
+                (click)="connectToTC()" 
+                [disabled]="timecontrolAPIService.connected" 
+                [styleClass]="timecontrolAPIService.connected ? 'p-button-success' : 'p-button-secondary'"
+                >
+            </p-button>
+    </div>
+    <div style="margin: 30px 0;">
+        <p-steps  *ngIf="laps" [model]="lapSteps" [activeIndex]="lap-1" [readonly]="true"></p-steps>
+    </div>
+    <div>
+        <table style="width: 100%">
+            <tr *ngFor="let event of raceEvents" [ngStyle]="{background: event.raceEventType===3 ? 'rgba(255,255,255,.1)': ''}">
+                <td width="60px">{{event.id}}</td>
+                <td width="280px" >{{event.racerFullName}}</td>
+                <td>{{event.raceEventTypeName}}</td>
+                <td>{{event.dtString}}</td>
+                <td align="right">{{event.dateString}}</td>
+            </tr>
+        </table>   
+    </div>
+</ng-container>
+
+
+
+

@@ -17,6 +17,7 @@ export class DataService {
     [EntityType.Racer]: {id: new Map()},
     [EntityType.Race]: {id: new Map()},
     [EntityType.LogItem]: {id: new Map()},
+    [EntityType.RaceEvent]: {id: new Map()},
   };
 
   items: Record<EntityType, any[]> =  {
@@ -24,6 +25,7 @@ export class DataService {
     [EntityType.Racer]: [],
     [EntityType.Race]: [],
     [EntityType.LogItem]: [],
+    [EntityType.RaceEvent]: [],
   };
   
   constructor() { }

@@ -37,6 +37,7 @@ export class TimecontrolAPIService {
   }
 
   connect() {
+    if (this.connected) return
     this.connected = false;
     this.serialService.start();
   }

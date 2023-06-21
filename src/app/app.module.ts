@@ -26,7 +26,7 @@ import { LogItemsService } from './shared/services/log-items.service';
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
     }),
-    NgxIndexedDBModule.forRoot(getDBConfig({version: 6})),
+    NgxIndexedDBModule.forRoot(getDBConfig({version: 7})),
     LayoutModule,
   ],
   providers: [

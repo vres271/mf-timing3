@@ -9,6 +9,10 @@ const routes: Routes = [
     component: RaceComponent
   },
   {
+    path: 'timing/:raceId',
+    component: RaceComponent
+  },
+  {
     path: 'racers',
     component: RaceComponent
   },

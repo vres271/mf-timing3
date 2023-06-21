@@ -6,6 +6,7 @@ import { MenuItem } from 'primeng/api';
 import { RacesComponent } from './races/races.component';
 import { RacesService } from 'src/app/shared/services/races.service';
 import { forkJoin } from 'rxjs';
+import { TimingComponent } from './timing/timing.component';
 
 @Component({
   selector: 'app-race',
@@ -33,14 +34,14 @@ export class RaceComponent  implements OnInit{
       this.currentComponent = RacesComponent;
       this.header = 'Races';
     } else {
-      this.currentComponent = RacersComponent;
-      this.header = 'Racers';
+      this.currentComponent = TimingComponent;
+      this.header = 'Timing';
     }
 
     this.menuItems  = [
       { 
-        label: 'General', 
-        icon: 'pi pi-fw pi-home', 
+        label: 'Timing', 
+        icon: 'pi pi-fw pi-stopwatch', 
         routerLink: '/race', 
         routerLinkActiveOptions: { exact: true } 
       },

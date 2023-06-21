@@ -18,6 +18,9 @@ import { RacesComponent } from './races/races.component';
 import { RacersService } from 'src/app/shared/services/racers.service';
 import { RacesService } from 'src/app/shared/services/races.service';
 import { RacesEditorComponent } from './races/races-editor/races-editor.component';
+import { TimingComponent } from './timing/timing.component';
+import { RaceEventsService } from 'src/app/shared/services/race-events.service';
+import { StepsModule } from 'primeng/steps';
 
 @NgModule({
   declarations: [
@@ -26,6 +29,7 @@ import { RacesEditorComponent } from './races/races-editor/races-editor.componen
     RacersEditorComponent,
     RacesComponent,
     RacesEditorComponent,
+    TimingComponent,
   ],
   imports: [
     CommonModule,
@@ -39,11 +43,13 @@ import { RacesEditorComponent } from './races/races-editor/races-editor.componen
     SidebarModule,
     DropdownModule,
     DateTimeModule,
-    ItemsPanelModule
+    ItemsPanelModule,
+    StepsModule,
   ],
   providers: [
     RacersService,
     RacesService,
+    RaceEventsService,
   ],
 
 })

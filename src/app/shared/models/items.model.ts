@@ -3,6 +3,7 @@ export enum EntityType {
     Racer = 'racers',
     Race = 'races',
     LogItem = 'log',
+    RaceEvent = 'race_events',
 }  
 
 export interface Item {
