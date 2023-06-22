@@ -9,6 +9,7 @@ import { RacersService } from 'src/app/shared/services/racers.service';
 import { Racer } from 'src/app/shared/models/racer.model';
 import { RaceEventsService } from 'src/app/shared/services/race-events.service';
 import { RaceEvent, RaceEventType } from 'src/app/shared/models/race-event.model';
+import { TableRowSelectEvent } from 'primeng/table';
 
 @Component({
   selector: 'app-timing',
@@ -29,12 +30,15 @@ export class TimingComponent implements OnInit, OnDestroy{
   races: Race[] | undefined;
   racers: Racer[] | undefined;
 
-  stateLabel = '';
+  stateLabel = 'Sleep';
   racerNum: number;
   racer: Racer | undefined;
   raceEvents: RaceEvent[];
   laps: number = 0;
   lap: number = 0;
+
+  racerSelectVisible = false;
+  selectedRacer!: Racer
 
   constructor(
     private racesService: RacesService,
@@ -104,6 +108,12 @@ export class TimingComponent implements OnInit, OnDestroy{
               }
               this.lap = 0;
               break;
+            case 'in_menu':
+              this.stateLabel = 'Sleep';
+              this.timerStartTime = 0;
+              this.timerFinishTime = 0;
+              this.lap = 0;
+              break;
             case 'set_racer':
               this.stateLabel = 'Ready';
               this.racerNum = res.racer;
@@ -155,8 +165,17 @@ export class TimingComponent implements OnInit, OnDestroy{
       raceEventType: type,
       raceId: this.race?.id || 0,
       racerId: this.racer?.id || 0,
-      detail: {},
+      detail: {cmd_racer: res.racer},
     }).subscribe());
+  }
+
+  selectRacer(e: any) {
+    this.timecontrolAPIService.sendComand( 'set_racer', [e.data.num]);
+    this.racerSelectVisible = false;
+  }
+
+  setReady() {
+    this.timecontrolAPIService.sendComand(this.stateLabel === 'Ready' ? '^' : 'set_ready');
   }
 
   ngOnDestroy() {

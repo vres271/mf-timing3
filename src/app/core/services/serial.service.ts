@@ -106,7 +106,7 @@ export class SerialService {
     const encoded = encoder.encode(message+"\n");
     const writeRes = await writer.write(encoded);
     this.log(message, SerialMessageDirection.Output);
-    // console.log('writeRes', encoded, writeRes);
+    console.log('send:', message);
     writer.releaseLock();
   }
 

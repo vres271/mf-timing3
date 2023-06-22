@@ -64,6 +64,10 @@ export class RaceEvent  implements RaceEventDTO{
     return this.racer?.userFullName
   }
 
+  get racerNum():number {
+    return this.racer?.num
+  }
+
   get race():Race {
     return this.itemsMap.races.id.get(this.raceId);
   }

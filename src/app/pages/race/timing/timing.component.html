@@ -3,27 +3,31 @@
 </ng-container>
 <ng-container *ngIf="race">
     <div class="flex-row">
-        <div>Гонка: {{race.name}}</div>
+        <div class="flex-grow-1">
+            <span (click)="setReady()" style="cursor: pointer"><i class="pi pi-circle-fill" [ngStyle]="{color: stateLabel==='Ready' ? '#ff6000' : ''}"></i> {{stateLabel}}</span>
+        </div>
+        <div class="flex-grow-3">{{race.name}}</div>
         <div *ngIf="laps">Кругов: {{laps}}</div>
-        <div>{{stateLabel}}</div>
-        <div>Racer #{{racerNum}}</div>
-        <div *ngIf="racer">{{racer.userFullName}}</div>
+        <p-button 
+            [label]="timecontrolAPIService.connected ? 'Connected' : 'Connect'" 
+            (click)="connectToTC()" 
+            [disabled]="timecontrolAPIService.connected" 
+            [styleClass]="timecontrolAPIService.connected ? 'p-button-success' : 'p-button-secondary'"
+            >
+        </p-button>
+    </div>
+    <div class="flex-row">
+        <div class="flex-grow-1" (click)="racerSelectVisible=true" style="cursor: pointer">Racer #{{racerNum}}</div>
+        <div *ngIf="racer" class="flex-grow-3">{{racer.userFullName}}</div>
         <div>{{timer}}</div>
-            <p-button 
-                [label]="timecontrolAPIService.connected ? 'Connected' : 'Connect'" 
-                (click)="connectToTC()" 
-                [disabled]="timecontrolAPIService.connected" 
-                [styleClass]="timecontrolAPIService.connected ? 'p-button-success' : 'p-button-secondary'"
-                >
-            </p-button>
     </div>
     <div style="margin: 30px 0;">
         <p-steps  *ngIf="laps" [model]="lapSteps" [activeIndex]="lap-1" [readonly]="true"></p-steps>
     </div>
-    <div>
+    <div style="max-height: 50vh; overflow-y: auto;">
         <table style="width: 100%">
             <tr *ngFor="let event of raceEvents" [ngStyle]="{background: event.raceEventType===3 ? 'rgba(255,255,255,.1)': ''}">
-                <td width="60px">{{event.id}}</td>
+                <td width="60px">{{event.racerNum}}</td>
                 <td width="280px" >{{event.racerFullName}}</td>
                 <td>{{event.raceEventTypeName}}</td>
                 <td>{{event.dtString}}</td>
@@ -32,6 +36,42 @@
         </table>   
     </div>
 </ng-container>
+
+<p-sidebar [visible]="racerSelectVisible" position="right" [modal]="false" (onHide)="racerSelectVisible=false" styleClass="p-sidebar-md">
+    <ng-template pTemplate="header">Select Racer</ng-template>
+    <ng-template pTemplate="content">
+        <ng-container *ngIf="racers">
+            <p-table 
+                #table
+                [value]="racers" 
+                [paginator]="true"
+                [rows]="500"     
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [rowsPerPageOptions]="[20, 50, 100, 500, 1000]"      
+                [globalFilterFields]="['num','userFullName']"  selectionMode="single" [(selection)]="selectedRacer" (onRowSelect)="selectRacer($event)"
+                styleClass="p-datatable-sm" >
+                <ng-template pTemplate="caption">
+                    <span class="p-input-icon-left ml-auto">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text"  (input)="table.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+                    </span>
+                </ng-template>        
+                <ng-template pTemplate="body" let-item >
+                    <tr [pSelectableRow]="item">
+                        <td>{{ item.num }}</td>
+                        <td>{{ item.userFullName }}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="5">No items found.</td>
+                    </tr>
+                </ng-template>        
+            </p-table>    
+        </ng-container>
+    </ng-template>
+</p-sidebar>
 
 
 

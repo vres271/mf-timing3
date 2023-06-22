@@ -43,7 +43,7 @@ export class TimecontrolAPIService {
   }
 
   sendComand(cmd: string, value?: number[]) {
-    this.sendText(`api ${cmd}` + (value?.length ? (' ' + value.join(' ')) : ''));
+    this.sendText(`${cmd}` + (value?.length ? (' ' + value.join(' ')) : '') + `;`);
   }
 
   sendText(message: string) {
