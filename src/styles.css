@@ -70,3 +70,23 @@ app-layout{
 .flex-grow-4 {
     flex-grow: 4;
 }
+
+.start-step{
+    border: 1px solid #8dc6ff69;
+    width: 32px;
+    height: 32px;
+    border-radius: 25%;
+    position: absolute;
+    margin-left: -32px;
+    text-align: center;
+    padding-top: 4px;    
+}
+
+.start-step.ready{
+    background-color: #95ff2085;
+}
+
+.start-step.started{
+    background-color: #ff87209e;
+}
+

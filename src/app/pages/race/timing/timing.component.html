@@ -17,17 +17,19 @@
         </p-button>
     </div>
     <div class="flex-row">
-        <div class="flex-grow-1" (click)="racerSelectVisible=true" style="cursor: pointer">Racer #{{racerNum}}</div>
-        <div *ngIf="racer" class="flex-grow-3">{{racer.userFullName}}</div>
+        <div class="flex-grow-1"  style="cursor: pointer" (click)="racerSelectVisible=true">Racer #{{racerNum}}</div>
+        <div *ngIf="racer" class="flex-grow-3" style="cursor: pointer" (click)="racerSelectVisible=true">{{racer.userFullName}}</div>
+        <div *ngIf="!racer && stateLabel==='Ready'" class="flex-grow-3" (click)="racerSelectVisible=true" style="cursor: pointer"><i class="pi pi-exclamation-circle" style="color:orange"></i> Select racer!</div>
         <div>{{timer}}</div>
     </div>
-    <div style="margin: 30px 0;">
-        <p-steps  *ngIf="laps" [model]="lapSteps" [activeIndex]="lap-1" [readonly]="true"></p-steps>
+    <div style="margin: 30px 0; padding-left: 32px; position: relative;" *ngIf="laps">
+        <div class="start-step" [ngClass]="{started: started && lap===0, ready: !started && racer && stateLabel==='Ready'}">S</div>
+        <p-steps   [model]="lapSteps" [activeIndex]="lap-1" [readonly]="true"></p-steps>
     </div>
     <div style="max-height: 50vh; overflow-y: auto;">
         <table style="width: 100%">
             <tr *ngFor="let event of raceEvents" [ngStyle]="{background: event.raceEventType===3 ? 'rgba(255,255,255,.1)': ''}">
-                <td width="60px">{{event.racerNum}}</td>
+                <td width="50px">{{event.racerNum}}</td>
                 <td width="280px" >{{event.racerFullName}}</td>
                 <td>{{event.raceEventTypeName}}</td>
                 <td>{{event.dtString}}</td>
@@ -43,7 +45,7 @@
         <ng-container *ngIf="racers">
             <p-table 
                 #table
-                [value]="racers" 
+                [value]="filter(racers, {raceId: race?.id})" 
                 [paginator]="true"
                 [rows]="500"     
                 [showCurrentPageReport]="true"

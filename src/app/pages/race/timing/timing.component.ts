@@ -10,6 +10,7 @@ import { Racer } from 'src/app/shared/models/racer.model';
 import { RaceEventsService } from 'src/app/shared/services/race-events.service';
 import { RaceEvent, RaceEventType } from 'src/app/shared/models/race-event.model';
 import { TableRowSelectEvent } from 'primeng/table';
+import { Item } from 'src/app/shared/models/items.model';
 
 @Component({
   selector: 'app-timing',
@@ -25,6 +26,7 @@ export class TimingComponent implements OnInit, OnDestroy{
   timer: string;
   timerStartTime: number;
   timerFinishTime: number;
+  started = false;
 
   race: Race | undefined;
   races: Race[] | undefined;
@@ -107,12 +109,14 @@ export class TimingComponent implements OnInit, OnDestroy{
                 this.lapSteps.push({label: '00:00:00.000'});
               }
               this.lap = 0;
+              this.started = false;
               break;
             case 'in_menu':
               this.stateLabel = 'Sleep';
               this.timerStartTime = 0;
               this.timerFinishTime = 0;
               this.lap = 0;
+              this.started = false;
               break;
             case 'set_racer':
               this.stateLabel = 'Ready';
@@ -130,6 +134,7 @@ export class TimingComponent implements OnInit, OnDestroy{
               this.timerFinishTime = 0;
               this.lapSteps.forEach(step => {step.label = '00:00:00.000'})
               this.lap = 0;
+              this.started = true;
               break;
             case 'lap':
               this.stateLabel = 'Ready';
@@ -142,6 +147,7 @@ export class TimingComponent implements OnInit, OnDestroy{
               this.addRaceEvent(res, RaceEventType.Finish)
               this.timerFinishTime = res.time;
               this.timerStartTime = 0;
+              this.started = false;
               break;
             default:
               break;
@@ -180,5 +186,10 @@ export class TimingComponent implements OnInit, OnDestroy{
 
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe())
+  }
+
+  filter(items: Item[], cond: any):Item[] {
+    const [key, value] = Object.entries(cond)[0];
+    return items.filter((item:any) => item[key] === value)
   }
 }
