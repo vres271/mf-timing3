@@ -1,19 +1,26 @@
 import { Injectable } from '@angular/core';
 import { Subject, filter, map } from 'rxjs';
 import { SerialService } from './serial.service';
+import { Timecontrol3MockService } from 'src/app/shared/mocks/timecontrol3.mock';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TimecontrolAPIService {
   connected = false;
+  serialService: SerialService;
 
-  constructor(private serialService: SerialService) {
+  constructor(
+    private _serialService: SerialService,
+    private _timecontrol3MockService: Timecontrol3MockService,
+  ) {
+    this.serialService = _timecontrol3MockService;
   }
 
   getInputStream() {
     return this.serialService.getInputStream().pipe(
       map(message => {
+        console.log(message)
         const splitted = message.trim().replace('\n', '').replace('\r', '').split(' ');
         if(splitted[0] === 'api') {
           const res:any = {

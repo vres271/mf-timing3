@@ -18,10 +18,10 @@ export class SerialService {
   serial: any;
   port: any;
 
-  private inputMessages$ = new Subject<string>();
+  inputMessages$ = new Subject<string>();
 
   constructor(
-    private logItemsService: LogItemsService
+    public logItemsService: LogItemsService
   ) {
     this.nav = navigator;
     this.serial = this.nav.serial;

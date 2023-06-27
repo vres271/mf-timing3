@@ -9,6 +9,13 @@
         <div class="flex-grow-3">{{race.name}}</div>
         <div *ngIf="laps">Кругов: {{laps}}</div>
         <p-button 
+            label="Mock" 
+            (click)="emitMockSensorEvent()"
+            [disabled]="!timecontrolAPIService.connected" 
+            [styleClass]="timecontrolAPIService.connected ? 'p-button-danger' : 'p-button-secondary'"
+            >
+        </p-button>
+        <p-button 
             [label]="timecontrolAPIService.connected ? 'Connected' : 'Connect'" 
             (click)="connectToTC()" 
             [disabled]="timecontrolAPIService.connected" 

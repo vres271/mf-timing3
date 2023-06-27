@@ -9,8 +9,8 @@ import { RacersService } from 'src/app/shared/services/racers.service';
 import { Racer } from 'src/app/shared/models/racer.model';
 import { RaceEventsService } from 'src/app/shared/services/race-events.service';
 import { RaceEvent, RaceEventType } from 'src/app/shared/models/race-event.model';
-import { TableRowSelectEvent } from 'primeng/table';
 import { Item } from 'src/app/shared/models/items.model';
+import { Timecontrol3MockService } from 'src/app/shared/mocks/timecontrol3.mock';
 
 @Component({
   selector: 'app-timing',
@@ -48,6 +48,7 @@ export class TimingComponent implements OnInit, OnDestroy{
     private raceEventsService: RaceEventsService,
     private route: ActivatedRoute,
     public timecontrolAPIService: TimecontrolAPIService,
+    public timecontrol3MockService: Timecontrol3MockService,
     ) {
 
   }
@@ -192,4 +193,9 @@ export class TimingComponent implements OnInit, OnDestroy{
     const [key, value] = Object.entries(cond)[0];
     return items.filter((item:any) => item[key] === value)
   }
+
+  emitMockSensorEvent() {
+    this.timecontrol3MockService.emitSensorEvent();
+  }
+
 }
