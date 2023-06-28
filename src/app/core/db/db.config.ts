@@ -7,6 +7,14 @@ export function getDBConfig(options: {version: number}): DBConfig {
     version: options.version,
     objectStoresMeta: [
       {
+        store: 'config',
+        storeConfig: { keyPath: 'id', autoIncrement: true },
+        storeSchema: [
+          { name: 'id', keypath: 'id', options: { unique: true } },
+          { name: 'data', keypath: 'data', options: { unique: false } },
+        ]
+      },
+      {
         store: 'users',
         storeConfig: { keyPath: 'id', autoIncrement: true },
         storeSchema: [

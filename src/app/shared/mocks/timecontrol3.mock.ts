@@ -8,7 +8,7 @@ export enum MenuState {
 }
 
 export enum RaceState {
-    Wait,
+    StandBy,
     Ready,
     Started
 }
@@ -24,7 +24,7 @@ export class Timecontrol3MockService extends SerialService{
     }
 
     menuState: MenuState = MenuState.MainMenu;
-    raceState: RaceState = RaceState.Wait;
+    raceState: RaceState = RaceState.StandBy;
     racer = 0;
     laps = 4;
     startTime: number = 0;
@@ -63,7 +63,7 @@ export class Timecontrol3MockService extends SerialService{
             } else if (cmd === '^') {
                 if (this.raceState !== RaceState.Started) {
                     this.menuState = this.menuState === MenuState.MainMenu ? MenuState.Race : MenuState.MainMenu;
-                    this.raceState = this.raceState === RaceState.Wait ? RaceState.Ready : RaceState.Wait;
+                    this.raceState = this.raceState === RaceState.StandBy ? RaceState.Ready : RaceState.StandBy;
                     this.response('in_menu',[this.racer, this.time])
                 }
             } else if (cmd === 'set_racer') {

@@ -1,6 +1,5 @@
 import { LogItemDTO, LogItemType } from 'src/app/shared/models/log-item.model';
 import { LogItemsService } from './../../shared/services/log-items.service';
-import { APIService } from './api.service';
 import { Injectable, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 

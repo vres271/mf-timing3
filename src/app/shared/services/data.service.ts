@@ -12,7 +12,7 @@ export interface ItemsMapSection {
 })
 export class DataService {
 
-  map: Record<EntityType, ItemsMapSection> = {
+  map: Record<string, ItemsMapSection> = {
     [EntityType.User]: {id: new Map()},
     [EntityType.Racer]: {id: new Map()},
     [EntityType.Race]: {id: new Map()},
@@ -20,7 +20,7 @@ export class DataService {
     [EntityType.RaceEvent]: {id: new Map()},
   };
 
-  items: Record<EntityType, any[]> =  {
+  items: Record<string, any[]> =  {
     [EntityType.User]: [],
     [EntityType.Racer]: [],
     [EntityType.Race]: [],

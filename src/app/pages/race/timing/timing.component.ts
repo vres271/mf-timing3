@@ -32,7 +32,7 @@ export class TimingComponent implements OnInit, OnDestroy{
   races: Race[] | undefined;
   racers: Racer[] | undefined;
 
-  stateLabel = 'Sleep';
+  stateLabel = 'StandBy';
   racerNum: number;
   racer: Racer | undefined;
   raceEvents: RaceEvent[];
@@ -113,7 +113,7 @@ export class TimingComponent implements OnInit, OnDestroy{
               this.started = false;
               break;
             case 'in_menu':
-              this.stateLabel = 'Sleep';
+              this.stateLabel = 'StandBy';
               this.timerStartTime = 0;
               this.timerFinishTime = 0;
               this.lap = 0;
