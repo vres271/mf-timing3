@@ -1,14 +1,15 @@
-import { Observable } from 'rxjs';
-import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Config, ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
   selector: 'app-general',
   templateUrl: './general.component.html',
 })
-export class GeneralComponent implements OnInit{
+export class GeneralComponent implements OnInit, OnDestroy{
 
-  configItem$: Observable<Config>;
+  subs: Subscription[] = [];
+  configItem$: BehaviorSubject<Config|null>;
 
   constructor(
     private configService: ConfigService,
@@ -18,8 +19,17 @@ export class GeneralComponent implements OnInit{
 
   ngOnInit() {
     this.configItem$ = this.configService.get();
-    this.configService.load()
-      .subscribe()
   }
+
+  saveConfig(item: Config) {
+    this.subs.push(
+    this.configService.save(item)
+      .subscribe())
+  }
+
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe())
+  }
+
 
 }

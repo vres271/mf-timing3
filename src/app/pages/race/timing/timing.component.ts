@@ -1,3 +1,4 @@
+import { UserDTO } from './../../../shared/models/user.model';
 import { TimecontrolAPIService } from './../../../core/services/timecontrol-api.service';
 import { RacesService } from 'src/app/shared/services/races.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -6,11 +7,13 @@ import { Race } from 'src/app/shared/models/race.model';
 import { ActivatedRoute } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { RacersService } from 'src/app/shared/services/racers.service';
-import { Racer } from 'src/app/shared/models/racer.model';
+import { Racer, RacerDTO } from 'src/app/shared/models/racer.model';
 import { RaceEventsService } from 'src/app/shared/services/race-events.service';
 import { RaceEvent, RaceEventType } from 'src/app/shared/models/race-event.model';
 import { Item } from 'src/app/shared/models/items.model';
 import { Timecontrol3MockService } from 'src/app/shared/mocks/timecontrol3.mock';
+import { Config, ConfigService } from 'src/app/core/services/config.service';
+import { UsersService } from 'src/app/shared/services/users.service';
 
 @Component({
   selector: 'app-timing',
@@ -42,18 +45,40 @@ export class TimingComponent implements OnInit, OnDestroy{
   racerSelectVisible = false;
   selectedRacer!: Racer
 
+  registerRacerVisible = false;
+
+  config: Config
+
+  newRacer = {
+    num:0,
+    firstName:'',
+    secondName:'',
+    thirdName:'' ,
+  };
+  registerNewRacerError = '';
+
   constructor(
     private racesService: RacesService,
     private racersService: RacersService,
+    private usersService: UsersService,
     private raceEventsService: RaceEventsService,
     private route: ActivatedRoute,
     public timecontrolAPIService: TimecontrolAPIService,
     public timecontrol3MockService: Timecontrol3MockService,
+    private configService: ConfigService,
     ) {
 
   }
 
   ngOnInit() {
+      this.subs.push(
+        this.configService.get()
+          .subscribe(config => {
+            if (config) {
+              this.config = config;
+            }
+          })
+      );
       this.subs.push(
       this.route.params.pipe(
         switchMap(params => this.racesService.get().pipe(map(races=>({races,params}))))
@@ -177,7 +202,7 @@ export class TimingComponent implements OnInit, OnDestroy{
   }
 
   selectRacer(e: any) {
-    this.timecontrolAPIService.sendComand( 'set_racer', [e.data.num]);
+    this.timecontrolAPIService.sendComand( 'set_racer', [+e.data.num]);
     this.racerSelectVisible = false;
   }
 
@@ -194,8 +219,64 @@ export class TimingComponent implements OnInit, OnDestroy{
     return items.filter((item:any) => item[key] === value)
   }
 
+  get isTCMockEnabled() {
+    return this.config?.data?.timecontrol?.device === 'timeControlMock'
+  }
+
   emitMockSensorEvent() {
     this.timecontrol3MockService.emitSensorEvent();
+  }
+
+  openRegisterNewRacerDialog() {
+    this.newRacer = {
+      num: (this.racers?.filter(racer => racer.raceId === this.race?.id).reduce((p, v) =>  ( p.num > v.num ? p : v )).num  || 0) + 1,
+      firstName:'',
+      secondName:'',
+      thirdName:'' ,  
+    }
+    this.registerRacerVisible = true;
+  }
+
+  validateNewRacerNum() {
+    this.registerNewRacerError = '';
+    if (this.racers?.find(racer => +this.newRacer?.num === +racer.num )) {
+      this.registerNewRacerError = 'Racer Number already exists';
+    }
+  }
+
+  registerNewRacer() {
+    const user: UserDTO =  {
+      id: 0,
+      name: '',
+      firstName: this.newRacer.firstName,
+      secondName: this.newRacer.secondName,
+      thirdName: this.newRacer.thirdName,
+      email: '',
+      active: true,
+    }
+    this.subs.push(
+    this.usersService.add(user)
+      .pipe(
+        switchMap(createdUser => {
+          const racer: RacerDTO = {
+            id: 0,
+            userId: createdUser.id,
+            raceId: this.race?.id || 0,
+            categoryId: 0,
+            regDate: new Date().getTime(),
+            num: +this.newRacer.num,
+          }
+          return this.racersService.add(racer)
+        })
+      )
+      .subscribe(createdRacer => {
+        if(createdRacer?.id) {
+          console.log('New Racer Created', createdRacer);
+          this.registerRacerVisible = false;
+        } else {
+          console.warn('Error creating Racer', createdRacer);
+        }
+      }))
   }
 
 }

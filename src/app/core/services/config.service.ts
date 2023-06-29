@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, Subject, tap } from 'rxjs';
 import { EntityType, Item } from 'src/app/shared/models/items.model';
 
 export class ConfigDTO{
+  id: number;
   data: {
     timecontrol:{
       device: 'serialPort' | 'timeControlMock'
@@ -21,8 +22,6 @@ export class Config{
 
   constructor(dto: ConfigDTO) {
     const empty:ConfigDTO = <ConfigDTO>{};
-    
-    console.log(empty)
     this.data = dto.data;
   }
 
@@ -34,8 +33,10 @@ export class Config{
 })
 export class ConfigService {
 
-  items$ = new Subject<Config>();
-  
+  item$ = new BehaviorSubject<Config|null>(null);
+  item: Config;
+  id: number;
+
   constructor(
     public apiService: APIService,
   ) { 
@@ -46,20 +47,36 @@ export class ConfigService {
           this.apiService.add<ConfigDTO>(EntityType.Config, emptyConfig)
             .subscribe(res2 => {
               console.log('created')
-            })
-        
+              this.item$.next(this.item);
+            })        
         }
       })   
   }
 
-  get():Observable<Config> {
-    return this.items$;
+  get():BehaviorSubject<Config|null> {
+    console.log(this.item)
+    this.item$.next(this.item);
+    return this.item$;
   }
 
   load():Observable<ConfigDTO[]> {
     return this.apiService.get<ConfigDTO>(EntityType.Config)
       .pipe(tap((dtos: ConfigDTO[] ) => {
-        this.items$.next(new Config(dtos[0]));
+        this.id = dtos[0].id;
+        this.item = new Config(dtos[0])
+        this.item$.next(this.item);
+      }));
+  }
+
+  save(item: Config):Observable<ConfigDTO[]> {
+    const dto: ConfigDTO = {
+      id: this.id,
+      data: item.data,
+    }
+    return this.apiService.update<ConfigDTO>(EntityType.Config, [dto])
+      .pipe(tap((savedDTOs: ConfigDTO[] ) => {
+        this.item = new Config(savedDTOs[0])
+        this.item$.next(this.item);
       }));
   }
 

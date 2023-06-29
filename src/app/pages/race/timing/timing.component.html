@@ -9,6 +9,7 @@
         <div class="flex-grow-3">{{race.name}}</div>
         <div *ngIf="laps">Кругов: {{laps}}</div>
         <p-button 
+            *ngIf="isTCMockEnabled"
             label="Mock" 
             (click)="emitMockSensorEvent()"
             [disabled]="!timecontrolAPIService.connected" 
@@ -65,6 +66,7 @@
                         <i class="pi pi-search"></i>
                         <input pInputText type="text"  (input)="table.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
                     </span>
+                    <p-button label="Register Racer" (onClick)="openRegisterNewRacerDialog()" class=" ml-auto" [style]="{'margin-left': '4px'}"></p-button>
                 </ng-template>        
                 <ng-template pTemplate="body" let-item >
                     <tr [pSelectableRow]="item">
@@ -79,6 +81,31 @@
                 </ng-template>        
             </p-table>    
         </ng-container>
+    </ng-template>
+</p-sidebar>
+
+<p-sidebar [visible]="registerRacerVisible" position="right" [modal]="false" (onHide)="registerRacerVisible=false" styleClass="p-sidebar-md">
+    <ng-template pTemplate="header">Register new Racer</ng-template>
+    <ng-template pTemplate="content">
+        <div class="input-block" >
+            <label>Number</label>
+            <input type="text" pInputText [(ngModel)]="newRacer.num" (ngModelChange)="validateNewRacerNum()" />
+            <div *ngIf="registerNewRacerError" style="color: orangered; margin-top: 4px;">
+                {{registerNewRacerError}}
+            </div>
+            <label>firstName</label>
+            <input type="text" pInputText [(ngModel)]="newRacer.firstName" />
+            <label>secondName</label>
+            <input type="text" pInputText [(ngModel)]="newRacer.secondName" />
+            <label>thirdName</label>
+            <input type="text" pInputText [(ngModel)]="newRacer.thirdName" />
+            <div class="flex btn-bar"  [style]="{'margin-top': '8px'}">
+                <p-button label="Register" (onClick)="registerNewRacer()" styleClass="p-button-success" 
+                    [disabled]="!(newRacer.num&&newRacer.firstName&&newRacer.secondName&&!registerNewRacerError)">
+                </p-button>
+                <p-button label="Cancel" (onClick)="registerRacerVisible=false" styleClass="p-button-secondary"></p-button>
+            </div>
+        </div>
     </ng-template>
 </p-sidebar>
 

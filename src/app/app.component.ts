@@ -6,6 +6,7 @@ import { UsersMockData } from './shared/mocks/users.mock';
 import { RacersMockData } from './shared/mocks/racers.mock';
 import { PrimeNGConfig } from 'primeng/api';
 import { RacesMockData } from './shared/mocks/races.mock';
+import { ConfigService } from './core/services/config.service';
 
 @Component({
   selector: 'app-root',
@@ -16,11 +17,15 @@ export class AppComponent{
   constructor(
     private usersService: UsersService,
     private dbService: NgxIndexedDBService,
-    private primengConfig: PrimeNGConfig
+    private primengConfig: PrimeNGConfig,
+    private configService: ConfigService,
   ) {
     
     this.usersService.load()
       .subscribe()
+    this.configService.load()
+      .subscribe()
+    
 
     this.primengConfig.ripple = true;
     this.dbService.bulkGet(EntityType.User, [1]).subscribe((result: any) => {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject, filter, map } from 'rxjs';
 import { SerialService } from './serial.service';
 import { Timecontrol3MockService } from 'src/app/shared/mocks/timecontrol3.mock';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,17 @@ export class TimecontrolAPIService {
   constructor(
     private _serialService: SerialService,
     private _timecontrol3MockService: Timecontrol3MockService,
+    private configService: ConfigService,
   ) {
-    this.serialService = _timecontrol3MockService;
+    this.configService.get()
+      .subscribe(config => {
+        if (config?.data?.timecontrol?.device === 'timeControlMock') {
+          this.serialService = this._timecontrol3MockService;
+        } else {
+          this.serialService = this._serialService;
+        }
+      })
+    
   }
 
   getInputStream() {
