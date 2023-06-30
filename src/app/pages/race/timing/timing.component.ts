@@ -5,7 +5,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription, forkJoin, map, switchMap } from 'rxjs';
 import { Race } from 'src/app/shared/models/race.model';
 import { ActivatedRoute } from '@angular/router';
-import { MenuItem } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { RacersService } from 'src/app/shared/services/racers.service';
 import { Racer, RacerDTO } from 'src/app/shared/models/racer.model';
 import { RaceEventsService } from 'src/app/shared/services/race-events.service';
@@ -17,7 +17,8 @@ import { UsersService } from 'src/app/shared/services/users.service';
 
 @Component({
   selector: 'app-timing',
-  templateUrl: './timing.component.html'
+  templateUrl: './timing.component.html',
+  providers: [ConfirmationService]
 })
 export class TimingComponent implements OnInit, OnDestroy{
 
@@ -41,6 +42,19 @@ export class TimingComponent implements OnInit, OnDestroy{
   raceEvents: RaceEvent[];
   laps: number = 0;
   lap: number = 0;
+  eventTypesList: any[];
+  eventsFilter = {
+    type: 0,
+    num: '',
+    name: '',
+  }
+  results: {
+    bestFinish: RaceEvent[],
+    bestLap: RaceEvent[],
+  } = {
+    bestFinish: [],
+    bestLap: [],
+  }
 
   racerSelectVisible = false;
   selectedRacer!: Racer
@@ -57,6 +71,8 @@ export class TimingComponent implements OnInit, OnDestroy{
   };
   registerNewRacerError = '';
 
+  resultsVisible = false;
+
   constructor(
     private racesService: RacesService,
     private racersService: RacersService,
@@ -66,11 +82,19 @@ export class TimingComponent implements OnInit, OnDestroy{
     public timecontrolAPIService: TimecontrolAPIService,
     public timecontrol3MockService: Timecontrol3MockService,
     private configService: ConfigService,
+    private confirmationService: ConfirmationService,
     ) {
 
   }
 
   ngOnInit() {
+      this.eventTypesList = [
+        {value: 0, label: 'All types'},
+        {value: RaceEventType.Start, label: 'Start'},
+        {value: RaceEventType.Point, label: 'Point'},
+        {value: RaceEventType.Finish, label: 'Finish'},
+      ]
+
       this.subs.push(
         this.configService.get()
           .subscribe(config => {
@@ -277,6 +301,74 @@ export class TimingComponent implements OnInit, OnDestroy{
           console.warn('Error creating Racer', createdRacer);
         }
       }))
+  }
+
+  openDeleteRaceEventDialog(item: RaceEvent) {
+    this.confirmationService.confirm({
+        message: 'Удалить точку?',
+        header: 'Подтверждение',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.raceEventsService.delete(item.id)
+            .subscribe(res => console.log('Delete RaceEvent', res))
+        },
+        reject: () => {
+
+        }
+    });
+  }
+
+  get resultsToFile() {
+    return 'data:text/plain;charset=utf-8,' + encodeURIComponent(this.filterEvents(this.raceEvents)
+      .map(event => (event.racerNum || '-') + "\t" + (event.racerFullName || '-') + "\t" + event.raceEventTypeName + "\t" + event.dtString)
+      .join("\n")
+    );
+  }
+
+  filterEvents(items: RaceEvent[]):RaceEvent[] {
+    const regexp = this.eventsFilter.name ? new RegExp(this.eventsFilter.name, "ig") : null;
+    return items.filter(item => {
+      return (+item.racerNum === +this.eventsFilter.num || !this.eventsFilter.num) 
+        && (!regexp || regexp.test(item.racerFullName))
+        && (item.raceEventType === this.eventsFilter.type || !this.eventsFilter.type)
+    })
+  }
+ 
+  resetEventFilter() {
+    this.eventsFilter.num = '';
+    this.eventsFilter.name = '';
+    this.eventsFilter.type = 0;
+  }
+
+  showResults() {
+    this.resultsVisible = true;
+
+    let min: any = {};
+    this.results.bestFinish = this.raceEvents
+        .filter(item => item.raceEventType === RaceEventType.Finish)
+        .sort((a,b) => a.dt - b.dt)
+        .filter(item => {
+          if (min[item.racerId] === undefined) {
+            min[item.racerId] = true;
+            return true;
+          } else {
+            return false;
+          }
+        })
+
+    min = {}
+    this.results.bestLap = this.raceEvents
+        .filter(item => item.raceEventType === RaceEventType.Point)
+        .sort((a,b) => a.dt - b.dt)
+        .filter(item => {
+          if (min[item.racerId] === undefined) {
+            min[item.racerId] = true;
+            return true;
+          } else {
+            return false;
+          }
+        })
+
   }
 
 }

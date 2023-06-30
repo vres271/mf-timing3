@@ -2,18 +2,26 @@
     <p-menu [model]="racesMenu" [style]="{width: '100%'}"></p-menu>
 </ng-container>
 <ng-container *ngIf="race">
-    <div class="flex-row">
+    <div class="flex-row"  *ngIf="config">
         <div class="flex-grow-1">
             <span (click)="setReady()" style="cursor: pointer"><i class="pi pi-circle-fill" [ngStyle]="{color: stateLabel==='Ready' ? '#ff6000' : ''}"></i> {{stateLabel}}</span>
         </div>
-        <div class="flex-grow-3">{{race.name}}</div>
-        <div *ngIf="laps">Кругов: {{laps}}</div>
+        <div class="flex-grow-3" style="font-size: 25px;" [style]="{color: stateLabel!=='Ready' ? 'grey' : ''}">
+            <span style="cursor: pointer" (click)="racerSelectVisible=true">#{{racerNum}} : </span>
+            <span *ngIf="racer" style="cursor: pointer" (click)="racerSelectVisible=true">{{racer.userFullName}}</span>
+            <span *ngIf="!racer && stateLabel==='Ready'" class="flex-grow-3" (click)="racerSelectVisible=true" style="cursor: pointer"><i class="pi pi-exclamation-circle" style="color:orange"></i> Select racer!</span>            
+        </div>
+        <div class="flex-grow-3"  [style]="{color: stateLabel!=='Ready' ? 'grey' : ''}">
+            {{race.name}}
+            <div *ngIf="laps">Кругов: {{laps}} | {{timer}}</div>
+        </div>
         <p-button 
             *ngIf="isTCMockEnabled"
-            label="Mock" 
+            label="Point"
+            icon="pi pi-bolt"
             (click)="emitMockSensorEvent()"
             [disabled]="!timecontrolAPIService.connected" 
-            [styleClass]="timecontrolAPIService.connected ? 'p-button-danger' : 'p-button-secondary'"
+            [styleClass]="timecontrolAPIService.connected ? 'p-button-warning' : 'p-button-secondary'"
             >
         </p-button>
         <p-button 
@@ -23,25 +31,44 @@
             [styleClass]="timecontrolAPIService.connected ? 'p-button-success' : 'p-button-secondary'"
             >
         </p-button>
-    </div>
-    <div class="flex-row">
-        <div class="flex-grow-1"  style="cursor: pointer" (click)="racerSelectVisible=true">Racer #{{racerNum}}</div>
-        <div *ngIf="racer" class="flex-grow-3" style="cursor: pointer" (click)="racerSelectVisible=true">{{racer.userFullName}}</div>
-        <div *ngIf="!racer && stateLabel==='Ready'" class="flex-grow-3" (click)="racerSelectVisible=true" style="cursor: pointer"><i class="pi pi-exclamation-circle" style="color:orange"></i> Select racer!</div>
-        <div>{{timer}}</div>
-    </div>
+    </div>    
     <div style="margin: 30px 0; padding-left: 32px; position: relative;" *ngIf="laps">
         <div class="start-step" [ngClass]="{started: started && lap===0, ready: !started && racer && stateLabel==='Ready'}">S</div>
         <p-steps   [model]="lapSteps" [activeIndex]="lap-1" [readonly]="true"></p-steps>
     </div>
+    <div class="flex-row">
+        <div class="flex-grow-5">
+            <p-button 
+                icon="pi pi-filter-slash"
+                (click)="resetEventFilter()" 
+                [styleClass]="'p-button-outlined p-button-secondary'"
+                >
+            </p-button>
+            <input type="text" pInputText placeholder="Фильтр по номеру" [(ngModel)]="eventsFilter.num" [style]="{'margin-left': '4px'}"/>
+            <input type="text" pInputText placeholder="Фильтр по имени" [(ngModel)]="eventsFilter.name" [style]="{'margin-left': '4px'}" />
+            <p-dropdown [style]="{'margin-left': '4px'}"
+                [options]="eventTypesList" 
+                [(ngModel)]="eventsFilter.type" 
+                >
+            </p-dropdown>
+            <p-button  [style]="{'margin-left': '4px'}"
+                label="Results"
+                (click)="showResults()" 
+                [styleClass]="'p-button-secondary'"
+                >
+            </p-button>
+        </div>
+        <div class="flex-grow-1" style="text-align: right;"><a [href]="resultsToFile" download="timecontrol_results.txt">Скачать</a></div>
+    </div>
     <div style="max-height: 50vh; overflow-y: auto;">
         <table style="width: 100%">
-            <tr *ngFor="let event of raceEvents" [ngStyle]="{background: event.raceEventType===3 ? 'rgba(255,255,255,.1)': ''}">
+            <tr *ngFor="let event of filterEvents(raceEvents)" [ngStyle]="{background: event.raceEventType===3 ? 'rgba(255,255,255,.1)': ''}">
                 <td width="50px">{{event.racerNum}}</td>
                 <td width="280px" >{{event.racerFullName}}</td>
                 <td>{{event.raceEventTypeName}}</td>
                 <td>{{event.dtString}}</td>
                 <td align="right">{{event.dateString}}</td>
+                <td width="30px" (click)="openDeleteRaceEventDialog(event)" style=" cursor: pointer; padding: 0px 10px"><i class="pi pi-times" style="color: orangered; font-size: .8rem"></i></td>
             </tr>
         </table>   
     </div>
@@ -85,30 +112,82 @@
 </p-sidebar>
 
 <p-sidebar [visible]="registerRacerVisible" position="right" [modal]="false" (onHide)="registerRacerVisible=false" styleClass="p-sidebar-md">
-    <ng-template pTemplate="header">Register new Racer</ng-template>
+    <ng-template pTemplate="header">Регистрация нового участника</ng-template>
     <ng-template pTemplate="content">
         <div class="input-block" >
-            <label>Number</label>
-            <input type="text" pInputText [(ngModel)]="newRacer.num" (ngModelChange)="validateNewRacerNum()" />
+            <label>Номер</label>
+            <input type="number" step="1" pInputText [(ngModel)]="newRacer.num" (ngModelChange)="validateNewRacerNum()" />
             <div *ngIf="registerNewRacerError" style="color: orangered; margin-top: 4px;">
                 {{registerNewRacerError}}
             </div>
-            <label>firstName</label>
+            <label>Имя</label>
             <input type="text" pInputText [(ngModel)]="newRacer.firstName" />
-            <label>secondName</label>
+            <label>Фамилия</label>
             <input type="text" pInputText [(ngModel)]="newRacer.secondName" />
-            <label>thirdName</label>
+            <label>Отчество</label>
             <input type="text" pInputText [(ngModel)]="newRacer.thirdName" />
             <div class="flex btn-bar"  [style]="{'margin-top': '8px'}">
-                <p-button label="Register" (onClick)="registerNewRacer()" styleClass="p-button-success" 
+                <p-button label="Зарегистрировать" (onClick)="registerNewRacer()" styleClass="p-button-success" 
                     [disabled]="!(newRacer.num&&newRacer.firstName&&newRacer.secondName&&!registerNewRacerError)">
                 </p-button>
-                <p-button label="Cancel" (onClick)="registerRacerVisible=false" styleClass="p-button-secondary"></p-button>
+                <p-button label="Отмена" (onClick)="registerRacerVisible=false" styleClass="p-button-secondary"></p-button>
             </div>
         </div>
     </ng-template>
 </p-sidebar>
 
+<p-sidebar [visible]="resultsVisible" position="right" [modal]="false" (onHide)="resultsVisible=false" styleClass="p-sidebar-lg">
+    <ng-template pTemplate="header">Результаты</ng-template>
+    <ng-template pTemplate="content">
+        <p-tabView>
+            <p-tabPanel header="Финиш">
+                <ng-container *ngIf="results.bestFinish">
+                    <p-table 
+                        #table
+                        [value]="results.bestFinish" 
+                        [paginator]="true"
+                        [rows]="5000"     
+                        [showCurrentPageReport]="true"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                        [rowsPerPageOptions]="[20, 50, 100, 500, 1000]"      
+                        styleClass="p-datatable-sm" >
+                        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                            <tr [pSelectableRow]="item">
+                                <td>{{ rowIndex+1 }}</td>
+                                <td  style="text-align: right;">#{{ item.racerNum }}</td>
+                                <td>{{ item.racerFullName }}</td>
+                                <td>{{ item.dtString }}</td>
+                            </tr>
+                        </ng-template> 
+                    </p-table>    
+                </ng-container>
+            </p-tabPanel>
+            <p-tabPanel header="Лучший круг">
+                <ng-container *ngIf="results.bestFinish">
+                    <p-table 
+                        #table
+                        [value]="results.bestLap" 
+                        [paginator]="true"
+                        [rows]="5000"     
+                        [showCurrentPageReport]="true"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                        [rowsPerPageOptions]="[20, 50, 100, 500, 1000]"      
+                        styleClass="p-datatable-sm" >
+                        <ng-template pTemplate="body" let-item  let-rowIndex="rowIndex">
+                            <tr [pSelectableRow]="item">
+                                <td>{{ rowIndex+1 }}</td>
+                                <td style="text-align: right;">#{{ item.racerNum }}</td>
+                                <td>{{ item.racerFullName }}</td>
+                                <td>{{ item.dtString }}</td>
+                            </tr>
+                        </ng-template> 
+                    </p-table>    
+                </ng-container>
+            </p-tabPanel>
+        </p-tabView>
+    </ng-template>
+</p-sidebar>
 
+<p-confirmDialog [style]="{width: '400px'}" #cd rejectButtonStyleClass="p-button-outlined" acceptButtonStyleClass="p-button-danger"></p-confirmDialog>
 
 

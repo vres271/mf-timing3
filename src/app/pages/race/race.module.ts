@@ -21,6 +21,8 @@ import { RacesEditorComponent } from './races/races-editor/races-editor.componen
 import { TimingComponent } from './timing/timing.component';
 import { RaceEventsService } from 'src/app/shared/services/race-events.service';
 import { StepsModule } from 'primeng/steps';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { TabViewModule } from 'primeng/tabview';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { StepsModule } from 'primeng/steps';
     DateTimeModule,
     ItemsPanelModule,
     StepsModule,
+    ConfirmDialogModule,
+    TabViewModule,
   ],
   providers: [
     RacersService,

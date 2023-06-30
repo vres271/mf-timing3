@@ -2,7 +2,7 @@
     <ng-container *ngIf="configItem$ | async as config"   >
         <div *ngIf="config.data.timecontrol">Timecontrol device: 
             <p-dropdown 
-                [options]="[{value: 'serialPort', label: 'serialPort'},{value: 'timeControlMock', label: 'timeControlMock'}]" 
+                [options]="[{value: 'serialPort', label: 'Serial Port'},{value: 'timeControlMock', label: 'Mock: Timecontrol3 Emulator'}]" 
                 [(ngModel)]="config.data.timecontrol.device" 
                 (onChange)="saveConfig(config)"
                 >
