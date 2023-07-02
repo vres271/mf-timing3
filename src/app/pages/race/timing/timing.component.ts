@@ -2,7 +2,7 @@ import { UserDTO } from './../../../shared/models/user.model';
 import { TimecontrolAPIService } from './../../../core/services/timecontrol-api.service';
 import { RacesService } from 'src/app/shared/services/races.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription, forkJoin, map, switchMap } from 'rxjs';
+import { Observable, Subscription, forkJoin, map, switchMap, tap } from 'rxjs';
 import { Race } from 'src/app/shared/models/race.model';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MenuItem } from 'primeng/api';
@@ -72,6 +72,8 @@ export class TimingComponent implements OnInit, OnDestroy{
   registerNewRacerError = '';
 
   resultsVisible = false;
+  autoStandBy = true;
+  connecting = false;
 
   constructor(
     private racesService: RacesService,
@@ -96,14 +98,6 @@ export class TimingComponent implements OnInit, OnDestroy{
       ]
 
       this.subs.push(
-        this.configService.get()
-          .subscribe(config => {
-            if (config) {
-              this.config = config;
-            }
-          })
-      );
-      this.subs.push(
       this.route.params.pipe(
         switchMap(params => this.racesService.get().pipe(map(races=>({races,params}))))
       ).subscribe(
@@ -113,14 +107,15 @@ export class TimingComponent implements OnInit, OnDestroy{
           this.racesMenu = races.map(race => ({label: race.name, routerLink: '/race/timing/' + race.id}))
           this.race = races?.find(r => r.id === +params['raceId']);
         }
-      ))
+      ));
 
       this.subs.push(
       this.racersService.get()
-        .subscribe(racers => this.racers = racers))
+        .subscribe(racers => this.racers = racers));
 
       this.subs.push(
-      this.raceEventsService.load().subscribe());
+        this.raceEventsService.load()
+        .subscribe());
 
       this.subs.push(
       this.raceEventsService.get()
@@ -128,10 +123,75 @@ export class TimingComponent implements OnInit, OnDestroy{
           this.raceEvents = raceEvents.filter(e => e.raceId === this.race?.id).sort((a,b) => (b.id - a.id))
         }))
       
+      this.subs.push(this.configService.get().pipe(
+        tap(config => {
+          if (config) {
+            this.config = config;
+          }
+        }),        switchMap(() => this.timecontrolAPIService.getInputStream()),
+
+      ).subscribe(res => {
+        switch (res?.command) {
+          case 'ready':
+            this.stateLabel = 'Ready';
+            this.timerStartTime = 0;
+            this.timerFinishTime = 0;
+            this.laps = res.laps;
+            this.lapSteps = []
+            for (let i = 0; i < this.laps; i++) {
+              this.lapSteps.push({label: '00:00:00.000'});
+            }
+            this.lap = 0;
+            this.started = false;
+            break;
+          case 'in_menu':
+            this.stateLabel = 'StandBy';
+            this.timerStartTime = 0;
+            this.timerFinishTime = 0;
+            this.lap = 0;
+            this.started = false;
+            break;
+          case 'set_racer':
+            this.stateLabel = 'Ready';
+            this.racerNum = res.racer;
+            this.racer = this.racers?.find(r => r.num === this.racerNum);
+            this.timerStartTime = 0;
+            this.timerFinishTime = 0;
+            this.lapSteps.forEach(step => {step.label = '00:00:00.000'})
+            this.lap = 0;            
+            break;
+          case 'start':
+            this.stateLabel = 'Ready';
+            this.addRaceEvent(res, RaceEventType.Start)
+            this.timerStartTime = new Date().getTime();
+            this.timerFinishTime = 0;
+            this.lapSteps.forEach(step => {step.label = '00:00:00.000'})
+            this.lap = 0;
+            this.started = true;
+            break;
+          case 'lap':
+            this.stateLabel = 'Ready';
+            this.addRaceEvent(res, RaceEventType.Point)
+            this.lap++;
+            this.lapSteps[this.lap-1].label = new Date(res.time).toISOString().substring(11,23);
+            break;
+          case 'finish':
+            this.stateLabel = 'Ready';
+            this.addRaceEvent(res, RaceEventType.Finish)
+            this.timerFinishTime = res.time;
+            this.timerStartTime = 0;
+            this.started = false;
+            if (this.autoStandBy) {this.setReady();}
+            break;
+          default:
+            break;
+        }
+      }))
+
       if (this.timerId) {
         clearInterval(this.timerId)
-      }
-      
+      }      
+
       this.timerId = setInterval(() => {
         if (this.timerStartTime) {
           const now = new Date().getTime();
@@ -142,72 +202,12 @@ export class TimingComponent implements OnInit, OnDestroy{
         }
         this.timer = '00:00:00.000';
       },100)
-
-      this.subs.push(
-      this.timecontrolAPIService.getInputStream()
-        .subscribe(res => {
-          console.log(res)
-
-          switch (res?.command) {
-            case 'ready':
-              this.stateLabel = 'Ready';
-              this.timerStartTime = 0;
-              this.timerFinishTime = 0;
-              this.laps = res.laps;
-              this.lapSteps = []
-              for (let i = 0; i < this.laps; i++) {
-                this.lapSteps.push({label: '00:00:00.000'});
-              }
-              this.lap = 0;
-              this.started = false;
-              break;
-            case 'in_menu':
-              this.stateLabel = 'StandBy';
-              this.timerStartTime = 0;
-              this.timerFinishTime = 0;
-              this.lap = 0;
-              this.started = false;
-              break;
-            case 'set_racer':
-              this.stateLabel = 'Ready';
-              this.racerNum = res.racer;
-              this.racer = this.racers?.find(r => r.num === this.racerNum);
-              this.timerStartTime = 0;
-              this.timerFinishTime = 0;
-              this.lapSteps.forEach(step => {step.label = '00:00:00.000'})
-              this.lap = 0;            
-              break;
-            case 'start':
-              this.stateLabel = 'Ready';
-              this.addRaceEvent(res, RaceEventType.Start)
-              this.timerStartTime = new Date().getTime();
-              this.timerFinishTime = 0;
-              this.lapSteps.forEach(step => {step.label = '00:00:00.000'})
-              this.lap = 0;
-              this.started = true;
-              break;
-            case 'lap':
-              this.stateLabel = 'Ready';
-              this.addRaceEvent(res, RaceEventType.Point)
-              this.lap++;
-              this.lapSteps[this.lap-1].label = new Date(res.time).toISOString().substring(11,23);
-              break;
-            case 'finish':
-              this.stateLabel = 'Ready';
-              this.addRaceEvent(res, RaceEventType.Finish)
-              this.timerFinishTime = res.time;
-              this.timerStartTime = 0;
-              this.started = false;
-              break;
-            default:
-              break;
-          }
-        }))
-      
+          
   }
 
   connectToTC() {
     this.timecontrolAPIService.connect();
+    this.connecting = true;
   }
 
   addRaceEvent(res: any, type: RaceEventType) {
@@ -326,11 +326,11 @@ export class TimingComponent implements OnInit, OnDestroy{
   }
 
   filterEvents(items: RaceEvent[]):RaceEvent[] {
-    const regexp = this.eventsFilter.name ? new RegExp(this.eventsFilter.name, "ig") : null;
+    const regexp = this.eventsFilter.name ? new RegExp(this.eventsFilter.name, "i") : null;
     return items.filter(item => {
       return (+item.racerNum === +this.eventsFilter.num || !this.eventsFilter.num) 
         && (!regexp || regexp.test(item.racerFullName))
-        && (item.raceEventType === this.eventsFilter.type || !this.eventsFilter.type)
+        && (item.raceEventType === this.eventsFilter.type || this.eventsFilter.type === 0)
     })
   }
  

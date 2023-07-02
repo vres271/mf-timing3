@@ -30,7 +30,7 @@ export class TimecontrolAPIService {
   getInputStream() {
     return this.serialService.getInputStream().pipe(
       map(message => {
-        console.log(message)
+        console.log('get input stream', message)
         const splitted = message.trim().replace('\n', '').replace('\r', '').split(' ');
         if(splitted[0] === 'api') {
           const res:any = {

@@ -23,6 +23,7 @@ import { RaceEventsService } from 'src/app/shared/services/race-events.service';
 import { StepsModule } from 'primeng/steps';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TabViewModule } from 'primeng/tabview';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { TabViewModule } from 'primeng/tabview';
     StepsModule,
     ConfirmDialogModule,
     TabViewModule,
+    CheckboxModule,
   ],
   providers: [
     RacersService,
