@@ -1,7 +1,8 @@
 import { LogItemDTO, LogItemType } from 'src/app/shared/models/log-item.model';
-import { LogItemsService } from './../../shared/services/log-items.service';
+import { LogItemsService } from '../../../shared/services/log-items.service';
 import { Injectable, Output } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, switchMap } from 'rxjs';
+import { Driver, DriverConnectionState, DriverService } from './driver.service';
 
 export enum SerialMessageDirection {
   Input = 1,
@@ -11,23 +12,22 @@ export enum SerialMessageDirection {
 @Injectable({
   providedIn: 'root'
 })
-export class SerialService {
+export class SerialService extends DriverService<string, string> implements Driver<string, string>{
+  id = 1;
+  name = 'Serial Port';
+  connectionState = DriverConnectionState.Disconnected
 
   nav: any;
   serial: any;
   port: any;
 
-  inputMessages$ = new Subject<string>();
-
   constructor(
     public logItemsService: LogItemsService
   ) {
+    super();
     this.nav = navigator;
     this.serial = this.nav.serial;
-  }
 
-  getInputStream() {
-    return this.inputMessages$;
   }
 
   start() {
@@ -88,7 +88,7 @@ export class SerialService {
             }
             if (value) {
               // console.log(value);
-              this.inputMessages$.next(value);
+              this.outputStream$.next(value);
               this.log(value, SerialMessageDirection.Input);
             }
           }

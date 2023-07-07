@@ -15,7 +15,7 @@ export class MenuComponent implements OnInit {
 
     this.menuItems  = [
       { 
-        label: 'General', 
+        label: 'Config', 
         icon: 'pi pi-fw pi-home', 
         routerLink: '/admin/general', 
         routerLinkActiveOptions: { exact: true } 
@@ -24,6 +24,12 @@ export class MenuComponent implements OnInit {
         label: 'Users', 
         icon: 'pi pi-fw pi-users', 
         routerLink: '/admin/users', 
+        routerLinkActiveOptions: { exact: true } 
+      },
+      { 
+        label: 'Drivers', 
+        icon: 'pi pi-fw pi-sitemap', 
+        routerLink: '/admin/drivers', 
         routerLinkActiveOptions: { exact: true } 
       },
       { 

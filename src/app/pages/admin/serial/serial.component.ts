@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, Input } from '@angular/core';
 import { Observable, Subscription, map, tap } from 'rxjs';
-import { SerialMessageDirection, SerialService } from 'src/app/core/services/serial.service';
-import { TimecontrolAPIService } from 'src/app/core/services/timecontrol-api.service';
+import { SerialMessageDirection, SerialService } from 'src/app/core/services/drivers/serial.service';
+import { TimecontrolAPIService } from 'src/app/core/services/drivers/timecontrol-api.service';
 import { LogItemsService } from 'src/app/shared/services/log-items.service';
 
 @Component({

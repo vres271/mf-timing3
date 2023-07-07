@@ -19,6 +19,7 @@ import { ItemsPanelModule } from 'src/app/shared/components/common/items-panel/i
 import { UsersEditorComponent } from './users/users-editor/users-editor.component';
 import { SerialComponent } from './serial/serial.component';
 import { TabViewModule } from 'primeng/tabview';
+import { DriversComponent } from './drivers/drivers.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { TabViewModule } from 'primeng/tabview';
     MenuComponent,
     UsersEditorComponent,
     SerialComponent,
+    DriversComponent,
   ],
   imports: [
     CommonModule,

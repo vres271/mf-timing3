@@ -1,13 +1,31 @@
 import { Injectable } from '@angular/core';
-import { Subject, filter, map } from 'rxjs';
+import { Subject, filter, map, switchMap } from 'rxjs';
 import { SerialService } from './serial.service';
-import { Timecontrol3MockService } from 'src/app/shared/mocks/timecontrol3.mock';
-import { ConfigService } from './config.service';
+import { Timecontrol3MockService } from 'src/app/core/services/drivers/timecontrol3.mock';
+import { ConfigService } from '../config.service';
+import { DriverConnectionState, DriverService } from './driver.service';
+
+export interface TimecontrolMessage {
+    command: string;
+    racer?: number;
+    time?: number;
+    laps?: number;
+    raw: string;
+}
+
+export interface TimecontrolCommand {
+  cmd: string, 
+  value?: number[]
+}
 
 @Injectable({
   providedIn: 'root'
 })
-export class TimecontrolAPIService {
+export class TimecontrolAPIService extends DriverService<TimecontrolCommand, TimecontrolMessage>{
+  id = 2;
+  name = 'Timecontrol3 Device';
+  connectionState: DriverConnectionState = DriverConnectionState.Disconnected;
+
   connected = false;
   serialService: SerialService;
 
@@ -16,6 +34,7 @@ export class TimecontrolAPIService {
     private _timecontrol3MockService: Timecontrol3MockService,
     private configService: ConfigService,
   ) {
+    super();
     this.configService.get()
       .subscribe(config => {
         if (config?.data?.timecontrol?.device === 'timeControlMock') {
@@ -23,17 +42,19 @@ export class TimecontrolAPIService {
         } else {
           this.serialService = this._serialService;
         }
+
       })
-    
   }
 
-  getInputStream() {
-    return this.serialService.getInputStream().pipe(
-      map(message => {
-        console.log('get input stream', message)
+  connect() {
+    if (this.connected) return
+    this.connected = false;
+    this.connectionState = DriverConnectionState.Disconnected;
+    this.serialService.getOutputStream()
+      .subscribe(message => {
         const splitted = message.trim().replace('\n', '').replace('\r', '').split(' ');
         if(splitted[0] === 'api') {
-          const res:any = {
+          const res:TimecontrolMessage = {
             command: splitted?.[1],
             racer: +splitted?.[2],
             time: +splitted?.[3],
@@ -44,19 +65,18 @@ export class TimecontrolAPIService {
           }
           if(res.command === 'connect_timecontrol3') {
             this.connected = true;
+            this.connectionState = DriverConnectionState.Connected;
           }
-          return res;
+          this.outputStream$.next(res);
         }
-        return null;
-      }),
-      filter(res => res !== null),
-    )
-  }
+      });
 
-  connect() {
-    if (this.connected) return
-    this.connected = false;
+    this.inputStream$.subscribe(command => {
+      this.sendComand(command.cmd, command.value);
+    })
+
     this.serialService.start();
+    
   }
 
   sendComand(cmd: string, value?: number[]) {
@@ -64,7 +84,8 @@ export class TimecontrolAPIService {
   }
 
   sendText(message: string) {
-    this.serialService.send(message);
+    // this.serialService.send(message);
+    this.serialService.getInputStream().next(message);
   }
 
 }

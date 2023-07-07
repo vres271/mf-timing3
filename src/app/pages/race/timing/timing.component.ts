@@ -1,8 +1,8 @@
 import { UserDTO } from './../../../shared/models/user.model';
-import { TimecontrolAPIService } from './../../../core/services/timecontrol-api.service';
+import { TimecontrolAPIService, TimecontrolCommand, TimecontrolMessage } from '../../../core/services/drivers/timecontrol-api.service';
 import { RacesService } from 'src/app/shared/services/races.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription, forkJoin, map, switchMap, tap } from 'rxjs';
+import { Observable, Subject, Subscription, forkJoin, map, switchMap, tap } from 'rxjs';
 import { Race } from 'src/app/shared/models/race.model';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MenuItem } from 'primeng/api';
@@ -11,7 +11,7 @@ import { Racer, RacerDTO } from 'src/app/shared/models/racer.model';
 import { RaceEventsService } from 'src/app/shared/services/race-events.service';
 import { RaceEvent, RaceEventType } from 'src/app/shared/models/race-event.model';
 import { Item } from 'src/app/shared/models/items.model';
-import { Timecontrol3MockService } from 'src/app/shared/mocks/timecontrol3.mock';
+import { Timecontrol3MockService } from 'src/app/core/services/drivers/timecontrol3.mock';
 import { Config, ConfigService } from 'src/app/core/services/config.service';
 import { UsersService } from 'src/app/shared/services/users.service';
 
@@ -75,6 +75,8 @@ export class TimingComponent implements OnInit, OnDestroy{
   autoStandBy = true;
   connecting = false;
 
+  timecontrolInputStream$: Subject<any>
+
   constructor(
     private racesService: RacesService,
     private racersService: RacersService,
@@ -123,12 +125,14 @@ export class TimingComponent implements OnInit, OnDestroy{
           this.raceEvents = raceEvents.filter(e => e.raceId === this.race?.id).sort((a,b) => (b.id - a.id))
         }))
       
+      this.timecontrolInputStream$ = this.timecontrolAPIService.getInputStream();
       this.subs.push(this.configService.get().pipe(
         tap(config => {
           if (config) {
             this.config = config;
           }
-        }),        switchMap(() => this.timecontrolAPIService.getInputStream()),
+        }),        
+        switchMap(() => this.timecontrolAPIService.getOutputStream()),
 
       ).subscribe(res => {
         switch (res?.command) {
@@ -136,7 +140,7 @@ export class TimingComponent implements OnInit, OnDestroy{
             this.stateLabel = 'Ready';
             this.timerStartTime = 0;
             this.timerFinishTime = 0;
-            this.laps = res.laps;
+            this.laps = res.laps || 0;
             this.lapSteps = []
             for (let i = 0; i < this.laps; i++) {
               this.lapSteps.push({label: '00:00:00.000'});
@@ -153,7 +157,7 @@ export class TimingComponent implements OnInit, OnDestroy{
             break;
           case 'set_racer':
             this.stateLabel = 'Ready';
-            this.racerNum = res.racer;
+            this.racerNum = res.racer || 0;
             this.racer = this.racers?.find(r => r.num === this.racerNum);
             this.timerStartTime = 0;
             this.timerFinishTime = 0;
@@ -173,12 +177,12 @@ export class TimingComponent implements OnInit, OnDestroy{
             this.stateLabel = 'Ready';
             this.addRaceEvent(res, RaceEventType.Point)
             this.lap++;
-            this.lapSteps[this.lap-1].label = new Date(res.time).toISOString().substring(11,23);
+            this.lapSteps[this.lap-1].label = new Date(res.time || 0).toISOString().substring(11,23);
             break;
           case 'finish':
             this.stateLabel = 'Ready';
             this.addRaceEvent(res, RaceEventType.Finish)
-            this.timerFinishTime = res.time;
+            this.timerFinishTime = res.time || 0;
             this.timerStartTime = 0;
             this.started = false;
             if (this.autoStandBy) {this.setReady();}
@@ -226,12 +230,18 @@ export class TimingComponent implements OnInit, OnDestroy{
   }
 
   selectRacer(e: any) {
-    this.timecontrolAPIService.sendComand( 'set_racer', [+e.data.num]);
+    // this.timecontrolAPIService.sendComand( 'set_racer', [+e.data.num]);
+    const command: TimecontrolCommand = {
+      cmd: 'set_racer',
+      value: [+e.data.num],
+    }
+    this.timecontrolInputStream$.next(command);
     this.racerSelectVisible = false;
   }
 
   setReady() {
-    this.timecontrolAPIService.sendComand(this.stateLabel === 'Ready' ? '^' : 'set_ready');
+    // this.timecontrolAPIService.sendComand(this.stateLabel === 'Ready' ? '^' : 'set_ready');
+    this.timecontrolInputStream$.next({cmd: this.stateLabel === 'Ready' ? '^' : 'set_ready'});
   }
 
   ngOnDestroy() {

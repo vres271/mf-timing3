@@ -3,6 +3,7 @@ import { UsersComponent } from './users/users.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GeneralComponent } from './general/general.component';
 import { SerialComponent } from './serial/serial.component';
+import { DriversComponent } from './drivers/drivers.component';
 
 @Component({
   selector: 'app-admin',
@@ -21,6 +22,9 @@ export class AdminComponent implements OnInit {
     if (this.router.url === '/admin/users') {
       this.currentComponent = UsersComponent;
       this.header = 'Users';
+    } else if(this.router.url === '/admin/drivers') {
+      this.currentComponent = DriversComponent;
+      this.header = 'Drivers';
     } else if(this.router.url === '/admin/serial') {
       this.currentComponent = SerialComponent;
       this.header = 'Serial Port';

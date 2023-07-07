@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { SerialService } from 'src/app/core/services/serial.service';
-import { LogItemsService } from '../services/log-items.service';
+import { SerialService } from 'src/app/core/services/drivers/serial.service';
+import { LogItemsService } from '../../../shared/services/log-items.service';
+import { DriverConnectionState } from './driver.service';
 
 export enum MenuState {
     MainMenu,
@@ -17,7 +18,9 @@ export enum RaceState {
     providedIn: 'root'
 })
 export class Timecontrol3MockService extends SerialService{
-
+    override id = 3;
+    override name = 'Timecontrol3 Serial Port Emulator';
+  
     constructor(logItemsService: LogItemsService) { 
         super(logItemsService)
         console.info('Using Timecontroll3 Mock Service')
@@ -33,16 +36,22 @@ export class Timecontrol3MockService extends SerialService{
     bootTime = 0;
 
     response(command:string, values:any[] = []) {
-        this.inputMessages$.next(`api ${command} ${values.join(' ')}`);
+        this.outputStream$.next(`api ${command} ${values.join(' ')}`);
     }
 
     override start() {
         console.log('Timecontroll3 Mock starting...')
         this.connected = true;
+        this.connectionState = DriverConnectionState.Connected;
         setTimeout(()=>{
             this.bootTime = new Date().getTime();
             this.response('connect_timecontrol3');
         },1000)
+
+        this.inputStream$.subscribe(message => {
+            this.send(message);
+        })      
+
     }
 
     get time():number {

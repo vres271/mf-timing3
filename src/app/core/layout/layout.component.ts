@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { TimecontrolAPIService } from '../services/timecontrol-api.service';
+import { TimecontrolAPIService } from '../services/drivers/timecontrol-api.service';
 
 @Component({
   selector: 'app-layout',
