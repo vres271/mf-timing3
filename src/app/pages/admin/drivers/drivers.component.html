@@ -36,15 +36,17 @@
         #table
         [value]="ioLogItems" 
         [paginator]="true"
-        [rows]="40"     
+        [rows]="20"     
         [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         [rowsPerPageOptions]="[20, 40, 100, 500, 1000]"      
         styleClass="p-datatable-sm" >
         <ng-template pTemplate="body" let-item >
             <tr [pSelectableRow]="item">
-                <td style="width: 10px; padding: 0;" [ngStyle]="{'background-color': item.direction === 1 ? 'DodgerBlue' : 'DarkOrange'}"></td>
-                <td>{{ dateString(item.t) }}</td>
+                <td style="width: 30px;"  [ngStyle]="{'background-color': item.direction === 1 ? '#1e90ff36' : '#ff8c0030'}">
+                    <i [class]="item.direction === 1 ? 'pi pi-angle-double-right' : 'pi  pi-angle-double-left'" ></i>
+                </td>
+                <td style="width: 80px;">{{ dateString(item.t) }}</td>
                 <td>{{ item.data }}</td>
             </tr>
         </ng-template>

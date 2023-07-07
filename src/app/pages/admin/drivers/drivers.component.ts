@@ -34,12 +34,12 @@ export class DriversComponent  implements OnInit{
   openIOLogSidebar() {
     this.ioLogItems = this.selectedItem.ioLog.input
       .concat(this.selectedItem.ioLog.output)
-      .sort((a, b) => a.t - b.t)
+      .sort((a, b) => b.t - a.t)
     this.ioVisible = true;
   }
 
   dateString(t: number) {
-    return new Date(t).toISOString();
+    return new Date(t).toLocaleTimeString();
   }
 
 }

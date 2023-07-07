@@ -32,6 +32,10 @@ export class SerialService extends DriverService<string, string> implements Driv
 
   start() {
     this._start();
+    this.connectionState = DriverConnectionState.Connected;
+    this.inputStream$.subscribe(message => {
+      this.send(message);
+    })     
   }
 
   send(message: string) {
@@ -45,14 +49,12 @@ export class SerialService extends DriverService<string, string> implements Driv
   }
 
   async requestPort() {
-
     const port = await this.serial.requestPort().catch((e:any) => console.warn('Serial port requestPort error', e));
-    console.log(port, port.getInfo());
     this.port = port;
-
   }
 
   async openPort() {
+    if (!this.port) return;
     const OpenRes = await this.port.open({ 
       baudRate: 9600 , 
       bufferSize: 2048,
@@ -62,7 +64,6 @@ export class SerialService extends DriverService<string, string> implements Driv
       flowControl  : "none",
     });
     console.log('OpenRes', OpenRes, this.port.getInfo());
-
   }
 
   async closePort() {
@@ -71,7 +72,7 @@ export class SerialService extends DriverService<string, string> implements Driv
   }
 
   async read() {
-
+    if (!this.port) return;
     const textDecoder = new TextDecoderStream();
     const readableStreamClosed = this.port.readable.pipeTo(textDecoder.writable);
 
