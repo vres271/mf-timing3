@@ -39,18 +39,21 @@ export class Timecontrol3MockService extends SerialService{
         this.outputStream$.next(`api ${command} ${values.join(' ')}`);
     }
 
-    override start() {
+    override connect() {
+
         console.log('Timecontroll3 Mock starting...')
         this.connected = true;
-        this.connectionState = DriverConnectionState.Connected;
         setTimeout(()=>{
             this.bootTime = new Date().getTime();
             this.response('connect_timecontrol3');
+            super.startLogging();
+            this.connectionState = DriverConnectionState.Connected;
         },1000)
 
-        this.inputStream$.subscribe(message => {
+        this.subs.push(this.inputStream$.subscribe(message => {
+            console.log('this.inputStream$', message);
             this.send(message);
-        })      
+        }));
 
     }
 

@@ -141,7 +141,7 @@ export class SerialComponent implements OnInit{
   }
 
   startService() {
-    this.serialService.start();
+    this.serialService.connect();
   }
 
   startAPIService() {

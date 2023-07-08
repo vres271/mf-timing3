@@ -6,7 +6,7 @@
     [showCurrentPageReport]="true"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rowsPerPageOptions]="[20, 50, 100, 500, 1000]"      
-    [globalFilterFields]="['num','userFullName']"  selectionMode="single"  [(selection)]="selectedItem" (onRowSelect)="openIOLogSidebar()" (onRowUnselect)="ioVisible = false"
+    [globalFilterFields]="['num','userFullName']"  selectionMode="single"  [(selection)]="selectedItem" (onRowSelect)="openIOLogSidebar()" (onRowUnselect)="closeIOLogSidebar()"
     styleClass="p-datatable-sm" >
     <ng-template pTemplate="caption">
         <span class="p-input-icon-left ml-auto">
@@ -29,7 +29,7 @@
     </ng-template>        
 </p-table> 
 
-<p-sidebar [visible]="ioVisible" position="right" [modal]="false" (onHide)="ioVisible=false" styleClass="p-sidebar-lg">
+<p-sidebar [visible]="ioVisible" position="right" [modal]="false" (onHide)="closeIOLogSidebar()" styleClass="p-sidebar-lg">
     <ng-template pTemplate="header">Driver IO</ng-template>
     <ng-template pTemplate="content">
         <p-table 

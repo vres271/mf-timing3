@@ -15,7 +15,6 @@ export enum SerialMessageDirection {
 export class SerialService extends DriverService<string, string> implements Driver<string, string>{
   id = 1;
   name = 'Serial Port';
-  connectionState = DriverConnectionState.Disconnected
 
   nav: any;
   serial: any;
@@ -30,12 +29,12 @@ export class SerialService extends DriverService<string, string> implements Driv
 
   }
 
-  start() {
+  override connect() {
     this._start();
-    this.connectionState = DriverConnectionState.Connected;
-    this.inputStream$.subscribe(message => {
+    this.subs.push(this.inputStream$.subscribe(message => {
       this.send(message);
-    })     
+    }))
+    super.connect()
   }
 
   send(message: string) {
@@ -63,12 +62,10 @@ export class SerialService extends DriverService<string, string> implements Driv
       parity : "none",
       flowControl  : "none",
     });
-    console.log('OpenRes', OpenRes, this.port.getInfo());
   }
 
   async closePort() {
     const closeRes = await this.port.close();
-    console.log('closeRes', closeRes);
   }
 
   async read() {
@@ -88,7 +85,6 @@ export class SerialService extends DriverService<string, string> implements Driv
               break;
             }
             if (value) {
-              // console.log(value);
               this.outputStream$.next(value);
               this.log(value, SerialMessageDirection.Input);
             }
@@ -106,7 +102,6 @@ export class SerialService extends DriverService<string, string> implements Driv
     const encoded = encoder.encode(message+"\n");
     const writeRes = await writer.write(encoded);
     this.log(message, SerialMessageDirection.Output);
-    console.log('send:', message);
     writer.releaseLock();
   }
 

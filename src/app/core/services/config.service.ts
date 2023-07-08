@@ -54,7 +54,6 @@ export class ConfigService {
   }
 
   get():BehaviorSubject<Config|null> {
-    console.log(this.item)
     this.item$.next(this.item);
     return this.item$;
   }

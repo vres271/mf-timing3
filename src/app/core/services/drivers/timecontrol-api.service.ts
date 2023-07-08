@@ -24,7 +24,6 @@ export interface TimecontrolCommand {
 export class TimecontrolAPIService extends DriverService<TimecontrolCommand, TimecontrolMessage>{
   id = 2;
   name = 'Timecontrol3 Device';
-  connectionState: DriverConnectionState = DriverConnectionState.Disconnected;
 
   connected = false;
   serialService: SerialService;
@@ -46,7 +45,7 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
       })
   }
 
-  connect() {
+  override connect() {
     if (this.connected) return
     this.connected = false;
     this.connectionState = DriverConnectionState.Disconnected;
@@ -65,7 +64,7 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
           }
           if(res.command === 'connect_timecontrol3') {
             this.connected = true;
-            this.connectionState = DriverConnectionState.Connected;
+            super.connect();
           }
           this.outputStream$.next(res);
         }
@@ -75,7 +74,7 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
       this.sendComand(command.cmd, command.value);
     })
 
-    this.serialService.start();
+    this.serialService.connect();
     
   }
 
@@ -84,7 +83,6 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
   }
 
   sendText(message: string) {
-    // this.serialService.send(message);
     this.serialService.getInputStream().next(message);
   }
 
