@@ -14,6 +14,11 @@ export const DriverConnectionStateNames:Record<number, String > = {
   [DriverConnectionState.Connected]: 'Connected',
 }
 
+export enum DriverValueDirection {
+  Input = 1,
+  Output,
+}
+
 export  abstract class Driver<InputType, OutputType> {
   id: number;
   name: string;
@@ -63,12 +68,20 @@ export  abstract class DriverService<InputType, OutputType> {
     return this.outputStream$;
   }
 
+  input(value: InputType) {
+    this.inputStream$.next(value);
+  }
+
+  output():Subject<OutputType> {
+    return this.outputStream$;
+  }
+
   startLogging() {
     this.subs.push(this.inputStream$.subscribe(res => {
-      this.ioLog.input.push({t: new Date().getTime(), data: JSON.stringify(res), direction: 0})
+      this.ioLog.input.push({t: new Date().getTime(), data: JSON.stringify(res), direction: DriverValueDirection.Input})
     }))
     this.subs.push(this.outputStream$.subscribe(res => {
-      this.ioLog.output.push({t: new Date().getTime(), data: JSON.stringify(res), direction: 1})
+      this.ioLog.output.push({t: new Date().getTime(), data: JSON.stringify(res), direction: DriverValueDirection.Output})
     }))
   }
 

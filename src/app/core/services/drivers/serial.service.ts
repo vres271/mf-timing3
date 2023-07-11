@@ -1,7 +1,7 @@
 import { LogItemDTO, LogItemType } from 'src/app/shared/models/log-item.model';
 import { LogItemsService } from '../../../shared/services/log-items.service';
 import { Injectable, Output } from '@angular/core';
-import { Subject, switchMap } from 'rxjs';
+import { Subject, Subscription, switchMap } from 'rxjs';
 import { Driver, DriverConnectionState, DriverService } from './driver.service';
 
 export enum SerialMessageDirection {
@@ -20,21 +20,39 @@ export class SerialService extends DriverService<string, string> implements Driv
   serial: any;
   port: any;
 
+  textDecoder: any;
+  readableStreamClosed: any;
+  reader: any;
+
+  textEncoder: any;
+  writer: any;
+  writableStreamClosed: any;
+
   constructor(
     public logItemsService: LogItemsService
   ) {
     super();
     this.nav = navigator;
     this.serial = this.nav.serial;
-
   }
 
   override connect() {
-    this._start();
-    this.subs.push(this.inputStream$.subscribe(message => {
+    this._start()
+    this.subs.forEach(sub => sub.unsubscribe())
+    this.subs.push(this.output().subscribe(message => {
       this.send(message);
     }))
-    super.connect()
+    super.connect();
+  }
+
+  override async disconnect() {
+    this.reader.cancel();
+    await this.readableStreamClosed.catch(() => { /* Ignore the error */ });
+    // this.writer.close();
+    // await this.writableStreamClosed.catch(() => { /* Ignore the error */ });
+    // console.log('writer.close')
+    await this.port.close();
+    super.disconnect()
   }
 
   send(message: string) {
@@ -70,39 +88,32 @@ export class SerialService extends DriverService<string, string> implements Driv
 
   async read() {
     if (!this.port) return;
-    const textDecoder = new TextDecoderStream();
-    const readableStreamClosed = this.port.readable.pipeTo(textDecoder.writable);
+    this.textDecoder = new TextDecoderStream();
+    this.readableStreamClosed = this.port.readable.pipeTo(this.textDecoder.writable);
+    this.reader = this.textDecoder.readable.getReader();
 
-    while (this.port.readable) {
-      const reader = textDecoder.readable.getReader();
-      // const reader = this.port.readable.getReader();
-      try {
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) {
-              // Allow the serial port to be closed later.
-              reader.releaseLock();
-              break;
-            }
-            if (value) {
-              this.outputStream$.next(value);
-              this.log(value, SerialMessageDirection.Input);
-            }
-          }
-        } catch (error) {
-          // TODO: Handle non-fatal read error.
-          console.warn('Serial non-fatal read error', error);
-        }
+    while (this.port.readable && this.connectionState === DriverConnectionState.Connected) {
+      const { value, done } = await  this.reader.read();
+      if (done) {
+        // Allow the serial port to be closed later.
+        this.reader.releaseLock();
+        break;
+      }
+      if (value) {
+        this.outputStream$.next(value);
+        // this.log(value, SerialMessageDirection.Input);
+      }
     }
   }
 
   async write(message: string) {
-    const encoder = new TextEncoder();
-    const writer = this.port.writable.getWriter();
-    const encoded = encoder.encode(message+"\n");
-    const writeRes = await writer.write(encoded);
-    this.log(message, SerialMessageDirection.Output);
-    writer.releaseLock();
+    this.textEncoder = new TextEncoder();
+    this.writer = this.port.writable.getWriter();
+    // this.writableStreamClosed = this.textEncoder.readable.pipeTo(this.port.writable);
+    const encoded = this.textEncoder.encode(message+"\n");
+    const writeRes = await this.writer.write(encoded);
+    // this.log(message, SerialMessageDirection.Output);
+    this.writer.releaseLock();
   }
 
   log(message: string, direction: SerialMessageDirection) {

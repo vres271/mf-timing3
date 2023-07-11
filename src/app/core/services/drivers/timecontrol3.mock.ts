@@ -51,7 +51,6 @@ export class Timecontrol3MockService extends SerialService{
         },1000)
 
         this.subs.push(this.inputStream$.subscribe(message => {
-            console.log('this.inputStream$', message);
             this.send(message);
         }));
 

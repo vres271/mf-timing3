@@ -1,5 +1,5 @@
 import { Subscription, race } from 'rxjs';
-import { DriverConnectionStateNames } from './../../../core/services/drivers/driver.service';
+import { DriverConnectionStateNames, DriverValueDirection } from './../../../core/services/drivers/driver.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DriverService } from 'src/app/core/services/drivers/driver.service';
 import { SerialService } from 'src/app/core/services/drivers/serial.service';
@@ -18,6 +18,9 @@ export class DriversComponent  implements OnInit, OnDestroy{
   ioVisible = false
   ioLogItems: any = [];
   subs: Subscription[] = [];
+
+  DriverValueDirection = DriverValueDirection
+  valueToSend: string;
 
   constructor(
     private serialService: SerialService,
@@ -63,6 +66,16 @@ export class DriversComponent  implements OnInit, OnDestroy{
 
   dateString(t: number) {
     return new Date(t).toLocaleTimeString();
+  }
+
+  sendValue(value: string) {
+    let parsed: any;
+    try {
+      parsed = JSON.parse(value);
+    } catch (error) {
+      parsed = value;
+    }
+    this.selectedItem.input(parsed);
   }
 
 }

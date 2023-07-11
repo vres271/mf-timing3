@@ -25,7 +25,6 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
   id = 2;
   name = 'Timecontrol3 Device';
 
-  connected = false;
   serialService: SerialService;
 
   constructor(
@@ -41,15 +40,18 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
         } else {
           this.serialService = this._serialService;
         }
-
       })
+  }
+
+  get connected() {
+    return this.connectionState === DriverConnectionState.Connected
   }
 
   override connect() {
     if (this.connected) return
-    this.connected = false;
     this.connectionState = DriverConnectionState.Disconnected;
-    this.serialService.getOutputStream()
+    console.log('Connecting ', this.name ,'to', this.serialService.name);
+    this.serialService.output()
       .subscribe(message => {
         const splitted = message.trim().replace('\n', '').replace('\r', '').split(' ');
         if(splitted[0] === 'api') {
@@ -63,7 +65,6 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
             res.laps = +splitted?.[4];
           }
           if(res.command === 'connect_timecontrol3') {
-            this.connected = true;
             super.connect();
           }
           this.outputStream$.next(res);
@@ -78,12 +79,17 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
     
   }
 
+  override disconnect() {
+    this.serialService.disconnect();
+    super.disconnect()
+  }
+
   sendComand(cmd: string, value?: number[]) {
     this.sendText(`${cmd}` + (value?.length ? (' ' + value.join(' ')) : '') + `;`);
   }
 
   sendText(message: string) {
-    this.serialService.getInputStream().next(message);
+    this.serialService.input(message);
   }
 
 }

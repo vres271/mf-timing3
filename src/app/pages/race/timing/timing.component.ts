@@ -1,3 +1,4 @@
+import { SerialService } from './../../../core/services/drivers/serial.service';
 import { UserDTO } from './../../../shared/models/user.model';
 import { TimecontrolAPIService, TimecontrolCommand, TimecontrolMessage } from '../../../core/services/drivers/timecontrol-api.service';
 import { RacesService } from 'src/app/shared/services/races.service';
@@ -14,6 +15,7 @@ import { Item } from 'src/app/shared/models/items.model';
 import { Timecontrol3MockService } from 'src/app/core/services/drivers/timecontrol3.mock';
 import { Config, ConfigService } from 'src/app/core/services/config.service';
 import { UsersService } from 'src/app/shared/services/users.service';
+import { DriverConnectionState } from 'src/app/core/services/drivers/driver.service';
 
 @Component({
   selector: 'app-timing',
@@ -75,8 +77,6 @@ export class TimingComponent implements OnInit, OnDestroy{
   autoStandBy = true;
   connecting = false;
 
-  timecontrolInputStream$: Subject<any>
-
   constructor(
     private racesService: RacesService,
     private racersService: RacersService,
@@ -87,6 +87,7 @@ export class TimingComponent implements OnInit, OnDestroy{
     public timecontrol3MockService: Timecontrol3MockService,
     private configService: ConfigService,
     private confirmationService: ConfirmationService,
+    private serialService: SerialService,
     ) {
 
   }
@@ -125,15 +126,13 @@ export class TimingComponent implements OnInit, OnDestroy{
           this.raceEvents = raceEvents.filter(e => e.raceId === this.race?.id).sort((a,b) => (b.id - a.id))
         }))
       
-      this.timecontrolInputStream$ = this.timecontrolAPIService.getInputStream();
       this.subs.push(this.configService.get().pipe(
         tap(config => {
           if (config) {
             this.config = config;
           }
         }),        
-        switchMap(() => this.timecontrolAPIService.getOutputStream()),
-
+        switchMap(() => this.timecontrolAPIService.output()),
       ).subscribe(res => {
         switch (res?.command) {
           case 'ready':
@@ -211,7 +210,28 @@ export class TimingComponent implements OnInit, OnDestroy{
 
   connectToTC() {
     this.timecontrolAPIService.connect();
-    this.connecting = true;
+    // this.connecting = true;
+  }
+
+  disconnectFromTC() {
+    this.timecontrolAPIService.disconnect();
+  }
+
+  connectToComPort() {
+    this.serialService.connect();
+    // this.connecting = true;
+  }
+
+  disconnectFromComPort() {
+    this.serialService.disconnect();
+  }
+
+  sendToComPort() {
+    this.serialService.input('test mess');
+  }
+
+  get isConnectedSerial() {
+    return this.serialService.connectionState === DriverConnectionState.Connected;
   }
 
   addRaceEvent(res: any, type: RaceEventType) {
@@ -235,13 +255,13 @@ export class TimingComponent implements OnInit, OnDestroy{
       cmd: 'set_racer',
       value: [+e.data.num],
     }
-    this.timecontrolInputStream$.next(command);
+    this.timecontrolAPIService.input(command);
     this.racerSelectVisible = false;
   }
 
   setReady() {
     // this.timecontrolAPIService.sendComand(this.stateLabel === 'Ready' ? '^' : 'set_ready');
-    this.timecontrolInputStream$.next({cmd: this.stateLabel === 'Ready' ? '^' : 'set_ready'});
+    this.timecontrolAPIService.input({cmd: this.stateLabel === 'Ready' ? '^' : 'set_ready'});
   }
 
   ngOnDestroy() {
