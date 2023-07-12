@@ -19,7 +19,7 @@ export enum DriverValueDirection {
   Output,
 }
 
-export  abstract class Driver<InputType, OutputType> {
+export  interface Driver<InputType, OutputType> {
   id: number;
   name: string;
   connectionState: DriverConnectionState;
@@ -27,8 +27,8 @@ export  abstract class Driver<InputType, OutputType> {
   inputStream$: Subject<InputType>;
   outputStream$: Subject<OutputType>;
 
-  connect() {}
-  disconnect() {}
+  connect():void;
+  disconnect():void;
 
 }
 

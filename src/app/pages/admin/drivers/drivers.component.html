@@ -32,9 +32,10 @@
 <p-sidebar [visible]="ioVisible" position="right" [modal]="false" (onHide)="closeIOLogSidebar()" styleClass="p-sidebar-lg">
     <ng-template pTemplate="header">Driver IO</ng-template>
     <ng-template pTemplate="content">
-        <div class="flex btn-bar">
+        <div class="flex-row flex-start">
+            <p-selectButton [options]="directionOptions" [(ngModel)]="sendDirection" optionLabel="label" optionValue="value" ></p-selectButton>
             <input type="text" [(ngModel)]="valueToSend" pInputText style="width: 60%" />
-            <p-button label="Send" (click)="sendValue(valueToSend)" styleClass="p-button-secondary"></p-button>
+            <p-button label="Send" (click)="sendValue(valueToSend)" styleClass="p-button-secondary" [style]="{'margin-left': '8px'}" ></p-button>
         </div>
         <p-table 
         #table

@@ -70,6 +70,9 @@ app-layout{
 .flex-grow-4 {
     flex-grow: 4;
 }
+.flex-start {
+    justify-content: flex-start;
+}
 
 .start-step{
     border: 1px solid #8dc6ff69;

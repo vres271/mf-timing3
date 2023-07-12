@@ -20,6 +20,7 @@ import { UsersEditorComponent } from './users/users-editor/users-editor.componen
 import { SerialComponent } from './serial/serial.component';
 import { TabViewModule } from 'primeng/tabview';
 import { DriversComponent } from './drivers/drivers.component';
+import { SelectButtonModule } from 'primeng/selectbutton';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { DriversComponent } from './drivers/drivers.component';
     DateTimeModule,
     ItemsPanelModule,
     TabViewModule,
+    SelectButtonModule,
   ],
   bootstrap: [AdminComponent]
 })

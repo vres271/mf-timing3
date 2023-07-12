@@ -61,28 +61,30 @@ export class Timecontrol3MockService extends SerialService{
     }
 
     override send(message: string) {
-        const splitted = message.trim().replace(';', '').replace('\n', '').replace('\r', '').split(' ');
-        const cmd = splitted[0];
-        const values = splitted.splice(1);
+        const splitted = String(message)?.trim()?.replace(';', '')?.replace('\n', '')?.replace('\r', '')?.split(' ');
+        const cmd = splitted?.[0];
+        const values = splitted?.splice(1);
         if(cmd) {
-            if (cmd === 'set_ready') {
-                if (this.raceState !== RaceState.Started) {
-                    this.menuState = MenuState.Race;
-                    this.raceState = RaceState.Ready;
-                    this.response('ready',[this.racer, this.time, this.laps])
+            setTimeout(()=>{
+                if (cmd === 'set_ready') {
+                    if (this.raceState !== RaceState.Started) {
+                        this.menuState = MenuState.Race;
+                        this.raceState = RaceState.Ready;
+                        this.response('ready',[this.racer, this.time, this.laps])
+                    }
+                } else if (cmd === '^') {
+                    if (this.raceState !== RaceState.Started) {
+                        this.menuState = this.menuState === MenuState.MainMenu ? MenuState.Race : MenuState.MainMenu;
+                        this.raceState = this.raceState === RaceState.StandBy ? RaceState.Ready : RaceState.StandBy;
+                        this.response('in_menu',[this.racer, this.time])
+                    }
+                } else if (cmd === 'set_racer') {
+                    if (this.menuState === MenuState.Race && this.raceState === RaceState.Ready) {
+                        this.racer = +values[0];
+                        this.response('set_racer',[this.racer, this.time])
+                    }
                 }
-            } else if (cmd === '^') {
-                if (this.raceState !== RaceState.Started) {
-                    this.menuState = this.menuState === MenuState.MainMenu ? MenuState.Race : MenuState.MainMenu;
-                    this.raceState = this.raceState === RaceState.StandBy ? RaceState.Ready : RaceState.StandBy;
-                    this.response('in_menu',[this.racer, this.time])
-                }
-            } else if (cmd === 'set_racer') {
-                if (this.menuState === MenuState.Race && this.raceState === RaceState.Ready) {
-                    this.racer = +values[0];
-                    this.response('set_racer',[this.racer, this.time])
-                }
-            }
+            },100)
         }        
     }
 

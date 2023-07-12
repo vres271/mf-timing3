@@ -21,6 +21,11 @@ export class DriversComponent  implements OnInit, OnDestroy{
 
   DriverValueDirection = DriverValueDirection
   valueToSend: string;
+  directionOptions = [
+    {value: DriverValueDirection.Input, label: 'Input'},
+    {value: DriverValueDirection.Output, label: 'Output'},
+  ]
+  sendDirection = DriverValueDirection.Input
 
   constructor(
     private serialService: SerialService,
@@ -42,10 +47,16 @@ export class DriversComponent  implements OnInit, OnDestroy{
 
   openIOLogSidebar() {
 
-    this.subs.push(race(
-        this.selectedItem.getInputStream(),
-        this.selectedItem.getOutputStream(),
-      )
+    this.subs.push(
+      this.selectedItem.getOutputStream()
+      .subscribe(() => {
+        this.ioLogItems = this.selectedItem.ioLog.input
+          .concat(this.selectedItem.ioLog.output)
+          .sort((a, b) => b.t - a.t)
+      }))
+
+    this.subs.push(
+      this.selectedItem.getInputStream()
       .subscribe(() => {
         this.ioLogItems = this.selectedItem.ioLog.input
           .concat(this.selectedItem.ioLog.output)
@@ -65,7 +76,7 @@ export class DriversComponent  implements OnInit, OnDestroy{
   }
 
   dateString(t: number) {
-    return new Date(t).toLocaleTimeString();
+    return (new Date(t).toLocaleTimeString()) + '.' + (new Date(t).toISOString().substr(20,3));
   }
 
   sendValue(value: string) {
@@ -75,7 +86,11 @@ export class DriversComponent  implements OnInit, OnDestroy{
     } catch (error) {
       parsed = value;
     }
-    this.selectedItem.input(parsed);
+    if (this.sendDirection === DriverValueDirection.Input) {
+      this.selectedItem.input(parsed);
+    } else {
+      this.selectedItem.getOutputStream().next(parsed);
+    }
   }
 
 }

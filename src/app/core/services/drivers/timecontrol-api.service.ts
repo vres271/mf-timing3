@@ -53,7 +53,7 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
     console.log('Connecting ', this.name ,'to', this.serialService.name);
     this.serialService.output()
       .subscribe(message => {
-        const splitted = message.trim().replace('\n', '').replace('\r', '').split(' ');
+        const splitted = String(message)?.trim()?.replace('\n', '')?.replace('\r', '')?.split(' ');
         if(splitted[0] === 'api') {
           const res:TimecontrolMessage = {
             command: splitted?.[1],
