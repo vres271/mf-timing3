@@ -6,7 +6,7 @@ import { ConfigService } from '../config.service';
 import { DriverConnectionState, DriverService } from './driver.service';
 
 export interface TimecontrolMessage {
-    command: string;
+    command: TimecontrolMessageCommand;
     racer?: number;
     time?: number;
     laps?: number;
@@ -18,6 +18,16 @@ export interface TimecontrolCommand {
   value?: number[]
 }
 
+export enum TimecontrolMessageCommand {
+  CONNECTED = 'connect_timecontrol3',
+  READY = 'ready',
+  IN_MENU = 'in_menu',
+  SET_RACER = 'set_racer',
+  START = 'start',
+  LAP = 'lap',
+  FINISH = 'finish',
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,6 +36,8 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
   name = 'Timecontrol3 Device';
 
   serialService: SerialService;
+  connected$ = new Subject<boolean>();
+
 
   constructor(
     private _serialService: SerialService,
@@ -56,7 +68,7 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
         const splitted = String(message)?.trim()?.replace('\n', '')?.replace('\r', '')?.split(' ');
         if(splitted[0] === 'api') {
           const res:TimecontrolMessage = {
-            command: splitted?.[1],
+            command: splitted?.[1] as TimecontrolMessageCommand,
             racer: +splitted?.[2],
             time: +splitted?.[3],
             raw: message,
@@ -64,8 +76,9 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
           if(splitted?.[4]) {
             res.laps = +splitted?.[4];
           }
-          if(res.command === 'connect_timecontrol3') {
+          if(res.command === TimecontrolMessageCommand.CONNECTED) {
             super.connect();
+            this.connected$.next(true);
           }
           this.outputStream$.next(res);
         }

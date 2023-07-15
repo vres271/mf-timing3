@@ -24,6 +24,8 @@ import { StepsModule } from 'primeng/steps';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TabViewModule } from 'primeng/tabview';
 import { CheckboxModule } from 'primeng/checkbox';
+import { TimingService } from 'src/app/shared/services/timing.service';
+import { AsTimerStringPipe } from 'src/app/shared/pipes/as-timer-string.pipe';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,7 @@ import { CheckboxModule } from 'primeng/checkbox';
     RacesComponent,
     RacesEditorComponent,
     TimingComponent,
+    AsTimerStringPipe,
   ],
   imports: [
     CommonModule,
@@ -56,6 +59,7 @@ import { CheckboxModule } from 'primeng/checkbox';
     RacersService,
     RacesService,
     RaceEventsService,
+    TimingService,
   ],
 
 })

@@ -13,7 +13,7 @@
         </div>
         <div class="flex-grow-3"  [style]="{color: stateLabel!=='Ready' ? 'grey' : ''}">
             {{race.name}}
-            <div *ngIf="laps">Кругов: {{laps}} | {{timer}}</div>
+            <div *ngIf="laps">Кругов: {{laps}} | <span *ngIf="timerMonitor$ | async as tm">{{tm?.raceTime | asTimerString}} | {{tm?.lapTime  | asTimerString}}</span></div>
         </div>
         <p-button 
             *ngIf="isTCMockEnabled"

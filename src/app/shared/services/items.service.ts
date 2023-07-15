@@ -20,6 +20,10 @@ export abstract class ItemsService<ItemType, DTOType> {
     return this.items$;
   }
 
+  getCachedById(id: number):ItemType {
+    return this.dataService.items[this.entityType].find(racer => racer.id === id);
+  }
+
   load():Observable<DTOType[]> {
     return this.apiService.get<DTOType>(this.entityType)
       .pipe(tap((dtos: DTOType[] ) => {

@@ -1,6 +1,6 @@
 import { SerialService } from './../../../core/services/drivers/serial.service';
 import { UserDTO } from './../../../shared/models/user.model';
-import { TimecontrolAPIService, TimecontrolCommand, TimecontrolMessage } from '../../../core/services/drivers/timecontrol-api.service';
+import { TimecontrolAPIService, TimecontrolCommand, TimecontrolMessage, TimecontrolMessageCommand } from '../../../core/services/drivers/timecontrol-api.service';
 import { RacesService } from 'src/app/shared/services/races.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject, Subscription, forkJoin, map, switchMap, tap } from 'rxjs';
@@ -16,6 +16,7 @@ import { Timecontrol3MockService } from 'src/app/core/services/drivers/timecontr
 import { Config, ConfigService } from 'src/app/core/services/config.service';
 import { UsersService } from 'src/app/shared/services/users.service';
 import { DriverConnectionState } from 'src/app/core/services/drivers/driver.service';
+import { TimerMonitor, TimingService } from 'src/app/shared/services/timing.service';
 
 @Component({
   selector: 'app-timing',
@@ -77,6 +78,8 @@ export class TimingComponent implements OnInit, OnDestroy{
   autoStandBy = true;
   connecting = false;
 
+  timerMonitor$: Observable<TimerMonitor>
+
   constructor(
     private racesService: RacesService,
     private racersService: RacersService,
@@ -88,6 +91,7 @@ export class TimingComponent implements OnInit, OnDestroy{
     private configService: ConfigService,
     private confirmationService: ConfirmationService,
     private serialService: SerialService,
+    private timingService: TimingService,
     ) {
 
   }
@@ -109,8 +113,15 @@ export class TimingComponent implements OnInit, OnDestroy{
           this.races = races;
           this.racesMenu = races.map(race => ({label: race.name, routerLink: '/race/timing/' + race.id}))
           this.race = races?.find(r => r.id === +params['raceId']);
+
+          if (this.race) {
+            this.timingService.setRace(this.race);
+          }
+
         }
       ));
+
+      this.timerMonitor$ = this.timingService.timer.getMonitor();
 
       this.subs.push(
       this.racersService.get()
@@ -165,7 +176,7 @@ export class TimingComponent implements OnInit, OnDestroy{
             break;
           case 'start':
             this.stateLabel = 'Ready';
-            this.addRaceEvent(res, RaceEventType.Start)
+            //this.addRaceEvent(res, RaceEventType.Start)
             this.timerStartTime = new Date().getTime();
             this.timerFinishTime = 0;
             this.lapSteps.forEach(step => {step.label = '00:00:00.000'})
@@ -174,13 +185,13 @@ export class TimingComponent implements OnInit, OnDestroy{
             break;
           case 'lap':
             this.stateLabel = 'Ready';
-            this.addRaceEvent(res, RaceEventType.Point)
+            //this.addRaceEvent(res, RaceEventType.Point)
             this.lap++;
             this.lapSteps[this.lap-1].label = new Date(res.time || 0).toISOString().substring(11,23);
             break;
           case 'finish':
             this.stateLabel = 'Ready';
-            this.addRaceEvent(res, RaceEventType.Finish)
+            //this.addRaceEvent(res, RaceEventType.Finish)
             this.timerFinishTime = res.time || 0;
             this.timerStartTime = 0;
             this.started = false;
@@ -252,7 +263,7 @@ export class TimingComponent implements OnInit, OnDestroy{
   selectRacer(e: any) {
     // this.timecontrolAPIService.sendComand( 'set_racer', [+e.data.num]);
     const command: TimecontrolCommand = {
-      cmd: 'set_racer',
+      cmd: TimecontrolMessageCommand.SET_RACER,
       value: [+e.data.num],
     }
     this.timecontrolAPIService.input(command);
@@ -399,6 +410,10 @@ export class TimingComponent implements OnInit, OnDestroy{
           }
         })
 
+  }
+
+  toTimerString(t: number | undefined) {
+    return new Date(t || 0).toISOString().substring(11,23);    
   }
 
 }

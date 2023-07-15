@@ -5,8 +5,9 @@ import { RacersComponent } from './racers/racers.component';
 import { MenuItem } from 'primeng/api';
 import { RacesComponent } from './races/races.component';
 import { RacesService } from 'src/app/shared/services/races.service';
-import { forkJoin } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { TimingComponent } from './timing/timing.component';
+import { TimerMonitor, TimingService } from 'src/app/shared/services/timing.service';
 
 @Component({
   selector: 'app-race',
@@ -18,15 +19,20 @@ export class RaceComponent  implements OnInit{
   header = 'General';
   menuItems: MenuItem[] = [];
   
+  timerMonitor$: Observable<TimerMonitor>;
+
   constructor(
     public router: Router, 
     public activatedRoute: ActivatedRoute,
     private racersService: RacersService,
     private racesService: RacesService,
+    private timingService: TimingService,
   ) {
   }
 
   ngOnInit() {
+    this.timerMonitor$ = this.timingService.timer.getMonitor();
+
     if (this.router.url === '/race/racers') {
       this.currentComponent = RacersComponent;
       this.header = 'Racers';
