@@ -1,6 +1,6 @@
 import { RacersService } from './racers.service';
 import { Injectable } from '@angular/core';
-import { TimecontrolAPIService, TimecontrolMessage, TimecontrolMessageCommand } from 'src/app/core/services/drivers/timecontrol-api.service';
+import { TimecontrolAPIService, TimecontrolInputCommand, TimecontrolInputDTO, TimecontrolOutputCommand, TimecontrolOutputDTO } from 'src/app/core/services/drivers/timecontrol-api.service';
 import { Racer } from '../models/racer.model';
 import { RaceEventType } from '../models/race-event.model';
 import { Race } from '../models/race.model';
@@ -130,6 +130,10 @@ export class TimingService {
     this.race = race;
   }
 
+  getLaps() {
+    return this.timer.laps;
+  }
+
   init() {
 
     this.timecontrolAPIService.connected$
@@ -143,32 +147,32 @@ export class TimingService {
     this.timecontrolAPIService.output()
       .subscribe(tcMessage => {
         switch (tcMessage?.command) {
-          case TimecontrolMessageCommand.READY:
+          case TimecontrolOutputCommand.READY:
             this.state = TimingState.Ready;
             if (tcMessage.laps) {
               this.timer.reset(tcMessage.laps);
             }
             break;
-          case TimecontrolMessageCommand.IN_MENU:
+          case TimecontrolOutputCommand.IN_MENU:
             this.state = TimingState.StandBy;
             break;
-          case TimecontrolMessageCommand.SET_RACER:
+          case TimecontrolOutputCommand.SET_RACER:
             if (tcMessage.racer) {
               this.racer = this.racersService.getCachedById(tcMessage.racer);
               this.timer.reset();
             }
             break;
-          case TimecontrolMessageCommand.START:
+          case TimecontrolOutputCommand.START:
             this.state = TimingState.Race;
             this.timer.reset();
             this.timer.registerStart();
             this.addRaceEvent(tcMessage, RaceEventType.Start);
             break;
-          case TimecontrolMessageCommand.LAP:
+          case TimecontrolOutputCommand.LAP:
             this.timer.registerLap(tcMessage.time || 0);
             this.addRaceEvent(tcMessage, RaceEventType.Point);
             break;
-          case TimecontrolMessageCommand.FINISH:
+          case TimecontrolOutputCommand.FINISH:
             this.state = TimingState.StandBy;
             this.timer.registerFinish(tcMessage.time || 0);
             this.addRaceEvent(tcMessage, RaceEventType.Finish);
@@ -180,7 +184,20 @@ export class TimingService {
       });        
   }
 
-  addRaceEvent(mess: TimecontrolMessage, type: RaceEventType) {
+  setReady() {
+    this.timecontrolAPIService.input({
+      cmd: this.state === TimingState.Ready ? TimecontrolInputCommand.UP : TimecontrolInputCommand.SET_READY,
+    });
+  }
+
+  setRacer(racer: Racer) {
+    this.timecontrolAPIService.input({
+      cmd: TimecontrolInputCommand.SET_RACER,
+      value: [+racer.num],
+    });
+  }
+
+  addRaceEvent(mess: TimecontrolOutputDTO, type: RaceEventType) {
     this.raceEventsService.add({
       id: 0,
       date: new Date().getTime(),

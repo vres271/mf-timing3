@@ -1,7 +1,7 @@
 <div class="with-menu-layout">
     <div>
         <p-menu [model]="menuItems"></p-menu>
-        <div *ngIf="timerMonitor$ | async as tm" style="font-size: 28px; margin: 8px;">{{tm?.raceTime | asTimerString}} <br> {{tm?.lapTime  | asTimerString}}</div>
+        <div *ngIf="timerMonitor$ | async as tm" style="font-size: 28px; text-align: center; padding-top: 16px;">{{tm?.raceTime | asTimerString}} <br> {{tm?.lapTime  | asTimerString}}</div>
     </div>
     <div>
         <p-card [header]="header">

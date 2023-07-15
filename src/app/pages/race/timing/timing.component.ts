@@ -1,6 +1,7 @@
+import { TimingLap } from './../../../shared/services/timing.service';
 import { SerialService } from './../../../core/services/drivers/serial.service';
 import { UserDTO } from './../../../shared/models/user.model';
-import { TimecontrolAPIService, TimecontrolCommand, TimecontrolMessage, TimecontrolMessageCommand } from '../../../core/services/drivers/timecontrol-api.service';
+import { TimecontrolAPIService, TimecontrolInputCommand, TimecontrolInputDTO, TimecontrolOutputCommand } from '../../../core/services/drivers/timecontrol-api.service';
 import { RacesService } from 'src/app/shared/services/races.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject, Subscription, forkJoin, map, switchMap, tap } from 'rxjs';
@@ -219,6 +220,10 @@ export class TimingComponent implements OnInit, OnDestroy{
           
   }
 
+  lapsToSteps():MenuItem[] {
+    return this.timingService.getLaps().map(lap => ({label: new Date(lap.t || 0).toISOString().substring(11,23)}))
+  }
+
   connectToTC() {
     this.timecontrolAPIService.connect();
     // this.connecting = true;
@@ -261,18 +266,12 @@ export class TimingComponent implements OnInit, OnDestroy{
   }
 
   selectRacer(e: any) {
-    // this.timecontrolAPIService.sendComand( 'set_racer', [+e.data.num]);
-    const command: TimecontrolCommand = {
-      cmd: TimecontrolMessageCommand.SET_RACER,
-      value: [+e.data.num],
-    }
-    this.timecontrolAPIService.input(command);
+    this.timingService.setRacer(e.data as Racer);
     this.racerSelectVisible = false;
   }
 
   setReady() {
-    // this.timecontrolAPIService.sendComand(this.stateLabel === 'Ready' ? '^' : 'set_ready');
-    this.timecontrolAPIService.input({cmd: this.stateLabel === 'Ready' ? '^' : 'set_ready'});
+    this.timingService.setReady();
   }
 
   ngOnDestroy() {

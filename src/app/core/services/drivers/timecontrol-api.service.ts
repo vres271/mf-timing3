@@ -5,20 +5,26 @@ import { Timecontrol3MockService } from 'src/app/core/services/drivers/timecontr
 import { ConfigService } from '../config.service';
 import { DriverConnectionState, DriverService } from './driver.service';
 
-export interface TimecontrolMessage {
-    command: TimecontrolMessageCommand;
+
+export interface TimecontrolInputDTO {
+  cmd: TimecontrolInputCommand, 
+  value?: number[]
+}
+
+export enum TimecontrolInputCommand {
+  SET_RACER = 'set_racer',
+  SET_READY = 'set_ready',
+  UP = '^',
+}
+
+export interface TimecontrolOutputDTO {
+    command: TimecontrolOutputCommand;
     racer?: number;
     time?: number;
     laps?: number;
     raw: string;
 }
-
-export interface TimecontrolCommand {
-  cmd: string, 
-  value?: number[]
-}
-
-export enum TimecontrolMessageCommand {
+export enum TimecontrolOutputCommand {
   CONNECTED = 'connect_timecontrol3',
   READY = 'ready',
   IN_MENU = 'in_menu',
@@ -31,7 +37,7 @@ export enum TimecontrolMessageCommand {
 @Injectable({
   providedIn: 'root'
 })
-export class TimecontrolAPIService extends DriverService<TimecontrolCommand, TimecontrolMessage>{
+export class TimecontrolAPIService extends DriverService<TimecontrolInputDTO, TimecontrolOutputDTO>{
   id = 2;
   name = 'Timecontrol3 Device';
 
@@ -67,8 +73,8 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
       .subscribe(message => {
         const splitted = String(message)?.trim()?.replace('\n', '')?.replace('\r', '')?.split(' ');
         if(splitted[0] === 'api') {
-          const res:TimecontrolMessage = {
-            command: splitted?.[1] as TimecontrolMessageCommand,
+          const res: TimecontrolOutputDTO = {
+            command: splitted?.[1] as TimecontrolOutputCommand,
             racer: +splitted?.[2],
             time: +splitted?.[3],
             raw: message,
@@ -76,7 +82,7 @@ export class TimecontrolAPIService extends DriverService<TimecontrolCommand, Tim
           if(splitted?.[4]) {
             res.laps = +splitted?.[4];
           }
-          if(res.command === TimecontrolMessageCommand.CONNECTED) {
+          if(res.command === TimecontrolOutputCommand.CONNECTED) {
             super.connect();
             this.connected$.next(true);
           }
