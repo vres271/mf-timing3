@@ -95,7 +95,7 @@ export class TimecontrolAPIService extends DriverService<TimecontrolInputDTO, Ti
     })
 
     this.serialService.connect();
-    
+    return this.connected$;
   }
 
   override disconnect() {

@@ -26,6 +26,8 @@ import { TabViewModule } from 'primeng/tabview';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TimingService } from 'src/app/shared/services/timing.service';
 import { AsTimerStringPipe } from 'src/app/shared/pipes/as-timer-string.pipe';
+import { ToolbarModule } from 'primeng/toolbar';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
   declarations: [
@@ -54,6 +56,8 @@ import { AsTimerStringPipe } from 'src/app/shared/pipes/as-timer-string.pipe';
     ConfirmDialogModule,
     TabViewModule,
     CheckboxModule,
+    ToolbarModule,
+    MultiSelectModule
   ],
   providers: [
     RacersService,

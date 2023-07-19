@@ -1,4 +1,4 @@
-import { TimingLap } from './../../../shared/services/timing.service';
+import { TimingLap, TimingState, TimingTimer } from './../../../shared/services/timing.service';
 import { SerialService } from './../../../core/services/drivers/serial.service';
 import { UserDTO } from './../../../shared/models/user.model';
 import { TimecontrolAPIService, TimecontrolInputCommand, TimecontrolInputDTO, TimecontrolOutputCommand } from '../../../core/services/drivers/timecontrol-api.service';
@@ -22,6 +22,7 @@ import { TimerMonitor, TimingService } from 'src/app/shared/services/timing.serv
 @Component({
   selector: 'app-timing',
   templateUrl: './timing.component.html',
+  styleUrls: ['timing.component.css'],
   providers: [ConfirmationService]
 })
 export class TimingComponent implements OnInit, OnDestroy{
@@ -30,8 +31,37 @@ export class TimingComponent implements OnInit, OnDestroy{
   lapSteps: MenuItem[] = [];
 
   subs: Subscription[] = [];
+
+  eventTypesList = [
+    {value: 0, label: 'All types'},
+    {value: RaceEventType.Start, label: 'Start'},
+    {value: RaceEventType.Point, label: 'Point'},
+    {value: RaceEventType.Finish, label: 'Finish'},
+  ];
+
+  stateLabels = {
+    [TimingState.Unknown] : 'Unknown',
+    [TimingState.StandBy] : 'StandBy',
+    [TimingState.Ready] : 'Ready',
+    [TimingState.Race] : 'Race',
+  }
+  
+  stateStyles = {
+    [TimingState.Unknown] : 'p-button-secondary',
+    [TimingState.StandBy] : 'p-button-info',
+    [TimingState.Ready] : 'p-button-success',
+    [TimingState.Race] : 'p-button-warning',
+  }
+  
+  TimingState = TimingState;
+  connecting = false;
+
+  config: Config
+  timerMonitor$: Observable<TimerMonitor>
+
+
+
   timerId: any;
-  timer: string;
   timerStartTime: number;
   timerFinishTime: number;
   started = false;
@@ -42,11 +72,9 @@ export class TimingComponent implements OnInit, OnDestroy{
 
   stateLabel = 'StandBy';
   racerNum: number;
-  racer: Racer | undefined;
   raceEvents: RaceEvent[];
   laps: number = 0;
   lap: number = 0;
-  eventTypesList: any[];
   eventsFilter = {
     type: 0,
     num: '',
@@ -65,7 +93,6 @@ export class TimingComponent implements OnInit, OnDestroy{
 
   registerRacerVisible = false;
 
-  config: Config
 
   newRacer = {
     num:0,
@@ -77,9 +104,7 @@ export class TimingComponent implements OnInit, OnDestroy{
 
   resultsVisible = false;
   autoStandBy = true;
-  connecting = false;
 
-  timerMonitor$: Observable<TimerMonitor>
 
   constructor(
     private racesService: RacesService,
@@ -98,15 +123,7 @@ export class TimingComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit() {
-      this.eventTypesList = [
-        {value: 0, label: 'All types'},
-        {value: RaceEventType.Start, label: 'Start'},
-        {value: RaceEventType.Point, label: 'Point'},
-        {value: RaceEventType.Finish, label: 'Finish'},
-      ]
-
-      this.subs.push(
-      this.route.params.pipe(
+      this.subs.push(this.route.params.pipe(
         switchMap(params => this.racesService.get().pipe(map(races=>({races,params}))))
       ).subscribe(
         res => {
@@ -114,155 +131,62 @@ export class TimingComponent implements OnInit, OnDestroy{
           this.races = races;
           this.racesMenu = races.map(race => ({label: race.name, routerLink: '/race/timing/' + race.id}))
           this.race = races?.find(r => r.id === +params['raceId']);
-
           if (this.race) {
             this.timingService.setRace(this.race);
           }
-
         }
       ));
 
       this.timerMonitor$ = this.timingService.timer.getMonitor();
 
-      this.subs.push(
-      this.racersService.get()
+      this.subs.push(this.racersService.get()
         .subscribe(racers => this.racers = racers));
 
-      this.subs.push(
-        this.raceEventsService.load()
+      this.subs.push(this.raceEventsService.load()
         .subscribe());
 
-      this.subs.push(
-      this.raceEventsService.get()
+      this.subs.push(this.raceEventsService.get()
         .subscribe(raceEvents => {
-          this.raceEvents = raceEvents.filter(e => e.raceId === this.race?.id).sort((a,b) => (b.id - a.id))
+          this.raceEvents = raceEvents.filter(e => e.raceId === this.race?.id)
         }))
       
-      this.subs.push(this.configService.get().pipe(
-        tap(config => {
-          if (config) {
-            this.config = config;
-          }
-        }),        
-        switchMap(() => this.timecontrolAPIService.output()),
-      ).subscribe(res => {
-        switch (res?.command) {
-          case 'ready':
-            this.stateLabel = 'Ready';
-            this.timerStartTime = 0;
-            this.timerFinishTime = 0;
-            this.laps = res.laps || 0;
-            this.lapSteps = []
-            for (let i = 0; i < this.laps; i++) {
-              this.lapSteps.push({label: '00:00:00.000'});
-            }
-            this.lap = 0;
-            this.started = false;
-            break;
-          case 'in_menu':
-            this.stateLabel = 'StandBy';
-            this.timerStartTime = 0;
-            this.timerFinishTime = 0;
-            this.lap = 0;
-            this.started = false;
-            break;
-          case 'set_racer':
-            this.stateLabel = 'Ready';
-            this.racerNum = res.racer || 0;
-            this.racer = this.racers?.find(r => r.num === this.racerNum);
-            this.timerStartTime = 0;
-            this.timerFinishTime = 0;
-            this.lapSteps.forEach(step => {step.label = '00:00:00.000'})
-            this.lap = 0;            
-            break;
-          case 'start':
-            this.stateLabel = 'Ready';
-            //this.addRaceEvent(res, RaceEventType.Start)
-            this.timerStartTime = new Date().getTime();
-            this.timerFinishTime = 0;
-            this.lapSteps.forEach(step => {step.label = '00:00:00.000'})
-            this.lap = 0;
-            this.started = true;
-            break;
-          case 'lap':
-            this.stateLabel = 'Ready';
-            //this.addRaceEvent(res, RaceEventType.Point)
-            this.lap++;
-            this.lapSteps[this.lap-1].label = new Date(res.time || 0).toISOString().substring(11,23);
-            break;
-          case 'finish':
-            this.stateLabel = 'Ready';
-            //this.addRaceEvent(res, RaceEventType.Finish)
-            this.timerFinishTime = res.time || 0;
-            this.timerStartTime = 0;
-            this.started = false;
-            if (this.autoStandBy) {this.setReady();}
-            break;
-          default:
-            break;
-        }
-      }))
-
-      if (this.timerId) {
-        clearInterval(this.timerId)
-      }      
-
-      this.timerId = setInterval(() => {
-        if (this.timerStartTime) {
-          const now = new Date().getTime();
-          this.timer = new Date(now - this.timerStartTime).toISOString().substring(11,23); return;
-        }
-        if (this.timerFinishTime) {
-          this.timer = new Date(this.timerFinishTime).toISOString().substring(11,23); return;
-        }
-        this.timer = '00:00:00.000';
-      },100)
+      this.subs.push(this.configService.get()
+        .subscribe(config => {
+          if (config) this.config = config;
+        }))
           
+  }
+
+  get state() {
+    return this.timingService.state;
+  }
+
+  get connected() {
+    return this.timingService.connected;
+  }
+
+  get racer() {
+    return this.timingService.racer;
+  }
+
+  get timer():TimingTimer {
+    return this.timingService.timer;
   }
 
   lapsToSteps():MenuItem[] {
     return this.timingService.getLaps().map(lap => ({label: new Date(lap.t || 0).toISOString().substring(11,23)}))
   }
 
-  connectToTC() {
-    this.timecontrolAPIService.connect();
-    // this.connecting = true;
+  connect() {
+    if (this.connected || this.connecting) { return; }
+    this.connecting = true;
+    this.timingService.connect()
+      .subscribe(res => this.connecting = false)
   }
 
-  disconnectFromTC() {
-    this.timecontrolAPIService.disconnect();
-  }
-
-  connectToComPort() {
-    this.serialService.connect();
-    // this.connecting = true;
-  }
-
-  disconnectFromComPort() {
-    this.serialService.disconnect();
-  }
-
-  sendToComPort() {
-    this.serialService.input('test mess');
-  }
-
-  get isConnectedSerial() {
-    return this.serialService.connectionState === DriverConnectionState.Connected;
-  }
-
-  addRaceEvent(res: any, type: RaceEventType) {
-    this.racerNum = res.racer;
-    this.racer = this.racers?.find(r => r.num === this.racerNum);
-    this.subs.push(
-    this.raceEventsService.add({
-      id: 0,
-      date: new Date().getTime(),
-      dt: res.time,
-      raceEventType: type,
-      raceId: this.race?.id || 0,
-      racerId: this.racer?.id || 0,
-      detail: {cmd_racer: res.racer},
-    }).subscribe());
+  setReady() {
+    if (this.state === TimingState.Unknown) { return; }
+    this.timingService.setReady();
   }
 
   selectRacer(e: any) {
@@ -270,13 +194,20 @@ export class TimingComponent implements OnInit, OnDestroy{
     this.racerSelectVisible = false;
   }
 
-  setReady() {
-    this.timingService.setReady();
+  showSelectRacerDialog() {
+    if (this.state === TimingState.Unknown || this.state === TimingState.Race) { return; }
+    this.racerSelectVisible = true;
   }
+
+
 
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe())
   }
+
+
+
+
 
   filter(items: Item[], cond: any):Item[] {
     const [key, value] = Object.entries(cond)[0];

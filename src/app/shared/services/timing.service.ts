@@ -123,10 +123,14 @@ export class TimingService {
   }
 
   connect() {
-    this.timecontrolAPIService.connect();    
+    this.timecontrolAPIService.connect();
+    return this.timecontrolAPIService.connected$;
   }
 
   setRace(race: Race) {
+    if (this.state !== TimingState.Unknown) {
+      return;
+    }
     this.race = race;
   }
 
@@ -178,7 +182,6 @@ export class TimingService {
             this.addRaceEvent(tcMessage, RaceEventType.Finish);
             break;
           default:
-            console.warn('Unknown timecontrolAPI command', tcMessage);
             break;
         }
       });        
