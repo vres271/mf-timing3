@@ -39,9 +39,10 @@ export class SerialService extends DriverService<string, string> implements Driv
   override connect() {
     this._start()
     this.subs.forEach(sub => sub.unsubscribe())
-    this.subs.push(this.output().subscribe(message => {
+    this.subs.push(this.inputStream$.subscribe(message => {
       this.send(message);
-    }))
+    }));
+
     super.connect();
   }
 

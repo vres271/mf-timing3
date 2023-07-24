@@ -44,6 +44,10 @@ export class RaceEvent  implements RaceEventDTO{
     return new Date(this.date).toLocaleString();
   }
 
+  get timeString():string {
+    return new Date(this.date).toLocaleString().substring(11,23);
+  }
+
   get dtString():string {
     return new Date(this.dt).toISOString().substring(11,23)
   }

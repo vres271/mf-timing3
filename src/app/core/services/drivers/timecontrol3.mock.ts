@@ -34,6 +34,8 @@ export class Timecontrol3MockService extends SerialService{
     lapTimes: number[] = [];
     connected = false;
     bootTime = 0;
+    CONNECT_DELAY = 10;
+    RESPONSE_DELAY = 10;
 
     response(command:string, values:any[] = []) {
         this.outputStream$.next(`api ${command} ${values.join(' ')}`);
@@ -48,7 +50,7 @@ export class Timecontrol3MockService extends SerialService{
             this.response('connect_timecontrol3');
             super.startLogging();
             this.connectionState = DriverConnectionState.Connected;
-        },1000)
+        }, this.CONNECT_DELAY)
 
         this.subs.push(this.inputStream$.subscribe(message => {
             this.send(message);
@@ -84,7 +86,7 @@ export class Timecontrol3MockService extends SerialService{
                         this.response('set_racer',[this.racer, this.time])
                     }
                 }
-            },100)
+            }, this.RESPONSE_DELAY)
         }        
     }
 

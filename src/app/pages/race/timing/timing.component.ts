@@ -70,7 +70,6 @@ export class TimingComponent implements OnInit, OnDestroy{
   races: Race[] | undefined;
   racers: Racer[] | undefined;
 
-  stateLabel = 'StandBy';
   racerNum: number;
   raceEvents: RaceEvent[];
   laps: number = 0;
@@ -198,8 +197,6 @@ export class TimingComponent implements OnInit, OnDestroy{
     if (this.state === TimingState.Unknown || this.state === TimingState.Race) { return; }
     this.racerSelectVisible = true;
   }
-
-
 
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe())

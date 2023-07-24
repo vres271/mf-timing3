@@ -57,18 +57,27 @@
         styleClass="p-datatable-sm mt-2" >
         <ng-template pTemplate="header" >
             <tr>
-                <th colspan="2" >
-                    <p-columnFilter type="text" field="racerNum" placeholder="Num"  [matchMode]="'equals'"></p-columnFilter>
-                </th>
-                <th colspan="2">
-                    <p-columnFilter type="text" field="racerFullName" placeholder="Name" [matchMode]="'contains'"></p-columnFilter>
-                </th>
-                <th colspan="99">
-                    <p-columnFilter field="raceEventType" matchMode="in" [showMenu]="false">
-                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <p-multiSelect [ngModel]="value" [options]="eventTypesList" placeholder="Event Type" (onChange)="filter($event.value)" ></p-multiSelect>                            
-                        </ng-template>
-                    </p-columnFilter>
+                <th colspan="99" >
+                    <div class="flex-row">
+                        <p-button
+                            icon="pi pi-filter-slash"
+                            (click)="eventsTable.clear()"
+                            styleClass="p-button-outlined p-button-secondary "
+                        ></p-button>
+                        <p-columnFilter type="text" field="racerNum" placeholder="Num"  [matchMode]="'equals'" ></p-columnFilter>
+                        <p-columnFilter type="text" field="racerFullName" placeholder="Name" [matchMode]="'contains'" class="flex-grow-2"></p-columnFilter>
+                        <p-columnFilter field="raceEventType" matchMode="in" [showMenu]="false" class="flex-grow-1">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <p-multiSelect [ngModel]="value" [options]="eventTypesList" placeholder="Event Type" (onChange)="filter($event.value)" ></p-multiSelect>                            
+                            </ng-template>
+                        </p-columnFilter>
+                        <p-button 
+                            label="Results"
+                            (click)="showResults()" 
+                            [styleClass]="'p-button-secondary'"
+                            >
+                        </p-button>
+                    </div>
                 </th>
             </tr>
         </ng-template>        
@@ -84,53 +93,7 @@
         </ng-template> 
     </p-table>
 </ng-container>
-
-    <!-- <div class="flex-row">
-        <div class="flex-grow-5">
-            <p-button 
-                icon="pi pi-filter-slash"
-                (click)="resetEventFilter()" 
-                [styleClass]="'p-button-outlined p-button-secondary'"
-                >
-            </p-button>
-            <input type="text" pInputText placeholder="Фильтр по номеру" [(ngModel)]="eventsFilter.num" [style]="{'margin-left': '4px'}"/>
-            <input type="text" pInputText placeholder="Фильтр по имени" [(ngModel)]="eventsFilter.name" [style]="{'margin-left': '4px'}" />
-            <p-dropdown [style]="{'margin-left': '4px'}"
-                [options]="eventTypesList" 
-                [(ngModel)]="eventsFilter.type" 
-                >
-            </p-dropdown>
-            <p-button  [style]="{'margin-left': '4px'}"
-                label="Results"
-                (click)="showResults()" 
-                [styleClass]="'p-button-secondary'"
-                >
-            </p-button>
-            <div style="margin-left: 8px; vertical-align: middle; display: inline-block;">
-                <p-checkbox [(ngModel)]="autoStandBy" [binary]="true" label="Auto StandBy"  ></p-checkbox>
-            </div>
-        </div>
-        <div class="flex-grow-1" style="text-align: right;"><a [href]="resultsToFile" download="timecontrol_results.txt">Скачать</a></div>
-    </div>
-    <div style="max-height: 50vh; overflow-y: auto;">
-        <table style="width: 100%">
-            <tr *ngFor="let event of filterEvents(raceEvents).slice(0,300)" [ngStyle]="{background: event.raceEventType===3 ? 'rgba(255,255,255,.1)': ''}">
-                <td width="50px">{{event.racerNum}}</td>
-                <td width="280px" >{{event.racerFullName}}</td>
-                <td>{{event.raceEventTypeName}}</td>
-                <td>{{event.dtString}}</td>
-                <td align="right">{{event.dateString}}</td>
-                <td width="30px" (click)="openDeleteRaceEventDialog(event)" style=" cursor: pointer; padding: 0px 10px"><i class="pi pi-times" style="color: orangered; font-size: .8rem"></i></td>
-            </tr>
-        </table>   
-    </div> -->
-
-
-
-
-
-
-<ng-container *ngIf="race && 0">
+<!-- <ng-container *ngIf="race && 0">
     <div class="flex-row"  *ngIf="config">
         <div class="flex-grow-1">{{state}}
             <span (click)="setReady()" style="cursor: pointer"><i class="pi pi-circle-fill" [ngStyle]="{color: stateLabel==='Ready' ? '#ff6000' : ''}"></i> {{stateLabel}}</span>
@@ -209,7 +172,7 @@
             </tr>
         </table>   
     </div>
-</ng-container>
+</ng-container> -->
 
 <p-sidebar [visible]="racerSelectVisible" position="right" [modal]="false" (onHide)="racerSelectVisible=false" styleClass="p-sidebar-md">
     <ng-template pTemplate="header">Select Racer</ng-template>
