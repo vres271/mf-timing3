@@ -1,25 +1,29 @@
 import { RacersService } from 'src/app/shared/services/racers.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RacersComponent } from './racers/racers.component';
 import { MenuItem } from 'primeng/api';
 import { RacesComponent } from './races/races.component';
 import { RacesService } from 'src/app/shared/services/races.service';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, Subscription, forkJoin } from 'rxjs';
 import { TimingComponent } from './timing/timing.component';
 import { TimerMonitor, TimingService } from 'src/app/shared/services/timing.service';
+import { Timecontrol3MockService } from 'src/app/core/services/drivers/timecontrol3.mock';
+import { Config, ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
   selector: 'app-race',
   templateUrl: './race.component.html',
 })
-export class RaceComponent  implements OnInit{
+export class RaceComponent  implements OnInit, OnDestroy{
 
   currentComponent: any = RacersComponent;
   header = 'General';
   menuItems: MenuItem[] = [];
   
   timerMonitor$: Observable<TimerMonitor>;
+  subs: Subscription[] = [];
+  config: Config;
 
   constructor(
     public router: Router, 
@@ -27,6 +31,8 @@ export class RaceComponent  implements OnInit{
     private racersService: RacersService,
     private racesService: RacesService,
     private timingService: TimingService,
+    private timecontrol3MockService: Timecontrol3MockService,
+    private configService: ConfigService,
   ) {
   }
 
@@ -72,6 +78,41 @@ export class RaceComponent  implements OnInit{
       
     } )
 
+    this.subs.push(this.configService.get()
+      .subscribe(config => {
+        if (config) this.config = config;
+      }))
+
+
   }
+  
+  get isTCMockEnabled() {
+    return this.config?.data?.timecontrol?.device === 'timeControlMock'
+  }
+
+  get isMockSensorConnected() {
+    return this.timecontrol3MockService.connected;
+  }
+
+  emitMockSensorEvent() {
+    this.timecontrol3MockService.emitSensorEvent();
+  }
+
+  emitMockSensorEnter() {
+    this.timecontrol3MockService.emitEnter();
+  }
+
+  emitMockSensorRacerNumInc() {
+    this.timecontrol3MockService.emitRacerNumInc();
+  }
+
+  emitMockSensoRacerNumDec() {
+    this.timecontrol3MockService.emitRacerNumDec();
+  }
+
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe())
+  }
+
 
 }

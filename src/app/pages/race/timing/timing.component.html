@@ -21,20 +21,10 @@
                 ><i class="pi pi-exclamation-circle" style="color:orange" *ngIf="!racer && state === TimingState.Ready"></i> Select racer!</span>            
             </span>
         </div>
-        <div class="p-toolbar-group-end">
+        <div class="p-toolbar-group-end" >
             <div *ngIf="timer.laps" class="mr-2" >
                 Кругов: {{timer.lapsCount}} | <span *ngIf="timerMonitor$ | async as tm">{{tm?.raceTime | asTimerString}} | {{tm?.lapTime  | asTimerString}}</span>
             </div>
-            <p-button 
-                *ngIf="isTCMockEnabled"
-                label="Point"
-                icon="pi pi-bolt"
-                class="mr-2"
-                (click)="emitMockSensorEvent()"
-                [disabled]="!connected" 
-                [styleClass]="connected ? 'p-button-warning' : 'p-button-secondary'"
-                >
-            </p-button>
             <p-button 
                 (click)="connect()"
                 [disabled]="connected || connecting"
@@ -83,8 +73,8 @@
         </ng-template>        
         <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
             <tr [ngStyle]="{background: item.raceEventType===3 ? 'rgba(255,255,255,.1)': ''}">
-                <td width="50px">{{item.racerNum}}</td>
-                <td width="280px">{{item.racerFullName}}</td>
+                <td width="50px">{{item.racerNum || item.detail.cmd_racer}}</td>
+                <td width="280px">{{item.racerFullName || '-'}}</td>
                 <td>{{item.raceEventTypeName}}</td>
                 <td>{{item.dtString}}</td>
                 <td class="text-right">{{item.dateString}}</td>

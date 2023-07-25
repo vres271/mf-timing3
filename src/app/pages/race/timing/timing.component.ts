@@ -1,10 +1,9 @@
-import { TimingLap, TimingState, TimingTimer } from './../../../shared/services/timing.service';
-import { SerialService } from './../../../core/services/drivers/serial.service';
+import { TimingState, TimingTimer } from './../../../shared/services/timing.service';
 import { UserDTO } from './../../../shared/models/user.model';
-import { TimecontrolAPIService, TimecontrolInputCommand, TimecontrolInputDTO, TimecontrolOutputCommand } from '../../../core/services/drivers/timecontrol-api.service';
+import { TimecontrolAPIService } from '../../../core/services/drivers/timecontrol-api.service';
 import { RacesService } from 'src/app/shared/services/races.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subject, Subscription, forkJoin, map, switchMap, tap } from 'rxjs';
+import { Observable, Subscription, map, switchMap, tap } from 'rxjs';
 import { Race } from 'src/app/shared/models/race.model';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MenuItem } from 'primeng/api';
@@ -13,10 +12,8 @@ import { Racer, RacerDTO } from 'src/app/shared/models/racer.model';
 import { RaceEventsService } from 'src/app/shared/services/race-events.service';
 import { RaceEvent, RaceEventType } from 'src/app/shared/models/race-event.model';
 import { Item } from 'src/app/shared/models/items.model';
-import { Timecontrol3MockService } from 'src/app/core/services/drivers/timecontrol3.mock';
 import { Config, ConfigService } from 'src/app/core/services/config.service';
 import { UsersService } from 'src/app/shared/services/users.service';
-import { DriverConnectionState } from 'src/app/core/services/drivers/driver.service';
 import { TimerMonitor, TimingService } from 'src/app/shared/services/timing.service';
 
 @Component({
@@ -112,10 +109,8 @@ export class TimingComponent implements OnInit, OnDestroy{
     private raceEventsService: RaceEventsService,
     private route: ActivatedRoute,
     public timecontrolAPIService: TimecontrolAPIService,
-    public timecontrol3MockService: Timecontrol3MockService,
     private configService: ConfigService,
     private confirmationService: ConfirmationService,
-    private serialService: SerialService,
     private timingService: TimingService,
     ) {
 
@@ -202,21 +197,9 @@ export class TimingComponent implements OnInit, OnDestroy{
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
-
-
-
-
   filter(items: Item[], cond: any):Item[] {
     const [key, value] = Object.entries(cond)[0];
     return items.filter((item:any) => item[key] === value)
-  }
-
-  get isTCMockEnabled() {
-    return this.config?.data?.timecontrol?.device === 'timeControlMock'
-  }
-
-  emitMockSensorEvent() {
-    this.timecontrol3MockService.emitSensorEvent();
   }
 
   openRegisterNewRacerDialog() {

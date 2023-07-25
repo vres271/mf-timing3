@@ -1,3 +1,4 @@
+import { Race } from './../../../shared/models/race.model';
 import { Injectable } from '@angular/core';
 import { SerialService } from 'src/app/core/services/drivers/serial.service';
 import { LogItemsService } from '../../../shared/services/log-items.service';
@@ -81,7 +82,7 @@ export class Timecontrol3MockService extends SerialService{
                         this.response('in_menu',[this.racer, this.time])
                     }
                 } else if (cmd === 'set_racer') {
-                    if (this.menuState === MenuState.Race && this.raceState === RaceState.Ready) {
+                    if ((this.menuState === MenuState.Race || this.menuState === MenuState.MainMenu) && this.raceState !== RaceState.Started) {
                         this.racer = +values[0];
                         this.response('set_racer',[this.racer, this.time])
                     }
@@ -109,6 +110,33 @@ export class Timecontrol3MockService extends SerialService{
                 }
                 return;
             }
+        }
+    }
+
+    emitRacerNumInc() {
+        if ((this.menuState === MenuState.Race || this.menuState === MenuState.MainMenu) && this.raceState !== RaceState.Started) {
+            this.racer++;
+            this.response('set_racer',[this.racer, this.time])
+        }
+    }
+
+    emitRacerNumDec() {
+        if ((this.menuState === MenuState.Race || this.menuState === MenuState.MainMenu) && this.raceState !== RaceState.Started) {
+            this.racer = this.racer > 1 ? this.racer - 1 : 1
+            this.response('set_racer',[this.racer, this.time])
+        }
+    }
+
+    emitEnter() {
+        if (this.menuState === MenuState.MainMenu) {
+            this.menuState = MenuState.Race;
+            this.raceState = RaceState.Ready;
+            this.response('ready',[this.racer, this.time, this.laps])
+        } else if(this.menuState === MenuState.Race) {
+            this.menuState = MenuState.MainMenu;
+            this.raceState = RaceState.StandBy;
+            this.response('in_menu',[this.racer, this.time])
+            
         }
     }
 

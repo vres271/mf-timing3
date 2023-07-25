@@ -2,6 +2,9 @@ import { Item } from './items.model.js';
 import { Race } from './race.model.js';
 import { User } from './user.model.js';
 
+export interface EmptyRacer extends Partial<Racer>{
+  
+}
 
 export interface RacerDTO extends Item{
     userId: number;

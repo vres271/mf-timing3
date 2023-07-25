@@ -2,6 +2,41 @@
     <div>
         <p-menu [model]="menuItems"></p-menu>
         <div *ngIf="timerMonitor$ | async as tm" style="font-size: 28px; text-align: center; padding-top: 16px;">{{tm?.raceTime | asTimerString}} <br> {{tm?.lapTime  | asTimerString}}</div>
+        <div *ngIf="isTCMockEnabled">
+            <div class="flex-row m-2 mt-3 flex-center">
+                <p-button 
+                    icon="pi pi-angle-left"
+                    (click)="emitMockSensoRacerNumDec()"
+                    [disabled]="!isMockSensorConnected" 
+                    [styleClass]="isMockSensorConnected ? 'p-button-primary' : 'p-button-secondary'"
+                    >
+                </p-button>
+                <p-button 
+                    icon="pi pi-angle-up"
+                    (click)="emitMockSensorEnter()"
+                    [disabled]="!isMockSensorConnected" 
+                    [styleClass]="isMockSensorConnected ? 'p-button-primary' : 'p-button-secondary'"
+                    >
+                </p-button>
+                <p-button 
+                    icon="pi pi-angle-right"
+                    (click)="emitMockSensorRacerNumInc()"
+                    [disabled]="!isMockSensorConnected" 
+                    [styleClass]="isMockSensorConnected ? 'p-button-primary' : 'p-button-secondary'"
+                    >
+                </p-button>
+            </div>
+            <div class="flex-row m-1 flex-center">
+                <p-button 
+                    label="Point"
+                    icon="pi pi-bolt"
+                    (click)="emitMockSensorEvent()"
+                    [disabled]="!isMockSensorConnected" 
+                    [styleClass]="isMockSensorConnected ? 'p-button-warning' : 'p-button-secondary'"
+                    >
+                </p-button>
+            </div>
+        </div> 
     </div>
     <div>
         <p-card [header]="header">

@@ -73,6 +73,9 @@ app-layout{
 .flex-start {
     justify-content: flex-start;
 }
+.flex-center {
+    justify-content: center;
+}
 
 .pointer {
     cursor: pointer;

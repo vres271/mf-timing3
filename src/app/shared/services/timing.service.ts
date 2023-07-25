@@ -1,7 +1,7 @@
 import { RacersService } from './racers.service';
 import { Injectable } from '@angular/core';
 import { TimecontrolAPIService, TimecontrolInputCommand, TimecontrolInputDTO, TimecontrolOutputCommand, TimecontrolOutputDTO } from 'src/app/core/services/drivers/timecontrol-api.service';
-import { Racer } from '../models/racer.model';
+import { EmptyRacer, Racer } from '../models/racer.model';
 import { RaceEventType } from '../models/race-event.model';
 import { Race } from '../models/race.model';
 import { RaceEventsService } from './race-events.service';
@@ -107,7 +107,7 @@ export class TimingTimer {
 export class TimingService {
   type = TimingType.Laps;
   state = TimingState.Unknown;
-  racer: Racer;
+  racer: Racer | EmptyRacer;
   race: Race;
 
   connected = false;
@@ -162,7 +162,7 @@ export class TimingService {
             break;
           case TimecontrolOutputCommand.SET_RACER:
             if (tcMessage.racer) {
-              this.racer = this.racersService.getCachedById(tcMessage.racer);
+              this.racer = this.racersService.getCachedByNum(tcMessage.racer) || {num: tcMessage.racer};
               this.timer.reset();
             }
             break;

@@ -19,4 +19,9 @@ export class RacersService extends ItemsService<Racer, RacerDTO>{
     super(dataService, apiService)
   }
 
+  getCachedByNum(racerNum: number):Racer {
+    return this.dataService.items[this.entityType].find((racer: Racer) => racer.num === racerNum);
+  }
+
+
 }
