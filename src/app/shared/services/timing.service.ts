@@ -113,6 +113,8 @@ export class TimingService {
   connected = false;
   timer: TimingTimer;
 
+  autoStandByAfterFinish = true;
+
   constructor(
     private timecontrolAPIService: TimecontrolAPIService,
     private racersService: RacersService,
@@ -177,9 +179,12 @@ export class TimingService {
             this.addRaceEvent(tcMessage, RaceEventType.Point);
             break;
           case TimecontrolOutputCommand.FINISH:
-            this.state = TimingState.StandBy;
             this.timer.registerFinish(tcMessage.time || 0);
+            this.state = TimingState.Ready;
             this.addRaceEvent(tcMessage, RaceEventType.Finish);
+            if (this.autoStandByAfterFinish) {
+              this.setReady()
+            }
             break;
           default:
             break;

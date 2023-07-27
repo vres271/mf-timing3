@@ -69,7 +69,7 @@ export class RaceEvent  implements RaceEventDTO{
   }
 
   get racerNum():number {
-    return this.racer?.num
+    return this.racer?.num || this.detail?.cmd_racer
   }
 
   get race():Race {

@@ -1,6 +1,5 @@
 import { TimingState, TimingTimer } from './../../../shared/services/timing.service';
 import { UserDTO } from './../../../shared/models/user.model';
-import { TimecontrolAPIService } from '../../../core/services/drivers/timecontrol-api.service';
 import { RacesService } from 'src/app/shared/services/races.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription, map, switchMap, tap } from 'rxjs';
@@ -25,8 +24,6 @@ import { TimerMonitor, TimingService } from 'src/app/shared/services/timing.serv
 export class TimingComponent implements OnInit, OnDestroy{
 
   racesMenu: MenuItem[];
-  lapSteps: MenuItem[] = [];
-
   subs: Subscription[] = [];
 
   eventTypesList = [
@@ -56,26 +53,23 @@ export class TimingComponent implements OnInit, OnDestroy{
   config: Config
   timerMonitor$: Observable<TimerMonitor>
 
-
-
-  timerId: any;
-  timerStartTime: number;
-  timerFinishTime: number;
-  started = false;
-
   race: Race | undefined;
-  races: Race[] | undefined;
   racers: Racer[] | undefined;
-
-  racerNum: number;
   raceEvents: RaceEvent[];
-  laps: number = 0;
-  lap: number = 0;
-  eventsFilter = {
-    type: 0,
-    num: '',
-    name: '',
-  }
+
+  racerSelectVisible = false;
+  selectedRacer!: Racer
+
+  registerRacerVisible = false;
+  registerNewRacerError = '';
+  newRacer = {
+    num:0,
+    firstName:'',
+    secondName:'',
+    thirdName:'' ,
+  };
+
+  resultsVisible = false;
   results: {
     bestFinish: RaceEvent[],
     bestLap: RaceEvent[],
@@ -84,37 +78,16 @@ export class TimingComponent implements OnInit, OnDestroy{
     bestLap: [],
   }
 
-  racerSelectVisible = false;
-  selectedRacer!: Racer
-
-  registerRacerVisible = false;
-
-
-  newRacer = {
-    num:0,
-    firstName:'',
-    secondName:'',
-    thirdName:'' ,
-  };
-  registerNewRacerError = '';
-
-  resultsVisible = false;
-  autoStandBy = true;
-
-
   constructor(
+    private route: ActivatedRoute,
+    private configService: ConfigService,
     private racesService: RacesService,
     private racersService: RacersService,
     private usersService: UsersService,
     private raceEventsService: RaceEventsService,
-    private route: ActivatedRoute,
-    public timecontrolAPIService: TimecontrolAPIService,
-    private configService: ConfigService,
-    private confirmationService: ConfirmationService,
     private timingService: TimingService,
-    ) {
-
-  }
+    private confirmationService: ConfirmationService,
+  ) { }
 
   ngOnInit() {
       this.subs.push(this.route.params.pipe(
@@ -122,7 +95,6 @@ export class TimingComponent implements OnInit, OnDestroy{
       ).subscribe(
         res => {
           const {races, params} = res;
-          this.races = races;
           this.racesMenu = races.map(race => ({label: race.name, routerLink: '/race/timing/' + race.id}))
           this.race = races?.find(r => r.id === +params['raceId']);
           if (this.race) {
@@ -151,6 +123,10 @@ export class TimingComponent implements OnInit, OnDestroy{
           
   }
 
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe())
+  }
+
   get state() {
     return this.timingService.state;
   }
@@ -165,6 +141,14 @@ export class TimingComponent implements OnInit, OnDestroy{
 
   get timer():TimingTimer {
     return this.timingService.timer;
+  }
+
+  get autoStandBy():boolean {
+    return this.timingService.autoStandByAfterFinish;
+  }
+
+  set autoStandBy(value: boolean) {
+    this.timingService.autoStandByAfterFinish = value;
   }
 
   lapsToSteps():MenuItem[] {
@@ -191,10 +175,6 @@ export class TimingComponent implements OnInit, OnDestroy{
   showSelectRacerDialog() {
     if (this.state === TimingState.Unknown || this.state === TimingState.Race) { return; }
     this.racerSelectVisible = true;
-  }
-
-  ngOnDestroy() {
-    this.subs.forEach(sub => sub.unsubscribe())
   }
 
   filter(items: Item[], cond: any):Item[] {
@@ -270,25 +250,10 @@ export class TimingComponent implements OnInit, OnDestroy{
   }
 
   get resultsToFile() {
-    return 'data:text/plain;charset=utf-8,' + encodeURIComponent(this.filterEvents(this.raceEvents)
+    return 'data:text/plain;charset=utf-8,' + encodeURIComponent(this.raceEvents
       .map(event => (event.racerNum || '-') + "\t" + (event.racerFullName || '-') + "\t" + event.raceEventTypeName + "\t" + event.dtString)
       .join("\n")
     );
-  }
-
-  filterEvents(items: RaceEvent[]):RaceEvent[] {
-    const regexp = this.eventsFilter.name ? new RegExp(this.eventsFilter.name, "i") : null;
-    return items.filter(item => {
-      return (+item.racerNum === +this.eventsFilter.num || !this.eventsFilter.num) 
-        && (!regexp || regexp.test(item.racerFullName))
-        && (item.raceEventType === this.eventsFilter.type || this.eventsFilter.type === 0)
-    })
-  }
- 
-  resetEventFilter() {
-    this.eventsFilter.num = '';
-    this.eventsFilter.name = '';
-    this.eventsFilter.type = 0;
   }
 
   showResults() {
@@ -299,8 +264,8 @@ export class TimingComponent implements OnInit, OnDestroy{
         .filter(item => item.raceEventType === RaceEventType.Finish)
         .sort((a,b) => a.dt - b.dt)
         .filter(item => {
-          if (min[item.racerId] === undefined) {
-            min[item.racerId] = true;
+          if (min[item.racerNum] === undefined) {
+            min[item.racerNum] = true;
             return true;
           } else {
             return false;
@@ -312,18 +277,14 @@ export class TimingComponent implements OnInit, OnDestroy{
         .filter(item => item.raceEventType === RaceEventType.Point)
         .sort((a,b) => a.dt - b.dt)
         .filter(item => {
-          if (min[item.racerId] === undefined) {
-            min[item.racerId] = true;
+          if (min[item.racerNum] === undefined) {
+            min[item.racerNum] = true;
             return true;
           } else {
             return false;
           }
         })
 
-  }
-
-  toTimerString(t: number | undefined) {
-    return new Date(t || 0).toISOString().substring(11,23);    
   }
 
 }

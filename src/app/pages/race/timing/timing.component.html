@@ -61,6 +61,8 @@
                                 <p-multiSelect [ngModel]="value" [options]="eventTypesList" placeholder="Event Type" (onChange)="filter($event.value)" ></p-multiSelect>                            
                             </ng-template>
                         </p-columnFilter>
+                        <p-checkbox [(ngModel)]="autoStandBy" [binary]="true" class="mr-4 pointer" label="Auto StandBy "  ></p-checkbox> 
+                        <div class="mr-4" ><a [href]="resultsToFile" download="timecontrol_results.txt">Скачать</a></div>                       
                         <p-button 
                             label="Results"
                             (click)="showResults()" 
@@ -73,7 +75,7 @@
         </ng-template>        
         <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
             <tr [ngStyle]="{background: item.raceEventType===3 ? 'rgba(255,255,255,.1)': ''}">
-                <td width="50px">{{item.racerNum || item.detail.cmd_racer}}</td>
+                <td width="50px">{{item.racerNum}}</td>
                 <td width="280px">{{item.racerFullName || '-'}}</td>
                 <td>{{item.raceEventTypeName}}</td>
                 <td>{{item.dtString}}</td>
@@ -83,86 +85,6 @@
         </ng-template> 
     </p-table>
 </ng-container>
-<!-- <ng-container *ngIf="race && 0">
-    <div class="flex-row"  *ngIf="config">
-        <div class="flex-grow-1">{{state}}
-            <span (click)="setReady()" style="cursor: pointer"><i class="pi pi-circle-fill" [ngStyle]="{color: stateLabel==='Ready' ? '#ff6000' : ''}"></i> {{stateLabel}}</span>
-        </div>
-        <div class="flex-grow-3" style="font-size: 25px;" [style]="{color: stateLabel!=='Ready' ? 'grey' : ''}">
-            <span style="cursor: pointer" (click)="racerSelectVisible=true">#{{racerNum}} : </span>
-            <span *ngIf="racer" style="cursor: pointer" (click)="racerSelectVisible=true">{{racer.userFullName}}</span>
-            <span *ngIf="!racer && stateLabel==='Ready'" class="flex-grow-3" (click)="racerSelectVisible=true" style="cursor: pointer"><i class="pi pi-exclamation-circle" style="color:orange"></i> Select racer!</span>            
-        </div>
-        <div class="flex-grow-3"  [style]="{color: stateLabel!=='Ready' ? 'grey' : ''}">
-            {{race.name}}
-            <div *ngIf="laps">Кругов: {{laps}} | <span *ngIf="timerMonitor$ | async as tm">{{tm?.raceTime | asTimerString}} | {{tm?.lapTime  | asTimerString}}</span></div>
-        </div>
-        <p-button 
-            *ngIf="isTCMockEnabled"
-            label="Point"
-            icon="pi pi-bolt"
-            (click)="emitMockSensorEvent()"
-            [disabled]="!timecontrolAPIService.connected" 
-            [styleClass]="timecontrolAPIService.connected ? 'p-button-warning' : 'p-button-secondary'"
-            >
-        </p-button>
-        <p-button 
-            [icon]="connecting && !timecontrolAPIService.connected  ? 'pi pi-spin pi-spinner' : ''"
-            [label]="timecontrolAPIService.connected ? 'Connected' : 'Connect'" 
-            (click)="connect()" 
-            [disabled]="timecontrolAPIService.connected" 
-            [styleClass]="timecontrolAPIService.connected ? 'p-button-success' : 'p-button-secondary'"
-            >
-        </p-button>
-    </div>    
-    <div style="margin: 30px 0; padding-left: 32px; position: relative;" *ngIf="laps">
-        <div class="start-step" [ngClass]="{started: started && lap===0, ready: !started && racer && stateLabel==='Ready'}">S</div>
-        <p-steps   [model]="lapSteps" [activeIndex]="lap-1" [readonly]="true"></p-steps>
-    </div>
-    <div style="margin: 30px 0; padding-left: 32px; position: relative;" *ngIf="laps">
-        <div class="start-step" [ngClass]="{started: started && lap===0, ready: !started && racer && stateLabel==='Ready'}">S</div>
-        <p-steps   [model]="lapsToSteps()" [activeIndex]="lap-1" [readonly]="true"></p-steps>
-    </div>
-    <div class="flex-row">
-        <div class="flex-grow-5">
-            <p-button 
-                icon="pi pi-filter-slash"
-                (click)="resetEventFilter()" 
-                [styleClass]="'p-button-outlined p-button-secondary'"
-                >
-            </p-button>
-            <input type="text" pInputText placeholder="Фильтр по номеру" [(ngModel)]="eventsFilter.num" [style]="{'margin-left': '4px'}"/>
-            <input type="text" pInputText placeholder="Фильтр по имени" [(ngModel)]="eventsFilter.name" [style]="{'margin-left': '4px'}" />
-            <p-dropdown [style]="{'margin-left': '4px'}"
-                [options]="eventTypesList" 
-                [(ngModel)]="eventsFilter.type" 
-                >
-            </p-dropdown>
-            <p-button  [style]="{'margin-left': '4px'}"
-                label="Results"
-                (click)="showResults()" 
-                [styleClass]="'p-button-secondary'"
-                >
-            </p-button>
-            <div style="margin-left: 8px; vertical-align: middle; display: inline-block;">
-                <p-checkbox [(ngModel)]="autoStandBy" [binary]="true" label="Auto StandBy"  ></p-checkbox>
-            </div>
-        </div>
-        <div class="flex-grow-1" style="text-align: right;"><a [href]="resultsToFile" download="timecontrol_results.txt">Скачать</a></div>
-    </div>
-    <div style="max-height: 50vh; overflow-y: auto;">
-        <table style="width: 100%">
-            <tr *ngFor="let event of filterEvents(raceEvents).slice(0,300)" [ngStyle]="{background: event.raceEventType===3 ? 'rgba(255,255,255,.1)': ''}">
-                <td width="50px">{{event.racerNum}}</td>
-                <td width="280px" >{{event.racerFullName}}</td>
-                <td>{{event.raceEventTypeName}}</td>
-                <td>{{event.dtString}}</td>
-                <td align="right">{{event.dateString}}</td>
-                <td width="30px" (click)="openDeleteRaceEventDialog(event)" style=" cursor: pointer; padding: 0px 10px"><i class="pi pi-times" style="color: orangered; font-size: .8rem"></i></td>
-            </tr>
-        </table>   
-    </div>
-</ng-container> -->
 
 <p-sidebar [visible]="racerSelectVisible" position="right" [modal]="false" (onHide)="racerSelectVisible=false" styleClass="p-sidebar-md">
     <ng-template pTemplate="header">Select Racer</ng-template>
@@ -279,5 +201,3 @@
 </p-sidebar>
 
 <p-confirmDialog [style]="{width: '400px'}" #cd rejectButtonStyleClass="p-button-outlined" acceptButtonStyleClass="p-button-danger"></p-confirmDialog>
-
-
