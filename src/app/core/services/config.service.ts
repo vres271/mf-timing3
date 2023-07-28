@@ -1,3 +1,4 @@
+import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { APIService } from './api.service';
 import { BehaviorSubject, Observable, Subject, tap } from 'rxjs';
@@ -23,6 +24,9 @@ export class Config{
   constructor(dto: ConfigDTO) {
     const empty:ConfigDTO = <ConfigDTO>{};
     this.data = dto.data;
+    if ((environment as any)?.config?.useTC3Mock) {
+      this.data.timecontrol.device = 'timeControlMock';
+    }
   }
 
 }
