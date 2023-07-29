@@ -123,28 +123,15 @@
     </ng-template>
 </p-sidebar>
 
+
+
 <p-sidebar [visible]="registerRacerVisible" position="right" [modal]="false" (onHide)="registerRacerVisible=false" styleClass="p-sidebar-md">
     <ng-template pTemplate="header">Регистрация нового участника</ng-template>
     <ng-template pTemplate="content">
-        <div class="input-block" >
-            <label>Номер</label>
-            <input type="number" step="1" pInputText [(ngModel)]="newRacer.num" (ngModelChange)="validateNewRacerNum()" />
-            <div *ngIf="registerNewRacerError" style="color: orangered; margin-top: 4px;">
-                {{registerNewRacerError}}
-            </div>
-            <label>Имя</label>
-            <input type="text" pInputText [(ngModel)]="newRacer.firstName" />
-            <label>Фамилия</label>
-            <input type="text" pInputText [(ngModel)]="newRacer.secondName" />
-            <label>Отчество</label>
-            <input type="text" pInputText [(ngModel)]="newRacer.thirdName" />
-            <div class="flex btn-bar"  [style]="{'margin-top': '8px'}">
-                <p-button label="Зарегистрировать" (onClick)="registerNewRacer()" styleClass="p-button-success" 
-                    [disabled]="!(newRacer.num&&newRacer.firstName&&newRacer.secondName&&!registerNewRacerError)">
-                </p-button>
-                <p-button label="Отмена" (onClick)="registerRacerVisible=false" styleClass="p-button-secondary"></p-button>
-            </div>
-        </div>
+        <app-racer-registrarion
+            [race]="race"
+            (onClose)="registerRacerVisible = false"
+        ></app-racer-registrarion>
     </ng-template>
 </p-sidebar>
 

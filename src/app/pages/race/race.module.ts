@@ -28,6 +28,7 @@ import { TimingService } from 'src/app/shared/services/timing.service';
 import { AsTimerStringPipe } from 'src/app/shared/pipes/as-timer-string.pipe';
 import { ToolbarModule } from 'primeng/toolbar';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { RacerRegistrarionComponent } from './racer-registrarion/racer-registrarion.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
     RacesEditorComponent,
     TimingComponent,
     AsTimerStringPipe,
+    RacerRegistrarionComponent,
   ],
   imports: [
     CommonModule,

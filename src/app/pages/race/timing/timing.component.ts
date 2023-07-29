@@ -61,13 +61,6 @@ export class TimingComponent implements OnInit, OnDestroy{
   selectedRacer!: Racer
 
   registerRacerVisible = false;
-  registerNewRacerError = '';
-  newRacer = {
-    num:0,
-    firstName:'',
-    secondName:'',
-    thirdName:'' ,
-  };
 
   resultsVisible = false;
   results: {
@@ -83,7 +76,6 @@ export class TimingComponent implements OnInit, OnDestroy{
     private configService: ConfigService,
     private racesService: RacesService,
     private racersService: RacersService,
-    private usersService: UsersService,
     private raceEventsService: RaceEventsService,
     private timingService: TimingService,
     private confirmationService: ConfirmationService,
@@ -183,56 +175,9 @@ export class TimingComponent implements OnInit, OnDestroy{
   }
 
   openRegisterNewRacerDialog() {
-    this.newRacer = {
-      num: (this.racers?.filter(racer => racer.raceId === this.race?.id).reduce((p, v) =>  ( p.num > v.num ? p : v )).num  || 0) + 1,
-      firstName:'',
-      secondName:'',
-      thirdName:'' ,  
-    }
     this.registerRacerVisible = true;
   }
 
-  validateNewRacerNum() {
-    this.registerNewRacerError = '';
-    if (this.racers?.find(racer => +this.newRacer?.num === +racer.num )) {
-      this.registerNewRacerError = 'Racer Number already exists';
-    }
-  }
-
-  registerNewRacer() {
-    const user: UserDTO =  {
-      id: 0,
-      name: '',
-      firstName: this.newRacer.firstName,
-      secondName: this.newRacer.secondName,
-      thirdName: this.newRacer.thirdName,
-      email: '',
-      active: true,
-    }
-    this.subs.push(
-    this.usersService.add(user)
-      .pipe(
-        switchMap(createdUser => {
-          const racer: RacerDTO = {
-            id: 0,
-            userId: createdUser.id,
-            raceId: this.race?.id || 0,
-            categoryId: 0,
-            regDate: new Date().getTime(),
-            num: +this.newRacer.num,
-          }
-          return this.racersService.add(racer)
-        })
-      )
-      .subscribe(createdRacer => {
-        if(createdRacer?.id) {
-          console.log('New Racer Created', createdRacer);
-          this.registerRacerVisible = false;
-        } else {
-          console.warn('Error creating Racer', createdRacer);
-        }
-      }))
-  }
 
   openDeleteRaceEventDialog(item: RaceEvent) {
     this.confirmationService.confirm({

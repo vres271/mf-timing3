@@ -10,6 +10,7 @@ describe('Test timing', () => {
 
     cy.get('.pi-power-off').click()
     cy.wait(100);
+
     cy.contains('StandBy').click()
 
     cy.get('.pi-angle-right').click()
@@ -61,6 +62,29 @@ describe('Test timing', () => {
     })
   
 
-    // cy.contains('LCPF').click()
+    cy.get('.racer-title > :nth-child(2)').click()
+    cy.contains('Register Racer').click()
+
+    cy.contains('Зарегистрировать').should('be.disabled');
+
+    cy.get('.input-block > input[type="number"]').invoke('val').then((nextRacerNum) => {
+      
+      const name = ['Иван', 'Петров', 'Сергеевич'].map(n => n + nextRacerNum);
+
+      cy.get('.input-block > :nth-child(4)').type(name[0])
+      cy.get('.input-block > :nth-child(6)').type(name[1])
+      cy.get('.input-block > :nth-child(8)').type(name[2])
+
+      cy.contains('Зарегистрировать').should('not.be.disabled').click();
+
+      cy.get('.p-input-icon-left > .p-inputtext').type(name.join(' '))
+
+      cy.get('#pr_id_4-table > .p-datatable-tbody > :nth-child(1) > :nth-child(2)').should('contain.text', name.join(' ')).click();
+
+      cy.get('.racer-title > :nth-child(2)').should('contain.text', name.join(' '))
+
+    })
+
+
   })
 })
