@@ -7,12 +7,12 @@ import { RacersService } from 'src/app/shared/services/racers.service';
 import { UsersService } from 'src/app/shared/services/users.service';
 
 @Component({
-  selector: 'app-racer-registrarion',
-  templateUrl: './racer-registrarion.component.html',
-  styleUrls: ['./racer-registrarion.component.css']
+  selector: 'app-racer-registration',
+  templateUrl: './racer-registration.component.html',
+  styleUrls: ['./racer-registration.component.css']
 })
 
-export class RacerRegistrarionComponent implements OnInit{
+export class RacerRegistrationComponent implements OnInit{
 
   @Output() onClose = new EventEmitter();
   @Input() race: Race | undefined;

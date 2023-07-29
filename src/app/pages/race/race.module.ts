@@ -28,7 +28,8 @@ import { TimingService } from 'src/app/shared/services/timing.service';
 import { AsTimerStringPipe } from 'src/app/shared/pipes/as-timer-string.pipe';
 import { ToolbarModule } from 'primeng/toolbar';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { RacerRegistrarionComponent } from './racer-registrarion/racer-registrarion.component';
+import { RacerRegistrationModule } from './racer-registration/racer-registration.module';
+import { RaceResultsModule } from './race-results/race-results.module';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,6 @@ import { RacerRegistrarionComponent } from './racer-registrarion/racer-registrar
     RacesEditorComponent,
     TimingComponent,
     AsTimerStringPipe,
-    RacerRegistrarionComponent,
   ],
   imports: [
     CommonModule,
@@ -59,7 +59,9 @@ import { RacerRegistrarionComponent } from './racer-registrarion/racer-registrar
     TabViewModule,
     CheckboxModule,
     ToolbarModule,
-    MultiSelectModule
+    MultiSelectModule,
+    RacerRegistrationModule,
+    RaceResultsModule,
   ],
   providers: [
     RacersService,

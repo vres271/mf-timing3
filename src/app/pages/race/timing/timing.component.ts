@@ -63,13 +63,6 @@ export class TimingComponent implements OnInit, OnDestroy{
   registerRacerVisible = false;
 
   resultsVisible = false;
-  results: {
-    bestFinish: RaceEvent[],
-    bestLap: RaceEvent[],
-  } = {
-    bestFinish: [],
-    bestLap: [],
-  }
 
   constructor(
     private route: ActivatedRoute,
@@ -203,33 +196,5 @@ export class TimingComponent implements OnInit, OnDestroy{
 
   showResults() {
     this.resultsVisible = true;
-
-    let min: any = {};
-    this.results.bestFinish = this.raceEvents
-        .filter(item => item.raceEventType === RaceEventType.Finish)
-        .sort((a,b) => a.dt - b.dt)
-        .filter(item => {
-          if (min[item.racerNum] === undefined) {
-            min[item.racerNum] = true;
-            return true;
-          } else {
-            return false;
-          }
-        })
-
-    min = {}
-    this.results.bestLap = this.raceEvents
-        .filter(item => item.raceEventType === RaceEventType.Point)
-        .sort((a,b) => a.dt - b.dt)
-        .filter(item => {
-          if (min[item.racerNum] === undefined) {
-            min[item.racerNum] = true;
-            return true;
-          } else {
-            return false;
-          }
-        })
-
   }
-
 }
