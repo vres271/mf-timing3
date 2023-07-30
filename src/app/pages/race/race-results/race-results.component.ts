@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { RaceEvent, RaceEventType } from 'src/app/shared/models/race-event.model';
 import { Race } from 'src/app/shared/models/race.model';
@@ -7,7 +7,8 @@ import { RaceEventsService } from 'src/app/shared/services/race-events.service';
 @Component({
   selector: 'app-race-results',
   templateUrl: './race-results.component.html',
-  styleUrls: ['./race-results.component.css']
+  styleUrls: ['./race-results.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RaceResultsComponent  implements OnInit{
   @Input() race: Race | undefined;

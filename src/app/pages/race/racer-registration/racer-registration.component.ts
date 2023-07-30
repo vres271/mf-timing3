@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, switchMap } from 'rxjs';
 import { Race } from 'src/app/shared/models/race.model';
 import { Racer, RacerDTO } from 'src/app/shared/models/racer.model';
@@ -9,7 +9,8 @@ import { UsersService } from 'src/app/shared/services/users.service';
 @Component({
   selector: 'app-racer-registration',
   templateUrl: './racer-registration.component.html',
-  styleUrls: ['./racer-registration.component.css']
+  styleUrls: ['./racer-registration.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class RacerRegistrationComponent implements OnInit{
