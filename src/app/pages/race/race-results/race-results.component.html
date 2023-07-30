@@ -4,11 +4,7 @@
             <p-table 
                 #table
                 [value]="results.bestFinish" 
-                [paginator]="true"
-                [rows]="5000"     
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [rowsPerPageOptions]="[20, 50, 100, 500, 1000]"      
+                [scrollable]="true" scrollHeight="70vh" [virtualScroll]="true" [virtualScrollItemSize]="46"
                 styleClass="p-datatable-sm" >
                 <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
                     <tr [pSelectableRow]="item">
@@ -26,11 +22,7 @@
             <p-table 
                 #table
                 [value]="results.bestLap" 
-                [paginator]="true"
-                [rows]="5000"     
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [rowsPerPageOptions]="[20, 50, 100, 500, 1000]"      
+                [scrollable]="true" scrollHeight="70vh" [virtualScroll]="true" [virtualScrollItemSize]="46"
                 styleClass="p-datatable-sm" >
                 <ng-template pTemplate="body" let-item  let-rowIndex="rowIndex">
                     <tr [pSelectableRow]="item">

@@ -40,9 +40,7 @@
     <p-table 
         #eventsTable
         [value]="raceEvents" 
-        [rows]="50"     
         [sortField]="'id'" [sortOrder]="-1"
-        [rowsPerPageOptions]="[20, 50, 100, 500, 1000]"   
         [scrollable]="true" scrollHeight="60vh" [virtualScroll]="true" [virtualScrollItemSize]="46"
         styleClass="p-datatable-sm mt-2" >
         <ng-template pTemplate="header" >

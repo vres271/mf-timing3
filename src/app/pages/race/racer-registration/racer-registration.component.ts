@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Subscription, switchMap } from 'rxjs';
 import { Race } from 'src/app/shared/models/race.model';
 import { Racer, RacerDTO } from 'src/app/shared/models/racer.model';
@@ -18,31 +19,28 @@ export class RacerRegistrationComponent implements OnInit{
   @Output() onClose = new EventEmitter();
   @Input() race: Race | undefined;
   subs: Subscription[] = [];
-
   racers: Racer[] | undefined;
-  registerNewRacerError = '';
-  newRacer = {
-    num:0,
-    firstName:'',
-    secondName:'',
-    thirdName:'' ,
-  };
+
+  registerRacerForm = this.fb.group({
+    num: [0, [Validators.required, this.racerNumExistsValidator()]],
+    firstName: ['', Validators.required],
+    secondName: ['', Validators.required],
+    thirdName: [''],
+  });
 
   constructor(
     private racersService: RacersService,
     private usersService: UsersService,
+    private fb: FormBuilder,
   ) { }
 
   ngOnInit() {
     this.subs.push(this.racersService.get().subscribe(
       racers => {
         this.racers = racers;
-        this.newRacer = {
-          num: (this.racers?.filter(racer => racer.raceId === this.race?.id).reduce((p, v) =>  ( p.num > v.num ? p : v )).num  || 0) + 1,
-          firstName:'',
-          secondName:'',
-          thirdName:'' ,  
-        }
+        this.registerRacerForm.patchValue({
+          num: (this.racers?.filter(racer => racer.raceId === this.race?.id).reduce((p, v) =>  ( p.num > v.num ? p : v )).num  || 0) + 1
+        })
       }
     ))
   }
@@ -51,11 +49,10 @@ export class RacerRegistrationComponent implements OnInit{
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
-  validateNewRacerNum() {
-    this.registerNewRacerError = '';
-    const existedRacer = this.racers?.find(racer => +this.newRacer?.num === +racer.num )
-    if (existedRacer) {
-      this.registerNewRacerError = `Racer Number already exists: ${existedRacer.userName || '-'}`;
+  racerNumExistsValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const existedRacer = this.racers?.find(racer => +control.value === +racer.num );
+      return existedRacer ?  {racerNumExists:  `Racer Number already exists: ${existedRacer.userName || '-'}`} : null
     }
   }
 
@@ -63,9 +60,9 @@ export class RacerRegistrationComponent implements OnInit{
     const user: UserDTO =  {
       id: 0,
       name: '',
-      firstName: this.newRacer.firstName,
-      secondName: this.newRacer.secondName,
-      thirdName: this.newRacer.thirdName,
+      firstName: this.registerRacerForm.value.firstName || '',
+      secondName: this.registerRacerForm.value.secondName || '',
+      thirdName: this.registerRacerForm.value.thirdName || '',
       email: '',
       active: true,
     }
@@ -79,7 +76,7 @@ export class RacerRegistrationComponent implements OnInit{
             raceId: this.race?.id || 0,
             categoryId: 0,
             regDate: new Date().getTime(),
-            num: +this.newRacer.num,
+            num: + (this.registerRacerForm.value.num || 0),
           }
           return this.racersService.add(racer)
         })
@@ -92,6 +89,10 @@ export class RacerRegistrationComponent implements OnInit{
           console.warn('Error creating Racer', createdRacer);
         }
       }))
+  }
+
+  get numErrors() {
+    return this.registerRacerForm.get('num')?.errors
   }
 
   close() {

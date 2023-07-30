@@ -1,21 +1,23 @@
 
-<div class="input-block" >
-    <label>Номер</label>
-    <input type="number" min="0" step="1" pInputText [(ngModel)]="newRacer.num" (ngModelChange)="validateNewRacerNum()" />
-    <div *ngIf="registerNewRacerError" style="color: orangered; margin-top: 4px;">
-        {{registerNewRacerError}}
-    </div>
-    <label>Имя</label>
-    <input type="text" pInputText [(ngModel)]="newRacer.firstName" />
-    <label>Фамилия</label>
-    <input type="text" pInputText [(ngModel)]="newRacer.secondName" />
+<form class="input-block" [formGroup]="registerRacerForm">
+    <label>Номер*</label>
+    <input type="number" min="0" step="1" pInputText formControlName="num"  />
+    <label>Имя*</label>
+    <input type="text" pInputText formControlName="firstName" />
+    <label>Фамилия*</label>
+    <input type="text" pInputText formControlName="secondName" />
     <label>Отчество</label>
-    <input type="text" pInputText [(ngModel)]="newRacer.thirdName" />
-    <div class="flex btn-bar"  [style]="{'margin-top': '8px'}">
-        <p-button label="Зарегистрировать" (onClick)="registerNewRacer()" styleClass="p-button-success" 
-            [disabled]="!(newRacer.num&&newRacer.firstName&&newRacer.secondName&&!registerNewRacerError)">
-        </p-button>
+    <input type="text" pInputText formControlName="thirdName" />
+    <div class="flex btn-bar mt-3" >
+        <p-button 
+            label="Зарегистрировать" 
+            (onClick)="registerNewRacer()" 
+            styleClass="p-button-success" 
+            [disabled]="!registerRacerForm.valid"
+        ></p-button>
         <p-button label="Отмена" (onClick)="close()" styleClass="p-button-secondary"></p-button>
     </div>
-</div>
-
+    <div *ngIf="numErrors?.['racerNumExists']" style="color: orangered; margin-top: 12px;">
+        {{numErrors?.['racerNumExists']}}
+    </div>
+</form>
