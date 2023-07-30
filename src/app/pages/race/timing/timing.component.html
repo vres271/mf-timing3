@@ -89,41 +89,14 @@
 <p-sidebar [visible]="racerSelectVisible" position="right" [modal]="false" (onHide)="racerSelectVisible=false" styleClass="p-sidebar-md">
     <ng-template pTemplate="header">Select Racer</ng-template>
     <ng-template pTemplate="content">
-        <ng-container *ngIf="racers">
-            <p-table 
-                #table
-                [value]="filter(racers, {raceId: race?.id})" 
-                [paginator]="true"
-                [rows]="500"     
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [rowsPerPageOptions]="[20, 50, 100, 500, 1000]"      
-                [globalFilterFields]="['num','userFullName']"  selectionMode="single" [(selection)]="selectedRacer" (onRowSelect)="selectRacer($event)"
-                styleClass="p-datatable-sm" >
-                <ng-template pTemplate="caption">
-                    <span class="p-input-icon-left ml-auto">
-                        <i class="pi pi-search"></i>
-                        <input pInputText type="text"  (input)="table.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
-                    </span>
-                    <p-button label="Register Racer" (onClick)="openRegisterNewRacerDialog()" class=" ml-auto" [style]="{'margin-left': '4px'}"></p-button>
-                </ng-template>        
-                <ng-template pTemplate="body" let-item >
-                    <tr [pSelectableRow]="item">
-                        <td>{{ item.num }}</td>
-                        <td>{{ item.userFullName }}</td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="5">No items found.</td>
-                    </tr>
-                </ng-template>        
-            </p-table>    
-        </ng-container>
+        <app-racer-select
+            [race]="race"
+            (onRegisterRacerClick)="registerRacerVisible = true"
+            (onRacerSelect)="selectRacer($event)"
+            (onClose)="this.racerSelectVisible = false"        
+        ></app-racer-select>
     </ng-template>
 </p-sidebar>
-
-
 
 <p-sidebar [visible]="registerRacerVisible" position="right" [modal]="false" (onHide)="registerRacerVisible=false" styleClass="p-sidebar-md">
     <ng-template pTemplate="header">Регистрация нового участника</ng-template>

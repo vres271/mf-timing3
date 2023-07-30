@@ -30,6 +30,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { RacerRegistrationModule } from './racer-registration/racer-registration.module';
 import { RaceResultsModule } from './race-results/race-results.module';
+import { RacerSelectModule } from './racer-select/racer-select.module';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { RaceResultsModule } from './race-results/race-results.module';
     MultiSelectModule,
     RacerRegistrationModule,
     RaceResultsModule,
+    RacerSelectModule,
   ],
   providers: [
     RacersService,

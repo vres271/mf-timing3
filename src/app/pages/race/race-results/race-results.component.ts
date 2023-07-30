@@ -27,14 +27,11 @@ export class RaceResultsComponent  implements OnInit{
   ) { }
 
   ngOnInit() {
-
     this.subs.push(this.raceEventsService.get()
     .subscribe(raceEvents => {
       this.raceEvents = raceEvents.filter(e => e.raceId === this.race?.id)
       this.calcResults();
     }))
-
-
   }
 
   ngOnDestroy() {
@@ -42,7 +39,6 @@ export class RaceResultsComponent  implements OnInit{
   }
 
   calcResults() {
-
     let min: any = {};
     this.results.bestFinish = this.raceEvents
         .filter(item => item.raceEventType === RaceEventType.Finish)
@@ -55,7 +51,6 @@ export class RaceResultsComponent  implements OnInit{
             return false;
           }
         })
-
     min = {}
     this.results.bestLap = this.raceEvents
         .filter(item => item.raceEventType === RaceEventType.Point)
@@ -68,7 +63,6 @@ export class RaceResultsComponent  implements OnInit{
             return false;
           }
         })
-
   }
 
 }

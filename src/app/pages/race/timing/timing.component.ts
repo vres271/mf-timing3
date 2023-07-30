@@ -58,7 +58,6 @@ export class TimingComponent implements OnInit, OnDestroy{
   raceEvents: RaceEvent[];
 
   racerSelectVisible = false;
-  selectedRacer!: Racer
 
   registerRacerVisible = false;
 
@@ -152,9 +151,8 @@ export class TimingComponent implements OnInit, OnDestroy{
     this.timingService.setReady();
   }
 
-  selectRacer(e: any) {
-    this.timingService.setRacer(e.data as Racer);
-    this.racerSelectVisible = false;
+  selectRacer(racer: Racer) {
+    this.timingService.setRacer(racer);
   }
 
   showSelectRacerDialog() {
@@ -162,15 +160,9 @@ export class TimingComponent implements OnInit, OnDestroy{
     this.racerSelectVisible = true;
   }
 
-  filter(items: Item[], cond: any):Item[] {
-    const [key, value] = Object.entries(cond)[0];
-    return items.filter((item:any) => item[key] === value)
-  }
-
   openRegisterNewRacerDialog() {
     this.registerRacerVisible = true;
   }
-
 
   openDeleteRaceEventDialog(item: RaceEvent) {
     this.confirmationService.confirm({
