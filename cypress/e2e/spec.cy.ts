@@ -1,90 +1,102 @@
+const newRacerName = ['Иван', 'Петров', 'Сергеевич'];
+
+function registerRaceEvents() {
+  cy.contains('Point').click()
+  cy.get('.p-toolbar-group-start > .mr-2 > .p-ripple').should('contain.text', 'Race')
+  cy.wait(500);
+  cy.get('.p-button').contains('Point').click()
+  cy.wait(500);
+  cy.get('.p-button').contains('Point').click()
+  cy.wait(500);
+  cy.get('.p-button').contains('Point').click()
+  cy.wait(500);
+  cy.get('.p-button').contains('Point').click()
+  cy.wait(500);
+
+  cy.get('.p-toolbar-group-start > .mr-2 > .p-ripple').should('contain.text', 'StandBy')
+  cy.get('.p-highlight').should('contain.text', '4')
+
+  cy.get('.p-datatable-tbody > :nth-child(1) > :nth-child(3)').should('contain.text', 'Finish')
+  cy.get(':nth-child(3) > :nth-child(3)').should('contain.text', 'Point')
+  cy.get(':nth-child(4) > :nth-child(3)').should('contain.text', 'Point')
+  cy.get(':nth-child(5) > :nth-child(3)').should('contain.text', 'Point')
+  cy.get(':nth-child(6) > :nth-child(3)').should('contain.text', 'Start')
+
+  cy.get('.racer-title > :nth-child(2)').invoke('text').then((racerName) => {
+    cy.get('.p-datatable-tbody > :nth-child(1) > :nth-child(2)').should('contain.text', racerName);
+    cy.get(':nth-child(3) > :nth-child(2)').should('contain.text', racerName);
+    cy.get(':nth-child(4) > :nth-child(2)').should('contain.text', racerName);
+    cy.get(':nth-child(5) > :nth-child(2)').should('contain.text', racerName);
+    cy.get(':nth-child(6) > :nth-child(2)').should('contain.text', racerName);
+  });  
+
+  cy.get(':nth-child(5) > :nth-child(4)').invoke('text').then(time => {
+    cy.get('.p-steps').contains(time).should('exist');
+  })
+  cy.get(':nth-child(4) > :nth-child(4)').invoke('text').then(time => {
+    cy.get('.p-steps').contains(time).should('exist');
+  })
+  cy.get(':nth-child(3) > :nth-child(4)').invoke('text').then(time => {
+    cy.get('.p-steps').contains(time).should('exist');
+  })
+  cy.get('.p-datatable-tbody > :nth-child(2) > :nth-child(4)').invoke('text').then(time => {
+    cy.get('.p-steps').contains(time).should('exist');
+  })  
+}
+
+function powerOn() {
+    cy.get('.pi-power-off').click()
+    cy.contains('StandBy').click()
+}
+
 describe('Test timing', () => {
-  it('LCPF race', () => {
+  
+  beforeEach(()=>{
     cy.viewport(1440, 950)
     cy.visit('http://localhost:4200/')
     cy.wait(300);
-    cy.visit('http://localhost:4200/')
-
+    cy.visit('http://localhost:4200/')  
     cy.contains('Race').click()
     cy.contains('LCPF').click()
+  })  
 
-    cy.get('.pi-power-off').click()
-    cy.wait(100);
+  it('Should start race and register raceevents', () => {
 
-    cy.contains('StandBy').click()
-
+    powerOn();
     cy.get('.pi-angle-right').click()
     cy.get('.pi-angle-right').click()
     cy.get('.pi-angle-right').click()
 
     cy.get('.racer-title > :nth-child(1)').should('contain.text', '3')
 
-    cy.contains('Point').click()
-    cy.get('.p-toolbar-group-start > .mr-2 > .p-ripple').should('contain.text', 'Race')
-    cy.wait(500);
-    cy.get('.p-button').contains('Point').click()
-    cy.wait(500);
-    cy.get('.p-button').contains('Point').click()
-    cy.wait(500);
-    cy.get('.p-button').contains('Point').click()
-    cy.wait(500);
-    cy.get('.p-button').contains('Point').click()
-    cy.wait(500);
+    registerRaceEvents()
 
-    cy.get('.p-toolbar-group-start > .mr-2 > .p-ripple').should('contain.text', 'StandBy')
-    cy.get('.p-highlight').should('contain.text', '4')
+  })
 
-    cy.get('.p-datatable-tbody > :nth-child(1) > :nth-child(3)').should('contain.text', 'Finish')
-    cy.get(':nth-child(3) > :nth-child(3)').should('contain.text', 'Point')
-    cy.get(':nth-child(4) > :nth-child(3)').should('contain.text', 'Point')
-    cy.get(':nth-child(5) > :nth-child(3)').should('contain.text', 'Point')
-    cy.get(':nth-child(6) > :nth-child(3)').should('contain.text', 'Start')
+  it('Should register and select racer, use it in race', () => {
 
-    cy.get('.racer-title > :nth-child(2)').invoke('text').then((racerName) => {
-      cy.get('.p-datatable-tbody > :nth-child(1) > :nth-child(2)').should('contain.text', racerName);
-      cy.get(':nth-child(3) > :nth-child(2)').should('contain.text', racerName);
-      cy.get(':nth-child(4) > :nth-child(2)').should('contain.text', racerName);
-      cy.get(':nth-child(5) > :nth-child(2)').should('contain.text', racerName);
-      cy.get(':nth-child(6) > :nth-child(2)').should('contain.text', racerName);
-    });
-
-    cy.get(':nth-child(5) > :nth-child(4)').invoke('text').then(time => {
-      cy.get('.p-steps').contains(time).should('exist');
-    })
-    cy.get(':nth-child(4) > :nth-child(4)').invoke('text').then(time => {
-      cy.get('.p-steps').contains(time).should('exist');
-    })
-    cy.get(':nth-child(3) > :nth-child(4)').invoke('text').then(time => {
-      cy.get('.p-steps').contains(time).should('exist');
-    })
-    cy.get('.p-datatable-tbody > :nth-child(2) > :nth-child(4)').invoke('text').then(time => {
-      cy.get('.p-steps').contains(time).should('exist');
-    })
-  
+    powerOn();
+    cy.get('.pi-angle-right').click()
 
     cy.get('.racer-title > :nth-child(2)').click()
     cy.contains('Register Racer').click()
-
     cy.contains('Зарегистрировать').should('be.disabled');
 
     cy.get('.input-block > input[type="number"]').invoke('val').then((nextRacerNum) => {
       
-      const name = ['Иван', 'Петров', 'Сергеевич'].map(n => n + nextRacerNum);
+      const name = newRacerName.map(n => n + nextRacerNum);
 
       cy.get('.input-block > :nth-child(4)').type(name[0])
       cy.get('.input-block > :nth-child(6)').type(name[1])
       cy.get('.input-block > :nth-child(8)').type(name[2])
 
       cy.contains('Зарегистрировать').should('not.be.disabled').click();
-
       cy.get('.p-input-icon-left > .p-inputtext').type(name.join(' '))
-
       cy.get('#pr_id_4-table > .p-datatable-tbody > :nth-child(1) > :nth-child(2)').should('contain.text', name.join(' ')).click();
-
       cy.get('.racer-title > :nth-child(2)').should('contain.text', name.join(' '))
 
+      registerRaceEvents();
     })
-
 
   })
 })
