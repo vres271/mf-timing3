@@ -21,6 +21,7 @@ import { SerialComponent } from './serial/serial.component';
 import { TabViewModule } from 'primeng/tabview';
 import { DriversComponent } from './drivers/drivers.component';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
     ItemsPanelModule,
     TabViewModule,
     SelectButtonModule,
+    InputSwitchModule,
   ],
   bootstrap: [AdminComponent]
 })

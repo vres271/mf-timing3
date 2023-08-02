@@ -1,0 +1,10 @@
+.logingIcon {
+    font-size: .7rem;
+    opacity: .5;
+}
+
+.logingIcon.on {
+    opacity: 1;
+    color: orangered;
+}
+

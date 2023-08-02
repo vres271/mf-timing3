@@ -47,6 +47,7 @@ export  abstract class DriverService<InputType, OutputType> {
     input: [],
     output: [],
   }
+  logingOn = false;
 
   constructor() { }
 
@@ -78,10 +79,10 @@ export  abstract class DriverService<InputType, OutputType> {
 
   startLogging() {
     this.subs.push(this.inputStream$.subscribe(res => {
-      this.ioLog.input.push({t: new Date().getTime(), data: JSON.stringify(res), direction: DriverValueDirection.Input})
+      if(this.logingOn) this.ioLog.input.push({t: new Date().getTime(), data: JSON.stringify(res), direction: DriverValueDirection.Input})
     }))
     this.subs.push(this.outputStream$.subscribe(res => {
-      this.ioLog.output.push({t: new Date().getTime(), data: JSON.stringify(res), direction: DriverValueDirection.Output})
+      if(this.logingOn) this.ioLog.output.push({t: new Date().getTime(), data: JSON.stringify(res), direction: DriverValueDirection.Output})
     }))
   }
 

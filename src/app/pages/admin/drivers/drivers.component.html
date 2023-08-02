@@ -16,7 +16,8 @@
     </ng-template>        
     <ng-template pTemplate="body" let-item >
         <tr [pSelectableRow]="item">
-            <td>{{ item.id }}</td>
+            <td width="30px">{{ item.id }}</td>
+            <td width="30px"><i class="pi pi-circle-fill logingIcon" [ngClass]="{on: item.logingOn}" ></i></td>
             <td>{{ item.name }}</td>
             <td width="100px">{{ driverConnectionStateNames[item.connectionState]}}</td>
             <td style="width: 10px; padding: 0;" [ngStyle]="{'background-color': item.connectionState === 3 ? 'MediumSeaGreen' : 'grey'}"></td>
@@ -33,6 +34,8 @@
     <ng-template pTemplate="header">Driver IO</ng-template>
     <ng-template pTemplate="content">
         <div class="flex-row flex-start">
+            <p-inputSwitch [(ngModel)]="selectedItem.logingOn"></p-inputSwitch>
+            <div class="mr-6">Loging</div>
             <p-selectButton [options]="directionOptions" [(ngModel)]="sendDirection" optionLabel="label" optionValue="value" ></p-selectButton>
             <input type="text" [(ngModel)]="valueToSend" pInputText style="width: 60%" />
             <p-button label="Send" (click)="sendValue(valueToSend)" styleClass="p-button-secondary" [style]="{'margin-left': '8px'}" ></p-button>
