@@ -19,20 +19,28 @@ body {
     margin-bottom: 1rem
 }
 
-app-root{
+app-root {
     display: block;
     height: 100vh;
 }
 
-app-layout{
+app-layout {
     display: block;
     height: 100vh;
 }
 
-.input-block{
+.input-block {
     flex-direction: column;
     display: flex;
     margin-bottom: 8px;
+}
+
+.form-error {
+    color: var(--pink-300);
+    border: 1px solid var(--pink-200);
+    border-radius: 4px;
+    padding: 8px;
+    text-align: center;
 }
 
 .with-menu-layout {

@@ -17,7 +17,5 @@
         ></p-button>
         <p-button label="Отмена" (onClick)="close()" styleClass="p-button-secondary"></p-button>
     </div>
-    <div *ngIf="numErrors?.['racerNumExists']" style="color: orangered; margin-top: 12px;">
-        {{numErrors?.['racerNumExists']}}
-    </div>
+    <div *ngIf="numErrors?.['racerNumExists']" class="form-error mt-3">{{numErrors?.['racerNumExists']}}</div>
 </form>
