@@ -1,3 +1,8 @@
 
-<p-calendar [(ngModel)]="dt" [showTime]="true" [showSeconds]="true" dateFormat="dd.mm.yy"></p-calendar>
-<!-- <input type="text" [(ngModel)]="model"> -->
+<p-calendar 
+    [ngModel]="_value" 
+    (ngModelChange)="onDateChange($event)" 
+    [showTime]="true" 
+    [showSeconds]="true" 
+    dateFormat="dd.mm.yy">
+</p-calendar>

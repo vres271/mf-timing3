@@ -23,7 +23,7 @@
                 </ng-container>
                 <ng-container *ngIf="field.type === 'date'">
                     <label>{{field.title}}</label>
-                    <date-time-control [(dt)]="$any(item)[field.name]" ></date-time-control>
+                    <date-time-control [(ngModel)]="$any(item)[field.name]" ></date-time-control>
                 </ng-container>
             </div>
             <div class="btn-bar">

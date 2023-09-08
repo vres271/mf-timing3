@@ -1,31 +1,43 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'date-time-control',
   templateUrl: './date-time.component.html',
-  styleUrls: ['./date-time.component.css']
+  styleUrls: ['./date-time.component.css'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => DateTimeComponent),
+      multi: true,
+    }
+  ]  
 })
-export class DateTimeComponent implements OnInit{
 
-  dtValue: Date;
-  @Input()
-  get dt() {
-    return this.dtValue;
+export class DateTimeComponent implements ControlValueAccessor{
+
+  _value: Date | null
+    
+  writeValue(value: number | null): void {
+    this._value = value ? new Date(value) : null
   }
 
-  @Output() dtChange = new EventEmitter();
+  onDateChange(value: Date) {
+    this._value = value;
+    this.onChange(this._value.getTime());
+  }
 
-  set dt(val) {
-    if(typeof val === 'number') {
-      this.dtValue = new Date(val);
-    } else {
-      this.dtValue = val;
-    }
-    this.dtChange.emit(this.dtValue?.getTime());
-  } 
+  private onChange: (value: number) => void = () => {};
+  registerOnChange(onChange: (value: number) => void): void {
+    this.onChange = onChange
+  }
 
-  ngOnInit() {
-    
+  registerOnTouched(fn: any): void {
+    // throw new Error('Method not implemented.');
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    // throw new Error('Method not implemented.');
   }
   
 }
