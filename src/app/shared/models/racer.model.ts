@@ -13,7 +13,7 @@ export interface RacerDTO extends Item{
     regDate: number;
     num: number;
 }
-// test
+// test 1
 export class Racer  implements RacerDTO{
     id: number;
     userId: number;
