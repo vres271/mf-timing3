@@ -10,3 +10,7 @@ export enum EntityType {
 export interface Item {
     id: number;
 }
+
+export interface ItemDTO {
+    id: number;
+}

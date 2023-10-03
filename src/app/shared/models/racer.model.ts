@@ -1,36 +1,58 @@
-import { Item } from './items.model.js';
+import { Item, ItemDTO } from './items.model.js';
 import { Race } from './race.model.js';
 import { User } from './user.model.js';
 
-export interface EmptyRacer extends Partial<Racer>{
+export interface EmptyRacer extends Partial<Racer> {
   
 }
 
-export interface RacerDTO extends Item{
+export interface RacerDTO extends ItemDTO {
     userId: number;
     raceId: number;
     categoryId: number;
     regDate: number;
     num: number;
 }
-// test 1
-export class Racer  implements RacerDTO{
+
+export class Racer implements Item {
     id: number;
-    userId: number;
-    raceId: number;
-    categoryId: number;
-    regDate: number;
+    private _userId: number;
+    private _raceId: number;
+    private _categoryId: number;
+    private _regDate: number;
     num: number;
 
     private itemsMap: any;
   
     constructor(dto: RacerDTO, itemsMap: any) {
-      Object.assign(this, dto);
+      // Object.assign(this, dto);
+      this.fromDTO(dto);
       this.itemsMap = itemsMap;
     }
   
+    fromDTO(dto: RacerDTO) {
+      this.id = dto.id
+      this._userId = dto.userId;
+      this._raceId = dto.raceId;
+      this._categoryId = dto.categoryId;
+      this._regDate = dto.regDate;
+      this.num = dto.num;
+    }
+
+    toDTO(): RacerDTO {
+      const dto:RacerDTO = {
+        id: this.id,
+        userId: this.user.id,
+        raceId: this.race.id,
+        categoryId: this.category?.id,
+        regDate: this._regDate,
+        num: this.num,
+      }
+      return dto;
+    }
+
     get user():User {
-      return this.itemsMap.users.id.get(this.userId);
+      return this.itemsMap.users.id.get(this._userId);
     }
     
     get userName():string {
@@ -41,12 +63,20 @@ export class Racer  implements RacerDTO{
       return this.user?.fullName
     }
 
+    get regDate():Date {
+      return new Date(this._regDate);
+    }
+
+    set regDate(date: Date) {
+      this._regDate = date.getTime();
+    }
+
     get registrationDate():string {
-      return new Date(this.regDate).toLocaleString();
+      return this.regDate.toLocaleString();
     }
 
     get race():Race {
-      return this.itemsMap.races.id.get(this.raceId);
+      return this.itemsMap.races.id.get(this._raceId);
     }
 
     get raceName():string {
@@ -56,21 +86,9 @@ export class Racer  implements RacerDTO{
     get raceTypeName():string {
       return this.race?.raceTypeName;
     }
-    
-}
 
-export function DTO2Racer() {
-
-}
-
-export function Racer2DTO(item: Racer):RacerDTO {
-    const dto:RacerDTO = {
-      id: 1*item.id || 0,
-      userId: 1*item.userId || 0,
-      raceId: 1*item.raceId || 0 ,
-      categoryId: 1*item.categoryId || 0,
-      regDate: ((regDate:any) => typeof regDate === 'object' ? regDate.getTime() : regDate)(item.regDate),
-      num: 1*item.num || 0,
+    get category():any {
+      return null;
     }
-    return dto;
+    
 }

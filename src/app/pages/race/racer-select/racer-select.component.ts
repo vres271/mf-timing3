@@ -27,7 +27,7 @@ export class RacerSelectComponent implements OnInit{
 
   ngOnInit() {
     this.racers$ = this.racersService.get().pipe(
-      map(racers => racers.filter(racer => racer.raceId === this.race?.id))
+      map(racers => racers.filter(racer => racer.race.id === this.race?.id))
     );
   }
 

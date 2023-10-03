@@ -1,9 +1,10 @@
 import { APIService } from '../../core/services/api.service';
-import { Racer, Racer2DTO, RacerDTO } from './../models/racer.model';
+import { Racer, RacerDTO } from './../models/racer.model';
 import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { EntityType } from '../models/items.model';
 import { ItemsService } from './items.service';
+import { Observable, tap } from 'rxjs';
 
 @Injectable()
 
@@ -22,6 +23,5 @@ export class RacersService extends ItemsService<Racer, RacerDTO>{
   getCachedByNum(racerNum: number):Racer {
     return this.dataService.items[this.entityType].find((racer: Racer) => racer.num === racerNum);
   }
-
 
 }

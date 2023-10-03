@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { EditField } from 'src/app/shared/components/common/items-editor/items-editor.component';
 import { Item } from 'src/app/shared/models/items.model';
-import { Racer, Racer2DTO, RacerDTO } from 'src/app/shared/models/racer.model';
+import { Racer, RacerDTO } from 'src/app/shared/models/racer.model';
 import { RacersService } from 'src/app/shared/services/racers.service';
 
 @Component({
@@ -41,7 +41,7 @@ export class RacersComponent implements OnInit {
   }
 
   openEditor(items: Item[]) {
-    this.editedItems = (items as Racer[]).map(racer => Racer2DTO(racer));
+    this.editedItems = (items as Racer[]).map(racer => racer.toDTO());
   }
 
   copyRacer(item: Item) {

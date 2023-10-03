@@ -39,7 +39,7 @@ export class RacerRegistrationComponent implements OnInit{
       racers => {
         this.racers = racers;
         this.registerRacerForm.patchValue({
-          num: (this.racers?.filter(racer => racer.raceId === this.race?.id).reduce((p, v) =>  ( p.num > v.num ? p : v )).num  || 0) + 1
+          num: (this.racers?.filter(racer => racer.race.id === this.race?.id).reduce((p, v) =>  ( p.num > v.num ? p : v )).num  || 0) + 1
         })
       }
     ))
