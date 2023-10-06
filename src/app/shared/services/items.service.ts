@@ -1,5 +1,5 @@
 import { APIService } from '../../core/services/api.service';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map, tap } from 'rxjs';
 import { DataService } from './data.service';
 import { EntityType } from '../models/items.model';
 
@@ -22,6 +22,15 @@ export abstract class ItemsService<ItemType, DTOType> {
 
   getCachedById(id: number):ItemType {
     return this.dataService.items[this.entityType].find(racer => racer.id === id);
+  }
+
+  getAsDictionary(label = 'name'): Observable<{value: ItemType, label: string}[]> {
+    return this.get()
+      .pipe(
+        map(items => items
+          .map(item => ({value: item, label: (item as any)[label]}))
+        )
+      )
   }
 
   load():Observable<DTOType[]> {

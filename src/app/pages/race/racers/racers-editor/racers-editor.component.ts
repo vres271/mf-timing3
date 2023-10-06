@@ -28,30 +28,24 @@ export class RacersEditorComponent implements OnInit  {
 
   ngOnInit() {
     this.editFields = [
-      {name: 'userId', title: 'userId', type: 'list', list: this.usersService.get()
-        .pipe(
-          map(users => users
-            .map(user => ({value: user.id, label: user.fullName}))
-          )
-        )},
-      {name: 'raceId', title: 'raceId', type: 'list', list: this.racesService.get()
-        .pipe(
-          map(races => races
-            .map(race => ({value: race.id, label: race.name}))
-          )
-        )},
-      {name: 'categoryId', title: 'categoryId', type: 'number' },
+      {name: 'user', title: 'User', type: 'list', list: this.usersService.getAsDictionary('fullName')},
+      {name: 'race', title: 'Race', type: 'list', list: this.racesService.getAsDictionary()},
+      // {name: 'categoryId', title: 'categoryId', type: 'number' },
       {name: 'regDate', title: 'regDate', type: 'date' },
       {name: 'num', title: 'num', type: 'number' },
     ]
   }
 
   save(dtos: RacerDTO[]) {
+    console.log('save', dtos);
+    return;
     this.racersService.save(dtos)
       .subscribe(res => console.log(res))    
   }
 
   add(item: RacerDTO) {
+    console.log('add', item);
+    return;
     this.racersService.add(item)
       .subscribe()    
   }

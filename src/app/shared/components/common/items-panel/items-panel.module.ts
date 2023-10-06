@@ -12,6 +12,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DateTimeModule } from '../../controls/date-time/date-time.module';
 import { ItemsPanelService } from './items-panel.service';
 import { ItemsEditorComponent } from '../items-editor/items-editor.component';
+import { ItemsEditorComponent2 } from '../items-editor2/items-editor2.component';
+import { CalendarModule } from 'primeng/calendar';
 
 
 
@@ -19,6 +21,7 @@ import { ItemsEditorComponent } from '../items-editor/items-editor.component';
   declarations: [
     ItemsPanelComponent,
     ItemsEditorComponent,
+    ItemsEditorComponent2,
   ],
   imports: [
     CommonModule,
@@ -31,7 +34,7 @@ import { ItemsEditorComponent } from '../items-editor/items-editor.component';
     DropdownModule,
     DateTimeModule,
     InputSwitchModule,
-
+    CalendarModule,
   ],
   providers: [
     ItemsPanelService
@@ -39,6 +42,7 @@ import { ItemsEditorComponent } from '../items-editor/items-editor.component';
   exports: [
     ItemsPanelComponent,
     ItemsEditorComponent,
+    ItemsEditorComponent2,
   ]
 })
 export class ItemsPanelModule { }

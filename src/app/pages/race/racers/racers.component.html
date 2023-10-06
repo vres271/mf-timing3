@@ -3,11 +3,11 @@
     >
 </app-racers-editor>
 <app-items-panel
-    [items$]="racers$"
+    [items$]="items$"
     [fields]="fields"
 
-    (onItemDelete)="deleteRacer($event)"
+    (onItemDelete)="deleteItem($event)"
     (onEditorOpen)="openEditor($event)"
-    (onItemCopy)="copyRacer($event)"
+    (onItemCopy)="copyItem($event)"
     >
 </app-items-panel>

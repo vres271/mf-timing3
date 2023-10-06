@@ -19,7 +19,7 @@ export class Racer implements Item {
     private _userId: number;
     private _raceId: number;
     private _categoryId: number;
-    private _regDate: number;
+    private _regDate: Date;
     num: number;
 
     private itemsMap: any;
@@ -35,24 +35,32 @@ export class Racer implements Item {
       this._userId = dto.userId;
       this._raceId = dto.raceId;
       this._categoryId = dto.categoryId;
-      this._regDate = dto.regDate;
+      this._regDate = dto.regDate ? new Date(dto.regDate) : new Date();
       this.num = dto.num;
     }
 
     toDTO(): RacerDTO {
       const dto:RacerDTO = {
         id: this.id,
-        userId: this.user.id,
-        raceId: this.race.id,
+        userId: this.user?.id,
+        raceId: this.race?.id,
         categoryId: this.category?.id,
-        regDate: this._regDate,
+        regDate: this._regDate.getTime(),
         num: this.num,
       }
       return dto;
     }
 
+    clone(): Racer {
+      return new Racer(this.toDTO(), this.itemsMap);
+    }
+
     get user():User {
       return this.itemsMap.users.id.get(this._userId);
+    }
+
+    set user(value: User) {
+      this._userId = value.id;
     }
     
     get userName():string {
@@ -64,11 +72,11 @@ export class Racer implements Item {
     }
 
     get regDate():Date {
-      return new Date(this._regDate);
+      return this._regDate;
     }
 
     set regDate(date: Date) {
-      this._regDate = date.getTime();
+      this._regDate = date;
     }
 
     get registrationDate():string {
@@ -77,6 +85,10 @@ export class Racer implements Item {
 
     get race():Race {
       return this.itemsMap.races.id.get(this._raceId);
+    }
+    
+    set race(value: Race) {
+      this._raceId = value.id;
     }
 
     get raceName():string {
@@ -89,6 +101,10 @@ export class Racer implements Item {
 
     get category():any {
       return null;
+    }
+    
+    set category(value: any) {
+      this._categoryId = value.id;
     }
     
 }

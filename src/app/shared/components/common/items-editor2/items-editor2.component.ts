@@ -6,16 +6,16 @@ export interface EditField {
   name: string;
   title: string; 
   type: string; 
-  list?: Observable<{value:any, label: string}[]>;
+  list?: Observable<{value:number, label: string}[]>;
   date?: Date
 }
 
 @Component({
-  selector: 'app-items-editor',
-  templateUrl: './items-editor.component.html',
-  styleUrls: ['./items-editor.component.css']
+  selector: 'app-items-editor2',
+  templateUrl: './items-editor2.component.html',
+  styleUrls: ['./items-editor2.component.css']
 })
-export class ItemsEditorComponent implements OnChanges{
+export class ItemsEditorComponent2 implements OnChanges{
 
   @Input() items: Item[]
   @Input() editFields: EditField[];
@@ -28,23 +28,24 @@ export class ItemsEditorComponent implements OnChanges{
 
   ngOnChanges(changes: SimpleChanges) {
     if(changes?.['items']) {
-      this.sourceItem = {...changes['items'].currentValue?.[0]};
+      this.sourceItem = (changes['items'].currentValue?.[0] as any)?.clone();
     }
   }
 
   save() {
     if(this.items[0]?.id) {
-      const firstItem:any = this.items[0];
-      const changedProps = Object.entries(firstItem).filter(entry => entry[1] !== this.sourceItem[entry[0]]);
-      this.onItemSave.emit(this.items.map(item => {
-        const changedItem:any = {...item};
-        changedProps.forEach(entry => {
-          changedItem[entry[0]] = entry[1];
-        })
-        return changedItem;
-      }));
+      this.onItemSave.emit(this.items[0]);
+      // const firstItem:any = this.items[0];
+      // const changedProps = Object.entries(firstItem).filter(entry => entry[1] !== this.sourceItem[entry[0]]);
+      // this.onItemSave.emit(this.items.map(item => {
+      //   const changedItem:any = {...item};
+      //   changedProps.forEach(entry => {
+      //     changedItem[entry[0]] = entry[1];
+      //   })
+      //   return changedItem;
+      // }));
     } else {
-      this.onItemAdd.emit({...this.items[0]});
+      this.onItemAdd.emit(this.items[0]);
     }
     this.items = [];
   }
