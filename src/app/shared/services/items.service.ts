@@ -1,11 +1,11 @@
 import { APIService } from '../../core/services/api.service';
 import { BehaviorSubject, Observable, map, tap } from 'rxjs';
 import { DataService } from './data.service';
-import { EntityType } from '../models/items.model';
+import { EntityType, Item, ItemDTO } from '../models/items.model';
 
 export type Class = { new(...args: any[]): any; };
 
-export abstract class ItemsService<ItemType, DTOType> {
+export abstract class ItemsService<ItemType extends Item, DTOType extends ItemDTO> {
 
   items$ = new BehaviorSubject<ItemType[]>([]);
   itemClass: Class;
@@ -54,6 +54,30 @@ export abstract class ItemsService<ItemType, DTOType> {
       }));  
   }
 
+  add1(items: ItemType[]):Observable<ItemType> {
+    return this.apiService.add<DTOType>(this.entityType, (items[0] as any).toDTO())
+      .pipe(
+        map(addedDTO => {
+          const newItem = new (this.itemClass)(addedDTO, this.dataService.map);
+          this.dataService.addItem(this.entityType, newItem);
+          this.items$.next(this.dataService.items[this.entityType]);
+          return newItem;
+        })
+      );  
+  }
+
+  save1(items: ItemType[]):Observable<ItemType[]> {
+    return this.apiService.update<DTOType>(this.entityType, items.map((item:any) => item.toDTO()))
+      .pipe(
+        map(savedDTOs => {
+          const newItems = savedDTOs.map((savedDTO: DTOType) =>  new (this.itemClass)(savedDTO, this.dataService.map));
+          this.dataService.replaceItems(this.entityType, newItems);
+          this.items$.next(this.dataService.items[this.entityType]);
+          return newItems;
+        })
+      );
+  }
+
   save(dtos: DTOType[]):Observable<DTOType[]> {
     return this.apiService.update<DTOType>(this.entityType, dtos)
       .pipe(tap((savedDTOs: DTOType[] ) => {
@@ -70,9 +94,7 @@ export abstract class ItemsService<ItemType, DTOType> {
   delete(id: number):Observable<DTOType> {
     return this.apiService.delete(this.entityType, id)
       .pipe(tap((deletedDTO: DTOType ) => {
-        const i = this.dataService.items[this.entityType].findIndex((item:any) => item.id === id);
-        this.dataService.items[this.entityType].splice(i, 1);
-        this.dataService.createMap(this.entityType);
+        this.dataService.deleteItem(this.entityType, id);
         this.items$.next(this.dataService.items[this.entityType]);
       }));
   }

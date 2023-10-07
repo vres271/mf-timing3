@@ -4,7 +4,7 @@ import { Item } from 'src/app/shared/models/items.model';
 import { UsersService } from 'src/app/shared/services/users.service';
 import { RacersService } from 'src/app/shared/services/racers.service';
 import { map } from 'rxjs';
-import { RacerDTO } from 'src/app/shared/models/racer.model';
+import { Racer, RacerDTO } from 'src/app/shared/models/racer.model';
 import { EditField } from 'src/app/shared/components/common/items-editor/items-editor.component';
 import { RacesService } from 'src/app/shared/services/races.service';
 
@@ -36,18 +36,14 @@ export class RacersEditorComponent implements OnInit  {
     ]
   }
 
-  save(dtos: RacerDTO[]) {
-    console.log('save', dtos);
-    return;
-    this.racersService.save(dtos)
-      .subscribe(res => console.log(res))    
+  save(items: Item[]) {
+    this.racersService.save1(items as Racer[])
+      .subscribe(console.log)    
   }
 
-  add(item: RacerDTO) {
-    console.log('add', item);
-    return;
-    this.racersService.add(item)
-      .subscribe()    
+  add(items: Item[]) {
+    this.racersService.add1(items as Racer[])
+      .subscribe(console.log)    
   }
 
 }

@@ -4,15 +4,15 @@ import { DataService } from "src/app/shared/services/data.service";
 import { ItemsService } from "src/app/shared/services/items.service";
 import { EditField } from "../items-editor/items-editor.component";
 
-export abstract class ItemsComponent<T extends Item, DTOType extends ItemDTO> {
+export abstract class ItemsComponent<ItemType extends Item, DTOType extends ItemDTO> {
 
-  items$: Observable<T[]>;
-  selectedItems:  T[] = [];
-  editedItems: T[];
+  items$: Observable<ItemType[]>;
+  selectedItems:  ItemType[] = [];
+  editedItems: ItemType[];
   fields: EditField[]
 
   constructor(
-    public itemsService: ItemsService<T, DTOType>,
+    public itemsService: ItemsService<ItemType, DTOType>,
     public dataService: DataService,
   ) {
     this.items$ = this.itemsService.get();
@@ -21,7 +21,7 @@ export abstract class ItemsComponent<T extends Item, DTOType extends ItemDTO> {
   openEditor(items: Item[]) {
     this.editedItems = items.map(item => item.id 
       ? (item as any).clone() 
-      : new this.itemsService.itemClass({id: 0} as T, this.dataService.map));
+      : new this.itemsService.itemClass({id: 0} as ItemType, this.dataService.map));
   }
 
   copyItem(item: Item) {

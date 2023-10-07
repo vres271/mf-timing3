@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { Racer } from '../models/racer.model';
-import { EntityType } from '../models/items.model';
+import { EntityType, Item } from '../models/items.model';
 
 export interface ItemsMapSection {
   id: Map<number, Racer | User>;
@@ -38,6 +38,31 @@ export class DataService {
 
   getById(key: EntityType, id: number) {
     return this.map[key].id.get(id);
+  }
+
+  addItem(entityType: EntityType, newItem: any) {
+    this.items[entityType].push(newItem);
+    this.createMap(entityType);
+  }
+
+  replaceItems(entityType: EntityType, newItems: any) {
+    newItems.forEach((newItem: any) => {
+      const i = this.items[entityType].findIndex((item: Item) => item.id === newItem.id);
+      this.items[entityType][i] = newItem;
+    })
+    this.createMap(entityType);
+  }
+
+  replaceItem(entityType: EntityType, newItem: any) {
+    const i = this.items[entityType].findIndex((item: Item) => item.id === newItem.id);
+    this.items[entityType][i] = newItem;
+    this.createMap(entityType);
+  }
+
+  deleteItem(entityType: EntityType, id: number) {
+    const i = this.items[entityType].findIndex((item:any) => item.id === id);
+    this.items[entityType].splice(i, 1);
+    this.createMap(entityType);
   }
 
   afterItemUpdate<T, V>(key: EntityType, savedDTO: any, type: { new(a:T, b:Record<EntityType, ItemsMapSection>):V ;}):T {

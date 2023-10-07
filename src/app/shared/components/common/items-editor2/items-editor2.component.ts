@@ -20,8 +20,8 @@ export class ItemsEditorComponent2 implements OnChanges{
   @Input() items: Item[]
   @Input() editFields: EditField[];
 
-  @Output() onItemSave = new EventEmitter<any>();
-  @Output() onItemAdd = new EventEmitter<any>();
+  @Output() onItemSave = new EventEmitter<Item[]>();
+  @Output() onItemAdd = new EventEmitter<Item[]>();
   @Output() onCancel = new EventEmitter<any>();
 
   sourceItem: any;
@@ -34,7 +34,7 @@ export class ItemsEditorComponent2 implements OnChanges{
 
   save() {
     if(this.items[0]?.id) {
-      this.onItemSave.emit(this.items[0]);
+      this.onItemSave.emit(this.items);
       // const firstItem:any = this.items[0];
       // const changedProps = Object.entries(firstItem).filter(entry => entry[1] !== this.sourceItem[entry[0]]);
       // this.onItemSave.emit(this.items.map(item => {
@@ -45,7 +45,7 @@ export class ItemsEditorComponent2 implements OnChanges{
       //   return changedItem;
       // }));
     } else {
-      this.onItemAdd.emit(this.items[0]);
+      this.onItemAdd.emit(this.items);
     }
     this.items = [];
   }
