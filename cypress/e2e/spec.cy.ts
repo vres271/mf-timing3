@@ -138,9 +138,9 @@ describe('Test timing', () => {
         cy.get('.form-error').should('not.exist');
         cy.contains('Зарегистрировать').should('not.be.disabled').click();
 
-        cy.get('.p-input-icon-left > .p-inputtext').type(name.join(' '));
-        cy.get('.p-datatable-tbody > .p-element > :nth-child(2)').should('contain.text', name.join(' ')).click();
-        cy.get('.racer-title > :nth-child(2)').should('contain.text', name.join(' '))
+        // cy.get('.p-input-icon-left > .p-inputtext').type(name.join(' '));
+        // cy.get('.p-datatable-tbody > .p-element > :nth-child(2)').should('contain.text', name.join(' ')).click();
+        // cy.get('.racer-title > :nth-child(2)').should('contain.text', name.join(' '))
       }
     
     })

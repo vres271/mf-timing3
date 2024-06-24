@@ -1,6 +1,6 @@
 import { RacersService } from './racers.service';
 import { Injectable } from '@angular/core';
-import { TimecontrolAPIService, TimecontrolInputCommand, TimecontrolInputDTO, TimecontrolOutputCommand, TimecontrolOutputDTO } from 'src/app/core/services/drivers/timecontrol-api.service';
+import { TimecontrolAPIService, TimecontrolInputCommand, TimecontrolInputDTO, TimecontrolOutputCommand, TimecontrolOutputDTO } from '../../core/services/drivers/timecontrol-api.service';
 import { EmptyRacer, Racer } from '../models/racer.model';
 import { RaceEventType } from '../models/race-event.model';
 import { Race } from '../models/race.model';

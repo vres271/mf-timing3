@@ -1,18 +1,15 @@
 import { TimingState, TimingTimer } from './../../../shared/services/timing.service';
-import { UserDTO } from './../../../shared/models/user.model';
 import { RacesService } from 'src/app/shared/services/races.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription, map, switchMap, tap } from 'rxjs';
+import { Observable, Subscription, map, switchMap } from 'rxjs';
 import { Race } from 'src/app/shared/models/race.model';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { RacersService } from 'src/app/shared/services/racers.service';
-import { Racer, RacerDTO } from 'src/app/shared/models/racer.model';
+import { Racer } from 'src/app/shared/models/racer.model';
 import { RaceEventsService } from 'src/app/shared/services/race-events.service';
 import { RaceEvent, RaceEventType } from 'src/app/shared/models/race-event.model';
-import { Item } from 'src/app/shared/models/items.model';
 import { Config, ConfigService } from 'src/app/core/services/config.service';
-import { UsersService } from 'src/app/shared/services/users.service';
 import { TimerMonitor, TimingService } from 'src/app/shared/services/timing.service';
 
 @Component({

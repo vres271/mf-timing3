@@ -3,7 +3,7 @@ import { User, UserDTO } from './../models/user.model';
 import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { EntityType } from '../models/items.model';
-import { APIService } from 'src/app/core/services/api.service';
+import { APIService } from '../../core/services/api.service';
 import { ItemsService } from './items.service';
 
 @Injectable({

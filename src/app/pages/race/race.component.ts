@@ -1,15 +1,15 @@
-import { RacersService } from 'src/app/shared/services/racers.service';
+import { RacersService } from '../../shared/services/racers.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RacersComponent } from './racers/racers.component';
 import { MenuItem } from 'primeng/api';
 import { RacesComponent } from './races/races.component';
-import { RacesService } from 'src/app/shared/services/races.service';
+import { RacesService } from '../../shared/services/races.service';
 import { Observable, Subscription, forkJoin } from 'rxjs';
 import { TimingComponent } from './timing/timing.component';
-import { TimerMonitor, TimingService } from 'src/app/shared/services/timing.service';
-import { Timecontrol3MockService } from 'src/app/core/services/drivers/timecontrol3.mock';
-import { Config, ConfigService } from 'src/app/core/services/config.service';
+import { TimerMonitor, TimingService } from '../../shared/services/timing.service';
+import { Timecontrol3MockService } from '../../core/services/drivers/timecontrol3.mock';
+import { Config, ConfigService } from '../../core/services/config.service';
 
 @Component({
   selector: 'app-race',

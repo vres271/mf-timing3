@@ -1,4 +1,3 @@
-import { UsersService } from 'src/app/shared/services/users.service';
 import { Component } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { EntityType } from './shared/models/items.model';
@@ -7,6 +6,7 @@ import { RacersMockData } from './shared/mocks/racers.mock';
 import { PrimeNGConfig } from 'primeng/api';
 import { RacesMockData } from './shared/mocks/races.mock';
 import { ConfigService } from './core/services/config.service';
+import { UsersService } from './shared/services/users.service';
 
 @Component({
   selector: 'app-root',
