@@ -1,4 +1,4 @@
-<p-tabView>
+<p-tabView (onChange)="tabChange($event)">
     <p-tabPanel header="Финиш">
         <ng-container *ngIf="results.bestFinish">
             <p-table 
@@ -34,5 +34,33 @@
                 </ng-template> 
             </p-table>    
         </ng-container>
+    </p-tabPanel>    
+    <p-tabPanel header="Полные">
+        <ng-container *ngIf="results.full">
+            <div class="results-full">
+                <table>
+                    <tr *ngFor="let racerItem of results.full">
+                        <td>{{racerItem.place}}</td>
+                        <td>#{{racerItem.racerNum}}</td>
+                        <td>{{racerItem.racerName}}</td>
+                        <td>{{racerItem.bestTimeString}}</td>
+                        <td *ngFor="let attempt of racerItem.attempts" class="grid">
+                            <table>
+                                <tr>
+                                    <td>{{attempt.timeString}}</td>
+                                    <td>{{attempt.dateString}}</td>
+                                </tr>
+                                <tr *ngFor="let lap of attempt.laps">
+                                    <td>{{lap.timeString}}</td>
+                                    <td>{{lap.dateString}}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </ng-container>
+
+        <!-- <p-button label="Generate test data" (click)="generateData()" ></p-button> -->
     </p-tabPanel>
 </p-tabView>

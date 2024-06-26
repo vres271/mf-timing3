@@ -106,11 +106,12 @@
     </ng-template>
 </p-sidebar>
 
-<p-sidebar [visible]="resultsVisible" position="right" [modal]="false" (onHide)="resultsVisible=false" styleClass="p-sidebar-lg">
+<p-sidebar [visible]="resultsVisible" position="right" [modal]="false" (onHide)="resultsVisible=false" [fullScreen]="resultsFullScreen" styleClass="p-sidebar-lg">
     <ng-template pTemplate="header">Результаты</ng-template>
     <ng-template pTemplate="content">
         <app-race-results
             [race]="race"
+            (modeChange)="setResultsMode($event)"
         ></app-race-results>
     </ng-template>
 </p-sidebar>

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RaceResultsComponent } from './race-results.component';
 import { TabViewModule } from 'primeng/tabview';
 import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [    
@@ -13,7 +14,8 @@ import { TableModule } from 'primeng/table';
     CommonModule,
     FormsModule,
     TabViewModule,
-    TableModule
+    TableModule,
+    ButtonModule
   ],
   exports: [
     RaceResultsComponent

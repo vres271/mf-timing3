@@ -22,6 +22,7 @@ export class TimingComponent implements OnInit, OnDestroy{
 
   racesMenu: MenuItem[];
   subs: Subscription[] = [];
+  resultsFullScreen: boolean = false;
 
   eventTypesList = [
     {value: 0, label: 'All types'},
@@ -186,4 +187,9 @@ export class TimingComponent implements OnInit, OnDestroy{
   showResults() {
     this.resultsVisible = true;
   }
+
+  setResultsMode(mode: boolean) {
+    this.resultsFullScreen = mode;
+  }
+
 }

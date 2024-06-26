@@ -1,0 +1,21 @@
+.results-full{
+    table {
+        border-spacing: 0px;
+        border-collapse: collapse;
+    }    
+    td {
+        border: 1px solid rgba(255,255,255,0.1);
+        margin: 0;
+        vertical-align: top;
+        padding: 2px 8px;
+        font-size: .9rem;
+    }
+    td.grid{
+        padding: 0;
+        border: 0;
+        table {
+            border: 0;
+        }
+    } 
+
+}
