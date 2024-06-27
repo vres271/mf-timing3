@@ -14,7 +14,8 @@ const routes: Routes = [
     path: 'admin',
     loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule)
   },
-  { path: '',   redirectTo: '/lazy-home/about', pathMatch: 'full' }
+  { path: '',   loadChildren: () => import('./pages/race/race.module').then(m => m.RaceModule) }
+  // { path: '',   redirectTo: '/lazy-home/about', pathMatch: 'full' }
 ];
 
 @NgModule({
