@@ -38,8 +38,15 @@
     <p-tabPanel header="Полные">
         <ng-container *ngIf="results.full">
             <div class="results-full">
-                <table>
-                    <tr *ngFor="let racerItem of results.full">
+                <table id="full-results-table">
+                    <tr  class="racer-row">
+                        <th>Место</th>
+                        <th>№</th>
+                        <th>Имя</th>
+                        <th>Лучшее время</th>
+                        <th *ngFor="let i of Arr(results.fullAttemptsCount).fill(1); index as j">Заезд {{j+1}}</th>
+                    </tr>
+                    <tr *ngFor="let racerItem of results.full" class="racer-row">
                         <td>{{racerItem.place}}</td>
                         <td>#{{racerItem.racerNum}}</td>
                         <td>{{racerItem.racerName}}</td>
@@ -47,12 +54,12 @@
                         <td *ngFor="let attempt of racerItem.attempts" class="grid">
                             <table>
                                 <tr>
-                                    <td>{{attempt.timeString}}</td>
-                                    <td>{{attempt.dateString}}</td>
+                                    <td [class]="attempt.isBestAtempt ? 'best-atempt' : ''">{{attempt.timeString}}</td>
+                                    <td class="date">{{attempt.dateString}}</td>
                                 </tr>
                                 <tr *ngFor="let lap of attempt.laps">
-                                    <td>{{lap.timeString}}</td>
-                                    <td>{{lap.dateString}}</td>
+                                    <td [class]="racerItem.bestLapId === lap.id ? 'best-lap' : ''">{{lap.timeString}}</td>
+                                    <td class="date">{{lap.dateString}}</td>
                                 </tr>
                             </table>
                         </td>

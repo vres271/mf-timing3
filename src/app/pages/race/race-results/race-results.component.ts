@@ -23,11 +23,14 @@ export class RaceResultsComponent  implements OnInit{
     bestFinish: RaceEvent[],
     bestLap: RaceEvent[],
     full: any[],
+    fullAttemptsCount: number,
   } = {
     bestFinish: [],
     bestLap: [],
     full: [],
+    fullAttemptsCount: 0,
   }
+  Arr = Array;
 
   constructor(
     private raceEventsService: RaceEventsService,
@@ -75,12 +78,15 @@ export class RaceResultsComponent  implements OnInit{
         .filter(filterBest)
 
     min = {}
+    let fullAttemptsCount = 0;
     this.results.full = this.raceEvents
       .filter(item => item.raceEventType === RaceEventType.Finish)
       .sort((a,b) => a.dt - b.dt)
       .filter(filterBest)
       .map((re, i) => {
-        return {
+        let bestLabTime = Infinity;
+        let bestLapId = 0;
+        const racerItem: any = {
           place: i + 1,
           racerNum: re.racerNum,
           racerName: re.racerName,
@@ -101,6 +107,23 @@ export class RaceResultsComponent  implements OnInit{
                   break;
                 }
               }
+              const laps = ase ? this.raceEvents
+                .filter(lre => (lre.raceEventType === RaceEventType.Point ) && lre.racer === re.racer && lre.id < afe.id && ase && lre.id > ase?.id)
+                .sort((a,b) => b.id - a.id)
+                .map((lre, k) => {
+                  if (lre.dt < bestLabTime) {
+                    bestLabTime = lre.dt;
+                    bestLapId = lre.id;
+                  }
+                  return {
+                    lapNum: k + 1,
+                    time: lre.dt,
+                    timeString: lre.dtString,
+                    id: lre.id,
+                    date: lre.date,
+                    dateString: lre.dateString,
+                  }
+                }) : []
               return {
                 num: j + 1,
                 time: afe.dt,
@@ -108,24 +131,17 @@ export class RaceResultsComponent  implements OnInit{
                 date: afe.date,
                 dateString: afe.dateString,
                 isBestAtempt: afe === re,
-                laps: ase ? this.raceEvents
-                  .filter(lre => (lre.raceEventType === RaceEventType.Point ) && lre.racer === re.racer && lre.id < afe.id && ase && lre.id > ase?.id)
-                  .sort((a,b) => b.id - a.id)
-                  .map((lre, k) => {
-                    return {
-                      lapNum: k + 1,
-                      time: lre.dt,
-                      timeString: lre.dtString,
-                      id: lre.id,
-                      date: lre.date,
-                      dateString: lre.dateString,
-                    }
-                  }) : []
+                laps,
               }
             })
         }
+        if (racerItem.attempts.length > fullAttemptsCount) {
+          fullAttemptsCount = racerItem.attempts.length;
+        }
+        racerItem.bestLapId = bestLapId;
+        this.results.fullAttemptsCount = fullAttemptsCount;
+        return racerItem;
       })
-      console.log(this.results.full);
     
   }
 
@@ -160,6 +176,9 @@ export class RaceResultsComponent  implements OnInit{
           let sumT = 0;
           let t = 0;
           this.generateEvent(racer, race, RaceEventType.Start, t).subscribe();
+          t = generateDt();
+          sumT += t;
+          this.generateEvent(racer, race, RaceEventType.Point, t).subscribe();
           t = generateDt();
           sumT += t;
           this.generateEvent(racer, race, RaceEventType.Point, t).subscribe();

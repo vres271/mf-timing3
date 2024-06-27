@@ -3,12 +3,23 @@
         border-spacing: 0px;
         border-collapse: collapse;
     }    
+    th {
+        font-size: 0.8rem;
+        font-weight: 400;
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 2px 8px;
+        text-align: left;
+    }
     td {
         border: 1px solid rgba(255,255,255,0.1);
         margin: 0;
         vertical-align: top;
         padding: 2px 8px;
         font-size: .9rem;
+        text-wrap: nowrap;
+    }
+    tr.racer-row{
+        border: 1px solid rgba(255,255,255,0.3);
     }
     td.grid{
         padding: 0;
@@ -16,6 +27,17 @@
         table {
             border: 0;
         }
-    } 
-
+    }
+    td.best-atempt{
+        background: rgba(255,255,255,0.4);
+        color: rgba(0,0,0,1);
+    }
+    td.best-lap{
+        background: rgba(255,255,255,0.1);
+    }
+    td.date{
+        color: rgba(255,255,255,0.3)
+    }
+    
 }
+
