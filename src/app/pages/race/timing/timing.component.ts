@@ -11,6 +11,7 @@ import { RaceEventsService } from 'src/app/shared/services/race-events.service';
 import { RaceEvent, RaceEventType } from 'src/app/shared/models/race-event.model';
 import { Config, ConfigService } from 'src/app/core/services/config.service';
 import { TimerMonitor, TimingService } from 'src/app/shared/services/timing.service';
+import { AudioService } from 'src/app/core/services/audio.service';
 
 @Component({
   selector: 'app-timing',
@@ -69,6 +70,7 @@ export class TimingComponent implements OnInit, OnDestroy{
     private raceEventsService: RaceEventsService,
     private timingService: TimingService,
     private confirmationService: ConfirmationService,
+    public audioService: AudioService,
   ) { }
 
   ngOnInit() {

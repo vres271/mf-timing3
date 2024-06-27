@@ -59,6 +59,7 @@
                                 <p-multiSelect [ngModel]="value" [options]="eventTypesList" placeholder="Event Type" (onChange)="filter($event.value)" ></p-multiSelect>                            
                             </ng-template>
                         </p-columnFilter>
+                        <p-checkbox [(ngModel)]="audioService.mute" [binary]="true" class="mr-4 pointer" label="Mute"  ></p-checkbox> 
                         <p-checkbox [(ngModel)]="autoStandBy" [binary]="true" class="mr-4 pointer" label="Auto StandBy "  ></p-checkbox> 
                         <div class="mr-4" ><a [href]="resultsToFile" download="timecontrol_results.txt">Скачать</a></div>                       
                         <p-button 

@@ -6,6 +6,7 @@ import { RaceEventType } from '../models/race-event.model';
 import { Race } from '../models/race.model';
 import { RaceEventsService } from './race-events.service';
 import { Observable, Subject, distinctUntilChanged, filter, interval, map, tap } from 'rxjs';
+import { AudioService } from 'src/app/core/services/audio.service';
 
 export enum TimingType {
   Laps = 1
@@ -114,11 +115,13 @@ export class TimingService {
   timer: TimingTimer;
 
   autoStandByAfterFinish = true;
+  lastTimePersonalSoundPlayed = 0;
 
   constructor(
     private timecontrolAPIService: TimecontrolAPIService,
     private racersService: RacersService,
     private raceEventsService: RaceEventsService,
+    private audioService: AudioService,
   ) {
     this.timer = new TimingTimer();
     this.init();
@@ -173,15 +176,26 @@ export class TimingService {
             this.timer.reset();
             this.timer.registerStart();
             this.addRaceEvent(tcMessage, RaceEventType.Start);
+            this.audioService.playFile(`beep_start.mp3`, 0, .5);
+            this.audioService.playFile(`start.mp3`,1000);
             break;
           case TimecontrolOutputCommand.LAP:
             this.timer.registerLap(tcMessage.time || 0);
             this.addRaceEvent(tcMessage, RaceEventType.Point);
+            if (this.timer?.lap < this.timer?.lapsCount) {
+              this.audioService.playFile(`beep_lap.mp3`, 0, .6);
+              this.audioService.playFile(`lap_${this.timer?.lap}.mp3`, 1000);
+            }
+            if (this.timer?.lap === this.timer?.lapsCount - 1) {
+              this.audioService.playFile(`last.mp3`, 2000);
+            }
             break;
           case TimecontrolOutputCommand.FINISH:
             this.timer.registerFinish(tcMessage.time || 0);
             this.state = TimingState.Ready;
             this.addRaceEvent(tcMessage, RaceEventType.Finish);
+            this.audioService.playFile(`beep_finish.mp3`);
+            this.audioService.playFile(`finish.mp3`, 1000);
             if (this.autoStandByAfterFinish) {
               this.setReady()
             }
@@ -189,7 +203,31 @@ export class TimingService {
           default:
             break;
         }
+        this.playPersonalSound(tcMessage);
       });        
+  }
+
+  private playPersonalSound(tcMessage: TimecontrolOutputDTO) {
+    const racer = this.racersService.getCachedById(tcMessage.racer || 0);
+    switch (tcMessage?.command) {
+      case TimecontrolOutputCommand.LAP:
+        this.lastTimePersonalSoundPlayed++;
+        const reasonToPlay = (Math.random() < .3 || this.lastTimePersonalSoundPlayed > 5);
+        if (reasonToPlay && this.timer?.lap < this.timer?.lapsCount) {
+          if (/Шатурн/.test(racer.userFullName)) {
+            const soundFileNames = [
+              `dima_ebash.mp3`,
+              `ebash_kak_boghenka.mp3`,
+            ]
+            const randomIndex = Math.floor(Math.random()*soundFileNames.length);
+            this.audioService.playFile(soundFileNames[randomIndex], 3000);
+            this.lastTimePersonalSoundPlayed = 0;
+          }
+        }
+        break;
+      default:
+        break;
+    }
   }
 
   setReady() {
