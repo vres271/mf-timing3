@@ -89,7 +89,7 @@ export class RaceResultsComponent  implements OnInit{
         const racerItem: any = {
           place: i + 1,
           racerNum: re.racerNum,
-          racerName: re.racerName,
+          racerFullName: re.racerFullName,
           bestTime: re.dt,
           bestTimeString: re.dtString,
           attempts: this.raceEvents

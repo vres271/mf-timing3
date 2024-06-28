@@ -49,7 +49,7 @@
                     <tr *ngFor="let racerItem of results.full" class="racer-row">
                         <td>{{racerItem.place}}</td>
                         <td>#{{racerItem.racerNum}}</td>
-                        <td>{{racerItem.racerName}}</td>
+                        <td>{{racerItem.racerFullName}}</td>
                         <td>{{racerItem.bestTimeString}}</td>
                         <td *ngFor="let attempt of racerItem.attempts" class="grid">
                             <table>
