@@ -162,7 +162,7 @@ export class RaceResultsComponent  implements OnInit{
 
   generateData() {
     this.racesService.get().subscribe(res => {
-      const race = res.find(race => race.name === 'LCPF - Левобережный ПампФест') as Race;
+      const race = res.find(race => race.id === 2) as Race;
       this.racersService.get().subscribe(res => {
         const racers = res.filter(racer => racer.race === race);
 

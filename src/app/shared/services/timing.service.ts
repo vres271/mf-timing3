@@ -116,6 +116,7 @@ export class TimingService {
 
   autoStandByAfterFinish = true;
   lastTimePersonalSoundPlayed = 0;
+  lastIndexPersonalSoundPlayed: number;
 
   constructor(
     private timecontrolAPIService: TimecontrolAPIService,
@@ -210,7 +211,8 @@ export class TimingService {
   private playPersonalSound(tcMessage: TimecontrolOutputDTO) {
     const racer = this.racersService.getCachedById(tcMessage.racer || 0);
     switch (tcMessage?.command) {
-      case TimecontrolOutputCommand.LAP:
+        case TimecontrolOutputCommand.START:
+        case TimecontrolOutputCommand.LAP:
         this.lastTimePersonalSoundPlayed++;
         const reasonToPlay = (Math.random() < .3 || this.lastTimePersonalSoundPlayed > 5);
         if (reasonToPlay && this.timer?.lap < this.timer?.lapsCount) {
@@ -218,8 +220,14 @@ export class TimingService {
             const soundFileNames = [
               `dima_ebash.mp3`,
               `ebash_kak_boghenka.mp3`,
+              `raschlenitel_goril.mp3`,
+              `glyadite_koghanye_meshki.mp3`,
             ]
-            const randomIndex = Math.floor(Math.random()*soundFileNames.length);
+            let randomIndex = Math.floor(Math.random()*soundFileNames.length);
+            if (randomIndex === this.lastIndexPersonalSoundPlayed) {
+              randomIndex = Math.floor(Math.random()*soundFileNames.length);
+            }
+            this.lastIndexPersonalSoundPlayed = randomIndex;
             this.audioService.playFile(soundFileNames[randomIndex], 3000);
             this.lastTimePersonalSoundPlayed = 0;
           }
