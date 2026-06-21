@@ -36,3 +36,60 @@
 .start-step.started{
     background-color: #ff87209e;
 }
+
+:host ::ng-deep .toolbar-ready .p-toolbar {
+  background-color: #28a745 !important;
+}
+
+:host ::ng-deep .toolbar-race .p-toolbar {
+  background-color: #fd7e14 !important;
+  animation: pulse-race 2s infinite;
+}
+
+/* Цвет текста внутри */
+:host ::ng-deep .toolbar-ready .p-toolbar,
+:host ::ng-deep .toolbar-race .p-toolbar {
+  color: white !important;
+}
+
+:host ::ng-deep .toolbar-ready .p-toolbar .racer-title,
+:host ::ng-deep .toolbar-race .p-toolbar .p-toolbar-group-end div {
+  color: white !important;
+}
+
+/* Кнопки на ярком фоне */
+:host ::ng-deep .toolbar-ready .p-toolbar .p-button,
+:host ::ng-deep .toolbar-race .p-toolbar .p-button {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+}
+
+:host ::ng-deep .toolbar-ready .p-toolbar .p-button:hover,
+:host ::ng-deep .toolbar-race .p-toolbar .p-button:hover {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+@keyframes pulse-race {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(253, 126, 20, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(253, 126, 20, 0);
+  }
+}
+
+/* Мигание для привлечения внимания */
+.blink-warning {
+  animation: blink-warning .33s ease-in-out infinite;
+  cursor: pointer;
+}
+
+@keyframes blink-warning {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}

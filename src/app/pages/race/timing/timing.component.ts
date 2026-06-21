@@ -45,6 +45,13 @@ export class TimingComponent implements OnInit, OnDestroy{
     [TimingState.Ready] : 'p-button-success',
     [TimingState.Race] : 'p-button-warning',
   }
+
+  toolbarStyles = {
+    [TimingState.Unknown]: 'toolbar-unknown',
+    [TimingState.StandBy]: 'toolbar-standby',
+    [TimingState.Ready]: 'toolbar-ready',
+    [TimingState.Race]: 'toolbar-race',
+  }  
   
   TimingState = TimingState;
   connecting = false;

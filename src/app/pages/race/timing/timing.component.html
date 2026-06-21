@@ -3,22 +3,22 @@
 </ng-container>
 
 <ng-container *ngIf="race">
-    <p-toolbar>
+    <p-toolbar [ngClass]="toolbarStyles[state]">
         <div class="p-toolbar-group-start">
             <p-button 
                 (click)="setReady()"  
                 [label]="stateLabels[state]"  
                 class="mr-2" 
-                [styleClass]="stateStyles[state]" 
                 [disabled]="state === TimingState.Unknown"
             ></p-button>
-            <span class="racer-title" [ngClass]="{disabled: state !== TimingState.Ready}">
+            <span class="racer-title">
                 <span *ngIf="racer" (click)="showSelectRacerDialog()">#{{racer.num}} : </span>
                 <span *ngIf="racer" (click)="showSelectRacerDialog()">{{racer.userFullName}}</span>
                 <span 
                     *ngIf="!racer" 
                     (click)="showSelectRacerDialog()" 
-                ><i class="pi pi-exclamation-circle" style="color:orange" *ngIf="!racer && state === TimingState.Ready"></i> Select racer!</span>            
+                    [class.blink-warning]="state === TimingState.Ready"
+                ><i class="pi pi-exclamation-circle" style="color:orange"></i> Select racer!</span>            
             </span>
         </div>
         <div class="p-toolbar-group-end" >
